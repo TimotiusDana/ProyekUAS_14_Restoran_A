@@ -2,8 +2,8 @@ const { db } = require('@vercel/postgres');
 const {
   invoices,
   customers,
-  revenue,
   users,
+  reservations
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -95,7 +95,7 @@ async function seedCustomers(client) {
       CREATE TABLE IF NOT EXISTS customers (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
+        adress VARCHAR(255) NOT NULL,
         image_url VARCHAR(255) NOT NULL
       );
     `;
@@ -106,8 +106,8 @@ async function seedCustomers(client) {
     const insertedCustomers = await Promise.all(
       customers.map(
         (customer) => client.sql`
-        INSERT INTO customers (id, name, email, image_url)
-        VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
+        INSERT INTO customers (id, name, adress, image_url)
+        VALUES (${customer.id}, ${customer.name}, ${customer.adress}, ${customer.image_url})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -160,6 +160,44 @@ async function seedRevenue(client) {
   }
 }
 
+async function seedReservations(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createTable = await client.sql`
+    CREATE TABLE IF NOT EXISTS reservations (
+    reservation_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    customer_id UUID NOT NULL,
+    amount INT NOT NULL,
+    status VARCHAR(255) NOT NULL,
+    reservation_date DATE NOT NULL
+  );
+`;
+
+    console.log(`Created "reservations" table`);
+
+    const insertedReservations = await Promise.all(
+      reservations.map(
+        (reservation) => client.sql`
+        INSERT INTO reservations (customer_id, amount, status, reservation_date)
+       VALUES (${reservation.customer_id}, ${reservation.amount}, ${reservation.status}, ${reservation.reservation_date})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedReservations.length} reservations`);
+
+    return {
+      createTable,
+      reservations: insertedReservations,
+    };
+  } catch (error) {
+    console.error('Error seeding reservations:', error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
@@ -167,6 +205,8 @@ async function main() {
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
+  await seedReservations(client);
+
 
   await client.end();
 }
