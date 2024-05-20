@@ -70,6 +70,7 @@ const customers = [
     email: 'balazs@orban.com',
     image_url: '/customers/balazs-orban.png',
   },
+  
 ];
 
 const invoices = [
