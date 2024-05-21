@@ -1,5 +1,3 @@
-// This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
-// https://nextjs.org/learn/dashboard-app/fetching-data
 const users = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
@@ -34,6 +32,8 @@ const customers = [
     address: 'Jalan Kaliurang km 10, Yogyakarta',
     image_url: '/customers/steven-tey.png',
   }
+  
+ 
 ];
 
 const invoices = [
@@ -42,91 +42,29 @@ const invoices = [
     amount: 15795,
     status: 'pending',
     date: '2022-12-06',
+    address: 'Sleman',
   },
   {
     customer_id: customers[1].id,
     amount: 20348,
     status: 'pending',
     date: '2022-11-14',
-  },
-  // Comment out or remove invalid references to customers that do not exist
-  // {
-  //   customer_id: customers[4].id,
-  //   amount: 3040,
-  //   status: 'paid',
-  //   date: '2022-10-29',
-  // },
-  {
-    customer_id: customers[3].id,
-    amount: 44800,
-    status: 'paid',
-    date: '2023-09-10',
-  },
-  // {
-  //   customer_id: customers[5].id,
-  //   amount: 34577,
-  //   status: 'pending',
-  //   date: '2023-08-05',
-  // },
-  // {
-  //   customer_id: customers[7].id,
-  //   amount: 54246,
-  //   status: 'pending',
-  //   date: '2023-07-16',
-  // },
-  // {
-  //   customer_id: customers[6].id,
-  //   amount: 666,
-  //   status: 'pending',
-  //   date: '2023-06-27',
-  // },
-  {
-    customer_id: customers[3].id,
-    amount: 32545,
-    status: 'paid',
-    date: '2023-06-09',
-  },
-  // {
-  //   customer_id: customers[4].id,
-  //   amount: 1250,
-  //   status: 'paid',
-  //   date: '2023-06-17',
-  // },
-  // {
-  //   customer_id: customers[5].id,
-  //   amount: 8546,
-  //   status: 'paid',
-  //   date: '2023-06-07',
-  // },
-  {
-    customer_id: customers[1].id,
-    amount: 500,
-    status: 'paid',
-    date: '2023-08-19',
-  },
-  // {
-  //   customer_id: customers[5].id,
-  //   amount: 8945,
-  //   status: 'paid',
-  //   date: '2023-06-03',
-  // },
-  {
-    customer_id: customers[2].id,
-    amount: 8945,
-    status: 'paid',
-    date: '2023-06-18',
-  },
-  {
-    customer_id: customers[0].id,
-    amount: 8945,
-    status: 'paid',
-    date: '2023-10-04',
+    address: 'Gamping',
   },
   {
     customer_id: customers[2].id,
-    amount: 1000,
+    amount: 3040,
     status: 'paid',
-    date: '2022-06-05',
+    date: '2022-10-29',
+    address: 'Berbah',
+  },
+
+  {
+    customer_id: customers[3].id,
+    amount: 3040,
+    status: 'paid',
+    date: '2022-10-29',
+    address: 'Berbah',
   },
 ];
 
@@ -143,36 +81,38 @@ const revenue = [
   { month: 'Oct', revenue: 2800 },
   { month: 'Nov', revenue: 3000 },
   { month: 'Dec', revenue: 4800 },
-];
-
-const reservations = [
+];const reservations = [
   {
-    customer_id: customers[3].id,
-    email: 'kevin@nextmail.com', // Updated to valid email format
+    customer_id: customers[0].id,
+    email: 'Jalan Parangtritis KM 5',
     amount: 25,
     status: 'pending',
     reservation_date: '2024-04-04',
   },
+
   {
-    customer_id: customers[2].id,
-    email: 'heri@nextmail.com', // Updated to valid email format
+    customer_id: customers[1].id,
+    email: 'Jalan Senopati 18, Yogyakarta',
     amount: 25,
     status: 'pending',
     reservation_date: '2024-05-04',
   },
+
   {
-    customer_id: customers[1].id,
-    email: 'leonardo@nextmail.com', // Updated to valid email format
+    customer_id: customers[2].id,
+    email: 'Jalan Babarsari, Sleman ',
     amount: 25,
     status: 'pending',
     reservation_date: '2024-03-04',
   },
 ];
 
+
+
 module.exports = {
   users,
   customers,
   invoices,
   revenue,
-  reservations,
+  reservations
 };
