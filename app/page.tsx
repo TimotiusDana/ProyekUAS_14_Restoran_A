@@ -1,50 +1,140 @@
-import AcmeLogo from '@/app/ui/acme-logo';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import Image from "next/image";
+import Head from "next/head";
+import { Kanit, Anton } from 'next/font/google';
 import Link from 'next/link';
-import { lusitana } from '@/app/ui/fonts';
-import Image from 'next/image';
+import { UserIcon, ArrowRightCircleIcon } from '@heroicons/react/24/outline';
 
+const bgHero = "/background.png";
+const logoHero = "/logo-noodles.png";
 
 export default function Page() {
   return (
-    <main className="flex min-h-screen flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
-        { <AcmeLogo /> }
-      </div>
-      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
-        <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
-        <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`} >
-            <strong>Welcome to Acme.</strong> This is the example for the{' '}
-            <a href="https://nextjs.org/learn/" className="text-blue-500">
-              Next.js Learn Course
-            </a>
-            , brought to you by Vercel.
-          </p>
-          <Link
-            href="/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-        </div>
-        <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          {/* Add Hero Images Here */}
-          <Image
-        src="/hero-desktop.png"
-        width={1000}
-        height={760}
-        className="hidden md:block"
-        alt="Screenshots of the dashboard project showing desktop version"
-      />
+    <div className="container">
+      <Head>
+        <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+      </Head>
+
       <Image
-        src="/hero-mobile.png"
-        width={560}
-        height={620}
-        className="block md:hidden"
-        alt="Screenshot of the dashboard project showing mobile version"
+        src={bgHero}
+        layout="fill"
+        objectFit="cover"
+        quality={100}
+        alt="Background Hero"
       />
-        </div>
+
+      <div className="logo-container">
+        <Image
+          src={logoHero}
+          width={40}
+          height={40}
+          quality={100}
+          alt="Logo Hero"
+          style={{
+            position: "absolute",
+            left: "20px",
+            top: "20px",
+            zIndex: 1,
+          }}
+        />
+        <p
+          style={{
+            position: "absolute",
+            left: "80px",
+            top: "25px",
+            color: "white",
+            fontSize: "20px",
+            fontWeight: "bold",
+            fontFamily: 'Kanit, sans-serif',
+          }}
+        >
+          Atma Barbershop
+        </p>
       </div>
-    </main>
-  );
+
+      <div className="title-container">
+        <p
+          style={{
+            position: "absolute",
+            top: "35%",
+            left: "45%",
+            bottom: "400px",
+            transform: "translate(-30%, -50%)",
+            color: "white",
+            fontSize: "20px",
+            textAlign: "right",
+            fontFamily: 'Kanit, sans-serif',
+          }}
+        >
+          Menawarkan Mie Ayam terbaik
+        </p>
+      </div>
+
+      <div className="title-container">
+        <p
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "65%",
+            transform: "translate(-90%, -50%)",
+            color: "white",
+            fontSize: "50px",
+            fontWeight: "bold",
+            textAlign: "left",
+            fontFamily: 'Anton, sans-serif',
+          }}
+        >
+          Our Barbershop Admin Dashboard
+        </p>
+      </div>
+
+      <div className="login-container">
+        <button
+          style={{
+            position: "absolute",
+            right: "40px",
+            top: "40px",
+            backgroundColor: "transparent",
+            border: "none",
+            outline: "none",
+            cursor: "pointer",
+          }}
+        >
+          <span
+            style={{
+              color: "white",
+              fontSize: "20px",
+              fontWeight: "bold",
+              border: "1px solid white",
+              borderRadius: "10px",
+              padding: "10px 25px",
+            }}
+          >
+            Login
+          </span>
+        </button>
+      </div>
+
+      <div className="go-to-dashboard-container">
+        <Link href="/dashboard">
+          <button
+            style={{
+              position: "absolute",
+              left: "12%",
+              transform: "translateX(-50%)",
+              bottom: "200px",
+              cursor: "pointer",
+              color: "white",
+              fontSize: "20px",
+              fontWeight: "bold",
+              padding: "10px 25px",
+            }}
+          >
+            for admin only
+            <ArrowRightCircleIcon className='w-6 mx-2'/>
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
 }
