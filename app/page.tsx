@@ -29,7 +29,7 @@ export default function Page() {
       {/* Header and content */}
       <div className="relative z-10 flex flex-col items-center justify-center p-6 w-full md:w-3/5 md:px-28 md:py-12">
         <header className="w-full">
-          <nav className="fixed inset-x-0 top-0 z-20 w-full px-4 py-1 bg-transparent transition duration-700 ease-out">
+          <nav className="fixed inset-x-0 top-0 z-20 w-full px-4 py-1 bg-red-700 transition duration-700 ease-out">
             <div className="flex justify-between p-4">
               <div className="text-[1.5rem] md:text-[2rem] leading-[2.5rem] md:leading-[3rem] text-white">
                 <ul className="flex items-center">
@@ -37,15 +37,21 @@ export default function Page() {
                     <Image
                       src="/logo-noodles.png"
                       alt="logo"
-                      width={60}
-                      height={60}
-                      className="md:w-20 md:h-20"
+                      width={40}
+                      height={40}
+                      className="md:w-40 md:h-40"
                     />
                   </li>
                   <li className={`${dm.className} ml-2 md:ml-4`}>
                     <strong>Restaurant</strong>
                   </li>
                 </ul>
+                <div className="flex items-center space-x-4 text-lg font-bold-tracking-tight">
+                  <Link href="/menu">
+                    <button className="px-6 py-2 text-white transition-colors hover:text-yellow-400 md:text-base"> Menu </button>
+                  </Link>
+
+                </div>
               </div>
             </div>
           </nav>
