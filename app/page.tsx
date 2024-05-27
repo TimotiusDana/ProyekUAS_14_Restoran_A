@@ -71,7 +71,23 @@ export default function Page() {
             <strong className="text-yellow-400">Selamat Datang di NoodleLab</strong>. Hanya menyajikan yang terbaik.
           </p>
         </div>
-        <div className="flex items-center bg-black bg-opacity-50 p-4 rounded-md space-x-4">
+
+        {/* Popular Menus Section */}
+        <div className="flex flex-col items-center justify-center mt-10 space-y-6">
+          <h2 className={`${dm.className} text-2xl md:text-3xl text-yellow-400 font-bold`}>
+            Popular Menus
+          </h2>
+          <p className={`${dm.className} text-xl md:text-2xl text-red-800 font-bold`}> 
+            Check out our most popular dishes!
+          </p>
+          <div className="flex items-center bg-black bg-opacity-50 p-4 rounded-md space-x-4">
+            <Image
+              src="/dish1.jpg"
+              alt="Popular Dish 1"
+              width={100}
+              height={100}
+              className="rounded-full"
+            />
             <Image
               src="/Noodle-Disp.jpeg"
               alt="Welcome Image"
@@ -79,7 +95,15 @@ export default function Page() {
               height={100}
               className="rounded-full"
             />
+            <Image
+              src="/dish2.jpg"
+              alt="Popular Dish 2"
+              width={100}
+              height={100}
+              className="rounded-full"
+            />
           </div>
+        </div>
       </div>
 
       {/* Spacer to push footer further down */}
