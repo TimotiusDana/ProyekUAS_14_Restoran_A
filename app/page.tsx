@@ -50,24 +50,24 @@ export default function Page() {
               <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 text-lg font-bold tracking-tight">
                 <button
                   onClick={() => setMenuVisible(!menuVisible)}
-                  className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base"
+                  className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base"
                 >
-                  <PlusCircleIcon className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
+                  <PlusCircleIcon className="w-5 h-5 md:w-6 md:h-6 text-white-400 font-bold" />
                 </button>
                 {menuVisible && (
                   <>
                     <Link href="/menu">
-                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base">
                         Menu Kami
                       </button>
                     </Link>
                     <Link href="/menu">
-                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base">
                         Lokasi
                       </button>
                     </Link>
                     <Link href="/about">
-                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base">
                         Tentang Kami
                       </button>
                     </Link>
@@ -97,7 +97,7 @@ export default function Page() {
           <h2 className={`${dm.className} text-2xl md:text-3xl text-yellow-400 font-bold`}>
             Popular Menus
           </h2>
-          <p className={`${dm.className} text-xl md:text-2xl text-red-800 font-bold`}>
+          <p className={`${dm.className} text-xl md:text-2xl text--800 font-bold`}>
             Check out our most popular dishes!
           </p>
           <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-4">
