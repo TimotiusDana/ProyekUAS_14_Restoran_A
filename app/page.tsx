@@ -1,11 +1,15 @@
-import AcmeLogo from '@/app/ui/acme-logo';
-import { ArrowRightIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+"use client";
+
+import { useState } from 'react';
+import { ArrowRightIcon, UserGroupIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '@/app/ui/home.module.css';
 import { lusitana, dm } from '@/app/ui/fonts';
 
 export default function Page() {
+  const [menuVisible, setMenuVisible] = useState(false);
+
   return (
     <main className="relative flex min-h-screen flex-col overflow-auto">
       {/* Background image */}
@@ -44,65 +48,98 @@ export default function Page() {
                 </span>
               </div>
               <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 text-lg font-bold tracking-tight">
-                <Link href="/menu-page">
-                  <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">Menu</button>
-                </Link>
-                <Link href="/menu">
-                  <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">Lokasi</button>
-                </Link>
-                <Link href="/menu">
-                  <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">Tentang Kami</button>
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className={`${dm.className} flex items-center gap-3 rounded-lg bg-gradient-to-r from-gray-800 via-gray-600 to-gray-800 px-4 py-2 text-sm font-medium text-white shadow-md transition-transform duration-300 hover:scale-105 hover:from-gray-700 hover:via-gray-500 hover:to-gray-700 md:px-6 md:py-3 md:text-base`}
+                <button
+                  onClick={() => setMenuVisible(!menuVisible)}
+                  className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base"
                 >
-                  <UserGroupIcon className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
-                  <span>Dashboard Admin</span>
-                  <ArrowRightIcon className="w-4 h-4 md:w-5 h-5" />
-                </Link>
+                  <PlusCircleIcon className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
+                </button>
+                {menuVisible && (
+                  <>
+                    <Link href="/menu">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">
+                        Menu Kami
+                      </button>
+                    </Link>
+                    <Link href="/menu">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">
+                        Lokasi
+                      </button>
+                    </Link>
+                    <Link href="/about">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-700 md:text-base">
+                        Tentang Kami
+                      </button>
+                    </Link>
+                    <Link
+                      href="/dashboard"
+                      className={`${dm.className} flex items-center gap-3 rounded-lg bg-gradient-to-r from-red-600 via-yellow-400 to-green-500 px-4 py-2 text-sm font-medium text-white shadow-md transition-transform duration-300 hover:scale-105 hover:from-gray-700 hover:via-gray-500 hover:to-gray-700 md:px-6 md:py-3 md:text-base`}
+                    >
+                      <UserGroupIcon className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
+                      <span>Dashboard Admin</span>
+                      <ArrowRightIcon className="w-4 h-4 md:w-5 h-5" />
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </nav>
         </header>
-
-        <div className="mt-20 flex grow flex-col gap-4 items-center text-center md:text-left md:items-start md:flex-row">
-          <p className={`${dm.className} text-lg md:text-xl text-white md:text-3xl md:leading-normal`}>
+        <div className="flex min-h-screen items-center justify-center">
+          <p className={`${dm.className} text-center md:text-2xl text-white md:text-3xl md:leading-normal`}>
             <strong className="text-yellow-400">Selamat Datang di NoodleLab</strong>. Hanya menyajikan yang terbaik.
           </p>
         </div>
+
 
         {/* Popular Menus Section */}
         <div className="flex flex-col items-center justify-center mt-10 space-y-6">
           <h2 className={`${dm.className} text-2xl md:text-3xl text-yellow-400 font-bold`}>
             Popular Menus
           </h2>
-          <p className={`${dm.className} text-xl md:text-2xl text-red-800 font-bold`}> 
+          <p className={`${dm.className} text-xl md:text-2xl text-red-800 font-bold`}>
             Check out our most popular dishes!
           </p>
-          <div className="flex items-center bg-black bg-opacity-50 p-4 rounded-md space-x-4">
+          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-4">
             <Image
               src="/dish1.jpg"
               alt="Popular Dish 1"
-              width={100}
-              height={100}
+              width={300}
+              height={300}
               className="rounded-full"
             />
             <Image
               src="/Noodle-Disp.jpeg"
               alt="Welcome Image"
-              width={100}
-              height={100}
+              width={300}
+              height={300}
               className="rounded-full"
             />
             <Image
               src="/dish2.jpg"
               alt="Popular Dish 2"
-              width={100}
-              height={100}
+              width={300}
+              height={300}
               className="rounded-full"
             />
           </div>
+
+          <div className="flex min-h-screen items-center justify-right">
+          <p className={`${dm.className} text-center md:text-2xl text-white md:text-3xl md:leading-normal`}>
+            <strong className="text-red-400">Kami hanya menggunakan bahan terbaik</strong>.
+            Karena kami tahu Anda ingin sesuatu yang terbaik.
+          </p>
+          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-4">
+            <Image
+              src="/Veggie-Display.jpeg"
+              alt="Popular Dish 1"
+              width={300}
+              height={300}
+              className="rounded-full"
+            />
+          </div>
+        </div>
+
         </div>
       </div>
 
