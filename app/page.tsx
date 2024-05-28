@@ -61,7 +61,7 @@ export default function Page() {
                         Menu Kami
                       </button>
                     </Link>
-                    <Link href="/menu">
+                    <Link href="/lokasi">
                       <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base">
                         Lokasi
                       </button>
