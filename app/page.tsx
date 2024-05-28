@@ -85,22 +85,30 @@ export default function Page() {
             </div>
           </nav>
         </header>
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="relative z-10 flex min-h-screen items-center justify-center mt-20">
           <p className={`${dm.className} text-center md:text-2xl text-white md:text-3xl md:leading-normal`}>
             <strong className="text-yellow-400">Selamat Datang di NoodleLab</strong>. Hanya menyajikan yang terbaik.
           </p>
         </div>
-
+        <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-4">
+            <Image
+              src="/logo-noodles.png"
+              alt="Popular Dish 1"
+              width={300}
+              height={300}
+              className="rounded-full"
+            />
+          </div>
 
         {/* Popular Menus Section */}
         <div className="flex flex-col items-center justify-center mt-10 space-y-6">
-          <h2 className={`${dm.className} text-2xl md:text-3xl text-yellow-400 font-bold`}>
+          <h2 className={`${dm.className} text-3xl md:text-3xl text-yellow-400 font-bold`}>
             Popular Menus
           </h2>
-          <p className={`${dm.className} text-xl md:text-2xl text--800 font-bold`}>
-            Check out our most popular dishes!
+          <p className={`${dm.className} text-center md:text-3xl md:text-3xl text-white font-bold`}>
+            Lihatlah Menu Populer Kami dan Penuhi Rasa Laparmu dengan yang terbaik!
           </p>
-          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-4">
+          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-6">
             <Image
               src="/dish1.jpg"
               alt="Popular Dish 1"
@@ -129,12 +137,12 @@ export default function Page() {
             <strong className="text-red-400">Kami hanya menggunakan bahan terbaik</strong>.
             Karena kami tahu Anda ingin sesuatu yang terbaik.
           </p>
-          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-4">
+          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-6">
             <Image
               src="/Veggie-Display.jpeg"
               alt="Popular Dish 1"
-              width={300}
-              height={300}
+              width={800}
+              height={800}
               className="rounded-full"
             />
           </div>
