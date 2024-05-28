@@ -73,7 +73,7 @@ export default function Page() {
                     </Link>
                     <Link
                       href="/dashboard"
-                      className={`${dm.className} flex items-center gap-3 rounded-lg bg-gradient-to-r from-red-600 via-yellow-400 to-green-500 px-4 py-2 text-sm font-medium text-white shadow-md transition-transform duration-300 hover:scale-105 hover:from-gray-700 hover:via-gray-500 hover:to-gray-700 md:px-6 md:py-3 md:text-base`}
+                      className={`${dm.className} flex items-center gap-3 rounded-lg bg-gradient-to-r from-red-700 via-  px-4 py-2 text-sm font-medium text-white shadow-md transition-transform duration-300 hover:scale-105 hover:from-gray-700 hover:via-gray-500 hover:to-gray-700 md:px-6 md:py-3 md:text-base`}
                     >
                       <UserGroupIcon className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
                       <span>Dashboard Admin</span>
