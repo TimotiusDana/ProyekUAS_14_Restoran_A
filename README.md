@@ -1,9 +1,13 @@
-## Next.js App Router Course - Starter
+Pertemuan 9
 
-This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+Timotius:
+1. Commit di Github bersama dengan anggota kelompok (sudah dinilai di pertemuan 10)
+2. Pembuatan branch (sudah dinilai di pertemuan 10)
 
-For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.
+Daniel:
+1. Pembuatan tabel invoice (Sudah dinilai di pertemuan 10)
+2. Clone github (Sudah dinilai di pertemuan 10)
 
-1. Commit pertama dilakukan di Repo.
-2. Buat branch "filan" masing"
-
+Filan:
+1. Pembuatan entitas reseervations dan customers (Sudah dinilai)
+2. Clone github

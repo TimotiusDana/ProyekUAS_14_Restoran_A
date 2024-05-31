@@ -13,7 +13,7 @@ const customers = [
     name: 'Dendi Anoma',
     address: 'Jalan Babarsari, Sleman',
     image_url: '/customers/delba-de-oliveira.png',
-    payment_methods: 'cash',  
+    payment_methods: 'cash',
   },
   {
     id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
