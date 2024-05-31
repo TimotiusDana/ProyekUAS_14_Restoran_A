@@ -1,140 +1,168 @@
-import Image from "next/image";
-import Head from "next/head";
-import { Kanit, Anton } from 'next/font/google';
-import Link from 'next/link';
-import { UserIcon, ArrowRightCircleIcon } from '@heroicons/react/24/outline';
+"use client";
 
-const bgHero = "/background.png";
-const logoHero = "/logo-noodles.png";
+import { useState } from 'react';
+import { ArrowRightIcon, UserGroupIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import Image from 'next/image';
+import styles from '@/app/ui/home.module.css';
+import { lusitana, dm } from '@/app/ui/fonts';
 
 export default function Page() {
+  const [menuVisible, setMenuVisible] = useState(false);
+
   return (
-    <div className="container">
-      <Head>
-        <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
-      </Head>
-
-      <Image
-        src={bgHero}
-        layout="fill"
-        objectFit="cover"
-        quality={100}
-        alt="Background Hero"
-      />
-
-      <div className="logo-container">
+    <main className="relative flex min-h-screen flex-col overflow-auto">
+      {/* Background image */}
+      <div className="absolute inset-0 z-0">
         <Image
-          src={logoHero}
-          width={40}
-          height={40}
-          quality={100}
-          alt="Logo Hero"
-          style={{
-            position: "absolute",
-            left: "20px",
-            top: "20px",
-            zIndex: 1,
-          }}
+          src="/bg_noodles.jpg"
+          alt="Background untuk versi desktop"
+          layout="fill"
+          objectFit="cover"
+          className="block md:hidden"
         />
-        <p
-          style={{
-            position: "absolute",
-            left: "80px",
-            top: "25px",
-            color: "white",
-            fontSize: "20px",
-            fontWeight: "bold",
-            fontFamily: 'Kanit, sans-serif',
-          }}
-        >
-          Atma Barbershop
-        </p>
+        <Image
+          src="/bg_noodles.jpg"
+          alt="Background untuk versi mobile"
+          layout="fill"
+          objectFit="cover"
+          className="hidden md:block"
+        />
       </div>
 
-      <div className="title-container">
-        <p
-          style={{
-            position: "absolute",
-            top: "35%",
-            left: "45%",
-            bottom: "400px",
-            transform: "translate(-30%, -50%)",
-            color: "white",
-            fontSize: "20px",
-            textAlign: "right",
-            fontFamily: 'Kanit, sans-serif',
-          }}
-        >
-          Menawarkan Mie Ayam terbaik
-        </p>
+      {/* Header and content */}
+      <div className="relative z-10 flex flex-col items-center justify-center p-6 w-full md:w-3/5 md:px-28 md:py-12">
+        <header className="w-full">
+          <nav className="fixed inset-x-0 top-0 z-20 w-full px-4 py-1 bg-transparent transition duration-700 ease-out">
+            <div className="flex flex-col md:flex-row justify-between items-center p-4 space-y-4 md:space-y-0">
+              <div className="flex items-center text-[1.5rem] md:text-[2rem] leading-[2.5rem] md:leading-[3rem] text-white">
+                <Image
+                  src="/logo-noodles.png"
+                  alt="logo"
+                  width={60}
+                  height={60}
+                  className="md:w-20 md:h-20"
+                />
+                <span className={`${dm.className} ml-2 md:ml-4 text-white text-2xl md:text-4xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent animate-pulse`}>
+                  <strong>NoodleLab</strong>
+                </span>
+              </div>
+              <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 text-lg font-bold tracking-tight">
+                <button
+                  onClick={() => setMenuVisible(!menuVisible)}
+                  className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base"
+                >
+                  <PlusCircleIcon className="w-5 h-5 md:w-6 md:h-6 text-white-400 font-bold" />
+                </button>
+                {menuVisible && (
+                  <>
+                    <Link href="/menu">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base">
+                        Menu Kami
+                      </button>
+                    </Link>
+                    <Link href="/lokasi">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base">
+                        Lokasi
+                      </button>
+                    </Link>
+                    <Link href="/about">
+                      <button className="px-6 py-2 text-white transition-colors bg-transparent rounded-full shadow-lg hover:shadow-xl hover:bg-yellow-400 md:text-base">
+                        Tentang Kami
+                      </button>
+                    </Link>
+                    <Link
+                      href="/dashboard"
+                      className={`${dm.className} flex items-center gap-3 rounded-lg bg-gradient-to-r from-red-700 via-  px-4 py-2 text-sm font-medium text-white shadow-md transition-transform duration-300 hover:scale-105 hover:from-gray-700 hover:via-gray-500 hover:to-gray-700 md:px-6 md:py-3 md:text-base`}
+                    >
+                      <UserGroupIcon className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
+                      <span>Dashboard Admin</span>
+                      <ArrowRightIcon className="w-4 h-4 md:w-5 h-5" />
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          </nav>
+        </header>
+        <div className="relative z-10 flex min-h-screen items-center justify-center mt-20">
+          <p className={`${dm.className} text-center md:text-2xl text-white md:text-3xl md:leading-normal`}>
+            <strong className="text-yellow-400">Selamat Datang di NoodleLab</strong>. Hanya menyajikan yang terbaik.
+          </p>
+        </div>
+        <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-4">
+            <Image
+              src="/logo-noodles.png"
+              alt="Popular Dish 1"
+              width={300}
+              height={300}
+              className="rounded-full"
+            />
+          </div>
+
+        {/* Popular Menus Section */}
+        <div className="flex flex-col items-center justify-center mt-10 space-y-6">
+          <h2 className={`${dm.className} text-3xl md:text-3xl text-yellow-400 font-bold`}>
+            Popular Menus
+          </h2>
+          <p className={`${dm.className} text-center md:text-3xl md:text-3xl text-white font-bold`}>
+            Lihatlah Menu Populer Kami dan Penuhi Rasa Laparmu dengan yang terbaik!
+          </p>
+          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-6">
+            <Image
+              src="/dish1.jpg"
+              alt="Popular Dish 1"
+              width={300}
+              height={300}
+              className="rounded-full"
+            />
+            <Image
+              src="/dish2.jpg"
+              alt="Popular Dish 2"
+              width={300}
+              height={300}
+              className="rounded-full"
+            />
+          </div>
+
+          <div className="flex min-h-screen items-center justify-right">
+          <p className={`${dm.className} text-center md:text-2xl text-white md:text-3xl md:leading-normal`}>
+            <strong className="text-red-400">Kami hanya menggunakan bahan terbaik</strong>.
+            Karena kami tahu Anda ingin sesuatu yang terbaik.
+          </p>
+          <div className="flex items-center bg-black bg-transparent p-4 rounded-md space-x-6">
+            <Image
+              src="/Veggie-Display.jpeg"
+              alt="Popular Dish 1"
+              width={800}
+              height={800}
+              className="rounded-full"
+            />
+          </div>
+        </div>
+
+        </div>
       </div>
 
-      <div className="title-container">
-        <p
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "65%",
-            transform: "translate(-90%, -50%)",
-            color: "white",
-            fontSize: "50px",
-            fontWeight: "bold",
-            textAlign: "left",
-            fontFamily: 'Anton, sans-serif',
-          }}
-        >
-          Our Barbershop Admin Dashboard
-        </p>
-      </div>
+      {/* Spacer to push footer further down */}
+      <div className="flex-grow"></div>
 
-      <div className="login-container">
-        <button
-          style={{
-            position: "absolute",
-            right: "40px",
-            top: "40px",
-            backgroundColor: "transparent",
-            border: "none",
-            outline: "none",
-            cursor: "pointer",
-          }}
-        >
-          <span
-            style={{
-              color: "white",
-              fontSize: "20px",
-              fontWeight: "bold",
-              border: "1px solid white",
-              borderRadius: "10px",
-              padding: "10px 25px",
-            }}
-          >
-            Login
-          </span>
-        </button>
-      </div>
-
-      <div className="go-to-dashboard-container">
-        <Link href="/dashboard">
-          <button
-            style={{
-              position: "absolute",
-              left: "12%",
-              transform: "translateX(-50%)",
-              bottom: "200px",
-              cursor: "pointer",
-              color: "white",
-              fontSize: "20px",
-              fontWeight: "bold",
-              padding: "10px 25px",
-            }}
-          >
-            for admin only
-            <ArrowRightCircleIcon className='w-6 mx-2'/>
-          </button>
-        </Link>
-      </div>
-    </div>
-  );
+      {/* Footer with Contact Us and Address */}
+      <footer className="relative z-10 flex flex-col items-center justify-center w-full bg-black bg-opacity-50 text-white py-6">
+        <div className="text-center">
+          <p className={`${dm.className} text-base md:text-lg`}>Contact Us</p>
+          <p className={`${dm.className} text-sm md:text-base`}>
+            Email: contact@restaurant.com
+          </p>
+          <p className={`${dm.className} text-sm md:text-base`}>
+            Phone: +62 123 4567 890
+          </p>
+          <p className={`${dm.className} text-base md:text-lg mt-4`}>Alamat</p>
+          <p className={`${dm.className} text-sm md:text-base`}>
+            Jl. Noodle Street No. 123, Yogyakarta, Indonesia
+          </p>
+        </div>
+      </footer>
+    </main>
+  );
 }
