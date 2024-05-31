@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from 'react';
 import Image from 'next/image';
 import { UserIcon } from '@heroicons/react/24/solid'; 
@@ -29,17 +27,16 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-[400px] p-6 bg-gradient-to-b from-red-800 to-green-600 to-blue-500 bg-opacity-50 rounded-lg shadow-lg">
-  <div className="flex h-20 w-full items-end rounded-lg bg-gradient-to-b from-red-800 to-green-900 to-blue-400 p-3 md:h-36">
-    <div className="w-32 text-white md:w-36">
+        <div className="flex h-20 w-full items-end rounded-lg bg-gradient-to-b from-red-800 to-green-900 to-blue-400 p-3 md:h-36">
+          <div className="w-32 text-white md:w-36">
             <AcmeLogo />
           </div>
         </div>
         <div className="text-center text-2xl font-bold text-yellow-500 mt-4">Welcome to NoodleLab</div>
         <LoginForm />
 
-   
         <div className="flex space-x-4 mt-6">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-800 text-white">
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500 text-white">
             <UserIcon className="w-10 h-10" /> 
           </div>
         </div>

@@ -1,5 +1,3 @@
-// This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
-// https://nextjs.org/learn/dashboard-app/fetching-data
 const users = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
@@ -13,110 +11,127 @@ const customers = [
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
     name: 'Dendi Anoma',
-    address: 'Jalan Babarsari, Sleman ',
+    address: 'Jalan Babarsari, Sleman',
     image_url: '/customers/delba-de-oliveira.png',
+    payment_methods: 'cash',  
   },
   {
     id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
     name: 'Leonardo',
     address: 'Jalan Senopati 18, Yogyakarta',
     image_url: '/customers/lee-robinson.png',
+    payment_methods: 'Qris',
   },
   {
     id: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
     name: 'Heri Priadi',
-    address: 'Jalan Parangtritis KM 5 ',
+    address: 'Jalan Parangtritis KM 5',
     image_url: '/customers/hector-simpson.png',
+    payment_methods: 'Qris',
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
     name: 'Kevin Sanjaya',
     address: 'Jalan Kaliurang km 10, Yogyakarta',
     image_url: '/customers/steven-tey.png',
+    payment_methods: 'Cash',
   }
-  
- 
 ];
 
 const invoices = [
   {
     customer_id: customers[0].id,
-    amount: 15795,
-    status: 'pending',
-    date: '2022-12-06',
-    address: 'Sleman',
+    price: '42000',
+    tax: '10',
+    payment_methods: 'Cash',
+    status: 'Paid',
+    invoice_date: '2024-05-04',
   },
   {
     customer_id: customers[1].id,
-    amount: 20348,
-    status: 'pending',
-    date: '2022-11-14',
-    address: 'Gamping',
+    price: '50000',
+    tax: '10',
+    payment_methods: 'Qris',
+    status: 'Pending',
+    invoice_date: '2024-05-10',
   },
   {
     customer_id: customers[2].id,
-    amount: 3040,
-    status: 'paid',
-    date: '2022-10-29',
-    address: 'Berbah',
+    price: '25000',
+    tax: '10',
+    payment_methods: 'Cash',
+    status: 'Pending',
+    invoice_date: '2024-05-20',
   },
-
   {
     customer_id: customers[3].id,
-    amount: 3040,
-    status: 'paid',
-    date: '2022-10-29',
-    address: 'Berbah',
+    price: '54000',
+    tax: '10',
+    payment_methods: 'Qris',
+    status: 'Paid',
+    invoice_date: '2024-05-12',
   },
 ];
 
-const revenue = [
-  { month: 'Jan', revenue: 2000 },
-  { month: 'Feb', revenue: 1800 },
-  { month: 'Mar', revenue: 2200 },
-  { month: 'Apr', revenue: 2500 },
-  { month: 'May', revenue: 2300 },
-  { month: 'Jun', revenue: 3200 },
-  { month: 'Jul', revenue: 3500 },
-  { month: 'Aug', revenue: 3700 },
-  { month: 'Sep', revenue: 2500 },
-  { month: 'Oct', revenue: 2800 },
-  { month: 'Nov', revenue: 3000 },
-  { month: 'Dec', revenue: 4800 },
-];const reservations = [
+const reservations = [
   {
     customer_id: customers[0].id,
-    email: 'Jalan Parangtritis KM 5',
-    amount: 25,
-    status: 'pending',
-    reservation_date: '2024-04-04',
+    address: 'Jalan Babarsari, Sleman',
+    price: '92000',
+    special_request: 'meja dekat lobby',
+    reservation_date: '2024-03-04',
+    email: 'Asep23@gmail.com',
   },
-
   {
     customer_id: customers[1].id,
-    email: 'Jalan Senopati 18, Yogyakarta',
-    amount: 25,
-    status: 'pending',
-    reservation_date: '2024-05-04',
+    address: 'Jalan Babarsari, Sleman',
+    price: '100000',
+    special_request: 'meja 4 dekat jendela',
+    reservation_date: '2024-03-04',
+    email: 'Samsul21@gmail.com',
   },
-
   {
     customer_id: customers[2].id,
-    email: 'Jalan Babarsari, Sleman ',
-    amount: 25,
-    status: 'pending',
+    address: 'Jalan Babarsari, Sleman',
+    price: '340000',
+    special_request: 'meja 3 VIP',
     reservation_date: '2024-03-04',
+    email: 'Arip242@gmail.com',
   },
 ];
 
-
+const menu = [
+  {
+    name: 'mie ayam biasa',
+    category: 'makanan',
+    price: '12000',
+  },
+  {
+    name: 'mie ayam bakso',
+    category: 'makanan',
+    price: '15000',
+  },
+  {
+    name: 'mie ayam bakso Jumbo',
+    category: 'makanan',
+    price: '24000',
+  },
+  {
+    name: 'esteh',
+    category: 'minuman',
+    price: '5000',
+  },
+  {
+    name: 'es jeruk',
+    category: 'minuman',
+    price: '7000',
+  },
+];
 
 module.exports = {
   users,
   customers,
   invoices,
-  revenue,
+  menu,
   reservations
 };
-
-
