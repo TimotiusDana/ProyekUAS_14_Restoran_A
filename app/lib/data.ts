@@ -23,7 +23,7 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   try {
     const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.price, customers.name, customers.image_url, invoices.id
+      SELECT invoices.price, invoices.tax, invoices.payment_methods, invoices.status, invoices.invoice_date, customers.name, customers.image_url, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoice.date DESC
@@ -31,7 +31,7 @@ export async function fetchLatestInvoices() {
 
     const latestInvoices = data.rows.map((invoice) => ({
       ...invoice,
-      amount: formatCurrency(invoice.amount),
+      price: formatCurrency(invoice.price),
     }));
     return latestInvoices;
   } catch (error: any) {
@@ -45,8 +45,8 @@ export async function fetchCardData() {
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
+         SUM(CASE WHEN status = 'paid' THEN price ELSE 0 END) AS "paid",
+         SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
          FROM invoices`;
 
     const data = await Promise.all([
@@ -115,7 +115,7 @@ export async function fetchInvoicesPages(query: string) {
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoice.price::text ILIKE ${`%${query}%`} OR
         invoice.date::text ILIKE ${`%${query}%`} OR
         invoice.status ILIKE ${`%${query}%`}
     `;
@@ -134,14 +134,17 @@ export async function fetchInvoiceById(id: string) {
       SELECT
         invoices.id,
         invoices.customer_id,
-        invoices.amount,
-        invoices.status
+        invoices.price,
+        invoices.tax,
+        invoices.payment_methods,
+        invoices.status,
+        invoices.invoice_date
       FROM invoices
       WHERE invoices.id = ${id}`;
 
     const invoice = data.rows.map((invoice) => ({
       ...invoice,
-      amount: invoice.amount / 100,
+      price: invoice.price / 100,
     }));
 
     return invoice[0];
@@ -176,8 +179,8 @@ export async function fetchFilteredCustomers(query: string) {
         customers.email,
         customers.image_url,
         COUNT(invoices.id) AS total_invoices,
-        SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-        SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+        SUM(CASE WHEN invoices.status = 'pending' THEN invoices.price ELSE 0 END) AS total_pending,
+        SUM(CASE WHEN invoices.status = 'paid' THEN invoices.price ELSE 0 END) AS total_paid
       FROM customers
       LEFT JOIN invoices ON customers.id = invoices.customer_id
       WHERE
@@ -206,5 +209,105 @@ export async function getUser(email: string) {
   } catch (error: any) {
     console.error('Failed to fetch user:', error);
     throw new Error(`Failed to fetch user. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchLatestReservations() {
+  try {
+    const data = await sql<LatestInvoiceRaw>`
+      SELECT reservations.address, reservations.price, reservations.special_request, reservations.reservation_date, reservations_email, customers.name, customers.image_url, reservations.id
+      FROM reservations
+      JOIN customers ON reservations.customer_id = customers.id
+      ORDER BY invoice.date DESC
+      LIMIT 5`;
+
+    const latestInvoices = data.rows.map((invoice) => ({
+      ...invoice,
+      price: formatCurrency(invoice.price),
+    }));
+    return latestReservations;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch the latest reservations. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchFilteredReservations(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const reservations = await sql<ReservationsTable>`
+      SELECT
+        reservation.id,
+        reservation.price,
+        reservation.tax,
+        reservation.payment_methods,
+        reservation.status,
+        reservation.reservation_date,
+        customers.name,
+        customers.image_url
+      FROM reservations
+      JOIN customers ON reservations.customer_id = customers.id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        reservation.price::text ILIKE ${`%${query}%`} OR
+        reservation.tax::text ILIKE ${`%${query}%`} OR
+        reservation.payment_methods::text ILIKE ${`%${query}%`} OR
+        reservation.status ILIKE ${`%${query}%`} OR
+        reservation.reservation_date ILIKE ${`%${query}%`}
+      ORDER BY reservation.reservation_date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
+
+    return reservations.rows;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch reservations. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchReservationsPages(query: string) {
+  try {
+    const count = await sql`SELECT COUNT(*)
+      FROM reservations
+      JOIN customers ON reservations.customer_id = customers.id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        reservation.price::text ILIKE ${`%${query}%`} OR
+        reservation.date::text ILIKE ${`%${query}%`} OR
+        reservation.status ILIKE ${`%${query}%`}
+    `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch total number of reservations. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchReservationById(id: string) {
+  try {
+    const data = await sql<ReservationForm>`
+      SELECT
+        reservations.id,
+        reservations.customer_id,
+        reservations.price,
+        reservations.tax,
+        reservations.payment_methods,
+        reservations.status,
+        reservations.reservation_date
+      FROM reservations
+      WHERE reservations.id = ${id}`;
+
+    const reservation = data.rows.map((reservation) => ({
+      ...reservation,
+      price: reservation.price / 100,
+    }));
+
+    return reservation[0];
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch reservation. Reason: ${error.message}`);
   }
 }
