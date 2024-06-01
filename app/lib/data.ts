@@ -26,7 +26,7 @@ export async function fetchLatestInvoices() {
       SELECT invoices.price, invoices.tax, invoices.payment_methods, invoices.status, invoices.invoice_date, customers.name, customers.image_url, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoice.date DESC
+      ORDER BY invoices.invoice_date DESC
       LIMIT 5`;
 
     const latestInvoices = data.rows.map((invoice) => ({
@@ -39,6 +39,7 @@ export async function fetchLatestInvoices() {
     throw new Error(`Failed to fetch the latest invoices. Reason: ${error.message}`);
   }
 }
+
 
 export async function fetchCardData() {
   try {
@@ -215,15 +216,15 @@ export async function getUser(email: string) {
 export async function fetchLatestReservations() {
   try {
     const data = await sql<LatestInvoiceRaw>`
-      SELECT reservations.address, reservations.price, reservations.special_request, reservations.reservation_date, reservations_email, customers.name, customers.image_url, reservations.id
+      SELECT reservations.address, reservations.price, reservations.special_request, reservations.reservation_date, reservations.email, customers.name, customers.image_url, reservations.id
       FROM reservations
       JOIN customers ON reservations.customer_id = customers.id
-      ORDER BY invoice.date DESC
+      ORDER BY reservations.reservation_date DESC
       LIMIT 5`;
 
-    const latestInvoices = data.rows.map((invoice) => ({
-      ...invoice,
-      price: formatCurrency(invoice.price),
+    const latestReservations = data.rows.map((reservation) => ({
+      ...reservation,
+      price: formatCurrency(reservation.price),
     }));
     return latestReservations;
   } catch (error: any) {
@@ -231,6 +232,7 @@ export async function fetchLatestReservations() {
     throw new Error(`Failed to fetch the latest reservations. Reason: ${error.message}`);
   }
 }
+
 
 export async function fetchFilteredReservations(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
