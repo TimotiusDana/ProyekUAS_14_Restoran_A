@@ -23,7 +23,7 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   try {
     const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.price, customers.name, customers.image_url, invoices.id
+      SELECT invoices.price, invoices.tax, invoices.payment_methods, invoices.status, invoices.invoice_date, customers.name, customers.image_url, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoice.date DESC
@@ -115,7 +115,7 @@ export async function fetchInvoicesPages(query: string) {
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.price::text ILIKE ${`%${query}%`} OR
         invoice.date::text ILIKE ${`%${query}%`} OR
         invoice.status ILIKE ${`%${query}%`}
     `;
@@ -144,7 +144,7 @@ export async function fetchInvoiceById(id: string) {
 
     const invoice = data.rows.map((invoice) => ({
       ...invoice,
-      amount: invoice.amount / 100,
+      price: invoice.price / 100,
     }));
 
     return invoice[0];
@@ -179,8 +179,8 @@ export async function fetchFilteredCustomers(query: string) {
         customers.email,
         customers.image_url,
         COUNT(invoices.id) AS total_invoices,
-        SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-        SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+        SUM(CASE WHEN invoices.status = 'pending' THEN invoices.price ELSE 0 END) AS total_pending,
+        SUM(CASE WHEN invoices.status = 'paid' THEN invoices.price ELSE 0 END) AS total_paid
       FROM customers
       LEFT JOIN invoices ON customers.id = invoices.customer_id
       WHERE
