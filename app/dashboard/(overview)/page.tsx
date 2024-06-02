@@ -1,3 +1,4 @@
+import React, { useState, useEffect, } from 'react';
 import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
@@ -9,6 +10,8 @@ import {
 import { Suspense } from 'react';
 import { LatestInvoicesSkeleton } from '@/app/ui/skeletons';
 
+
+
 export default async function Page() {
   try {
     const latestInvoices = await fetchLatestInvoices();
@@ -18,6 +21,7 @@ export default async function Page() {
       totalPaidInvoices,
       totalPendingInvoices,
     } = await fetchCardData();
+    
 
     return (
       <main>
