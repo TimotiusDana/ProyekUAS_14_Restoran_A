@@ -88,8 +88,35 @@ export type InvoiceForm = {
   id: string;
   customer_id: string;
   price: number;
-  tax: string;
-  payment_methods: string;
+  status: 'pending' | 'paid';
+};
+
+export type LatestReservation = {
+  id: string;
+  customer_id: string;
+  address: string;
+  price: number;
+  special_request: string;
+  reservation_date: string;
+  email: string;
+};
+
+
+export type ReservationsTable = {
+  id: string;
+  customer_id: string;
+  name: string;
+  image_url: string;
   invoice_date: string;
+  price: number;
+  payment_methods: string;
+  tax: number;
+  status: 'pending' | 'paid';
+};
+
+export type ReservationForm = {
+  id: string;
+  customer_id: string;
+  price: number;
   status: 'pending' | 'paid';
 };

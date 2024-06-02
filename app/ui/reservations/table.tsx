@@ -1,54 +1,55 @@
 import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
+import { UpdateReservation, DeleteReservation } from '@/app/ui/reservations/buttons';
+import ReservationStatus from '@/app/ui/reservations/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import { fetchFilteredReservations } from '@/app/lib/data';
 
-export default async function InvoicesTable({
+export default async function ReservationsTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const reservations = await fetchFilteredReservations(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {invoices?.map((invoice) => (
+            {reservations?.map((reservation) => (
               <div
-                key={invoice.id}
+                key={reservation.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={invoice.image_url}
+                        src={reservation.image_url}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                        alt={`${reservation.name}'s profile picture`}
                       />
-                      <p>{invoice.name}</p>
+                      <p>{reservation.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
+                    <p className="text-sm text-gray-500">{reservation.email}</p>
                   </div>
-                  <InvoiceStatus status={invoice.status} />
+                  {/* Uncomment this line if the ReservationStatus component is used */}
+                  {/* <ReservationStatus status={reservation.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(invoice.price)}
+                      {formatCurrency(reservation.price)}
                     </p>
-                    <p>{formatDateToLocal(invoice.invoice_date)}</p>
+                    <p>{formatDateToLocal(reservation.date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
+                    <UpdateReservation id={reservation.id} />
+                    <DeleteReservation id={reservation.id} />
                   </div>
                 </div>
               </div>
@@ -64,7 +65,7 @@ export default async function InvoicesTable({
                   Email
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  Price
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
@@ -78,40 +79,38 @@ export default async function InvoicesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices?.map((invoice) => (
+              {reservations?.map((reservation) => (
                 <tr
-                  key={invoice.id}
+                  key={reservation.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <Image
-                        src={invoice.image_url}
+                        src={reservation.image_url}
                         className="rounded-full"
                         width={28}
                         height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                        alt={`${reservation.name}'s profile picture`}
                       />
-                      <p>{invoice.name}</p>
+                      <p>{reservation.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
+                    {reservation.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(invoice.price)}
+                    {formatCurrency(reservation.price)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.invoice_date)}
+                    {formatDateToLocal(reservation.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
+                    <ReservationStatus status={reservation.status} />
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
-                    </div>
+                  <td className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
+                    <UpdateReservation id={reservation.id} />
+                    <DeleteReservation id={reservation.id} />
                   </td>
                 </tr>
               ))}
