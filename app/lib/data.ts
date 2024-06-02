@@ -23,7 +23,7 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   try {
     const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.price, invoices.tax, invoices.payment_methods, invoices.status, invoices.invoice_date, customers.name, customers.image_url, invoices.id
+      SELECT invoices.price, customers.name, customers.image_url, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoice.date DESC
@@ -80,24 +80,24 @@ export async function fetchFilteredInvoices(query: string, currentPage: number) 
   try {
     const invoices = await sql<InvoicesTable>`
       SELECT
-        invoice.id,
-        invoice.price,
-        invoice.tax,
-        invoice.payment_methods,
-        invoice.status,
-        invoice.invoice_date,
+        invoices.id,
+        invoices.price,
+        invoices.tax,
+        invoices.payment_methods,
+        invoices.status,
+        invoices.invoice_date,
         customers.name,
         customers.image_url
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
-        invoice.price::text ILIKE ${`%${query}%`} OR
-        invoice.tax::text ILIKE ${`%${query}%`} OR
-        invoice.payment_methods::text ILIKE ${`%${query}%`} OR
-        invoice.status ILIKE ${`%${query}%`} OR
-        invoice.invoice_date ILIKE ${`%${query}%`}
-      ORDER BY invoice.invoice_date DESC
+        invoices.price::text ILIKE ${`%${query}%`} OR
+        invoices.tax::text ILIKE ${`%${query}%`} OR
+        invoices.payment_methods::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`} OR
+        invoices.invoice_date ILIKE ${`%${query}%`}
+      ORDER BY invoices.invoice_date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
 
     return invoices.rows;
@@ -116,8 +116,10 @@ export async function fetchInvoicesPages(query: string) {
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
         invoices.price::text ILIKE ${`%${query}%`} OR
-        invoice.date::text ILIKE ${`%${query}%`} OR
-        invoice.status ILIKE ${`%${query}%`}
+        invoices.tax::text ILIKE ${`%${query}%`} OR
+        invoices.payment_methods::text ILIKE ${`%${query}%`} OR
+        invoices.invoice_date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`}
     `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);

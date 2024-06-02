@@ -88,5 +88,8 @@ export type InvoiceForm = {
   id: string;
   customer_id: string;
   price: number;
+  tax: string;
+  payment_methods: string;
+  invoice_date: string;
   status: 'pending' | 'paid';
 };
