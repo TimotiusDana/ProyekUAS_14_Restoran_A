@@ -26,7 +26,7 @@ export async function fetchLatestInvoices() {
       SELECT invoices.price, invoices.tax, invoices.payment_methods, invoices.status, invoices.invoice_date, customers.name, customers.image_url, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoice.date DESC
+      ORDER BY invoices.invoice_date DESC
       LIMIT 5`;
 
     const latestInvoices = data.rows.map((invoice) => ({
@@ -39,6 +39,7 @@ export async function fetchLatestInvoices() {
     throw new Error(`Failed to fetch the latest invoices. Reason: ${error.message}`);
   }
 }
+
 
 export async function fetchCardData() {
   try {
@@ -115,7 +116,7 @@ export async function fetchInvoicesPages(query: string) {
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
-        invoices.price::text ILIKE ${`%${query}%`} OR
+        invoice.price::text ILIKE ${`%${query}%`} OR
         invoice.date::text ILIKE ${`%${query}%`} OR
         invoice.status ILIKE ${`%${query}%`}
     `;
@@ -209,5 +210,106 @@ export async function getUser(email: string) {
   } catch (error: any) {
     console.error('Failed to fetch user:', error);
     throw new Error(`Failed to fetch user. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchLatestReservations() {
+  try {
+    const data = await sql<LatestInvoiceRaw>`
+      SELECT reservations.address, reservations.price, reservations.special_request, reservations.reservation_date, reservations.email, customers.name, customers.image_url, reservations.id
+      FROM reservations
+      JOIN customers ON reservations.customer_id = customers.id
+      ORDER BY reservations.reservation_date DESC
+      LIMIT 5`;
+
+    const latestReservations = data.rows.map((reservation) => ({
+      ...reservation,
+      price: formatCurrency(reservation.price),
+    }));
+    return latestReservations;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch the latest reservations. Reason: ${error.message}`);
+  }
+}
+
+
+export async function fetchFilteredReservations(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const reservations = await sql<ReservationsTable>`
+      SELECT
+        reservation.id,
+        reservation.price,
+        reservation.tax,
+        reservation.payment_methods,
+        reservation.status,
+        reservation.reservation_date,
+        customers.name,
+        customers.image_url
+      FROM reservations
+      JOIN customers ON reservations.customer_id = customers.id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        reservation.price::text ILIKE ${`%${query}%`} OR
+        reservation.tax::text ILIKE ${`%${query}%`} OR
+        reservation.payment_methods::text ILIKE ${`%${query}%`} OR
+        reservation.status ILIKE ${`%${query}%`} OR
+        reservation.reservation_date ILIKE ${`%${query}%`}
+      ORDER BY reservation.reservation_date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
+
+    return reservations.rows;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch reservations. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchReservationsPages(query: string) {
+  try {
+    const count = await sql`SELECT COUNT(*)
+      FROM reservations
+      JOIN customers ON reservations.customer_id = customers.id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        reservation.price::text ILIKE ${`%${query}%`} OR
+        reservation.date::text ILIKE ${`%${query}%`} OR
+        reservation.status ILIKE ${`%${query}%`}
+    `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch total number of reservations. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchReservationById(id: string) {
+  try {
+    const data = await sql<ReservationForm>`
+      SELECT
+        reservations.id,
+        reservations.customer_id,
+        reservations.price,
+        reservations.tax,
+        reservations.payment_methods,
+        reservations.status,
+        reservations.reservation_date
+      FROM reservations
+      WHERE reservations.id = ${id}`;
+
+    const reservation = data.rows.map((reservation) => ({
+      ...reservation,
+      price: reservation.price / 100,
+    }));
+
+    return reservation[0];
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch reservation. Reason: ${error.message}`);
   }
 }

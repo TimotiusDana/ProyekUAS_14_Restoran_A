@@ -90,3 +90,13 @@ export type InvoiceForm = {
   price: number;
   status: 'pending' | 'paid';
 };
+
+export type LatestReservation = {
+  id: string;
+  customer_id: string;
+  address: string;
+  price: number;
+  special_request: string;
+  reservation_date: string;
+  email: string;
+};
