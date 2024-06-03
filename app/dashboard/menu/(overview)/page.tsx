@@ -1,6 +1,6 @@
-import Pagination from '@/app/ui/menu/pagination';
+import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/invoices/table';
+import Table from '@/app/ui/menu/table';
 import { CreateMenu } from '@/app/ui/menu/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { MenuTableSkeleton } from '@/app/ui/skeletons';
@@ -15,6 +15,9 @@ export default async function Page({
     page?: string;
   };
 }) {
+  // Simulate network delay
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 

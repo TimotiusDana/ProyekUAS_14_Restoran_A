@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { File } from 'buffer';
 // import { signIn } from '@/auth';
-import { AuthError } from 'next-auth';
+// import { AuthError } from 'next-auth';
 
 const FormSchema = z.object({
   id: z.string(),
@@ -246,3 +246,8 @@ export async function deleteCustomer(id: string) {
 //     throw error;
 //   }
 // }
+
+export async function deleteMenu(id: string) {
+  await sql`DELETE FROM menu WHERE id = ${id}`;
+  revalidatePath('/dashboard/menu');
+}

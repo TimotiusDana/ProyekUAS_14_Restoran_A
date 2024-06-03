@@ -1,11 +1,11 @@
 import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/invoices/table';
-import { CreateInvoice } from '@/app/ui/invoices/buttons';
+import Table from '@/app/ui/customers/table';
 import { lusitana } from '@/app/ui/fonts';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchInvoicesPages } from '@/app/lib/data';
+import { fetchCustomersPages } from '@/app/lib/data';
+import { CreateCustomers } from '@/app/ui/customers/buttons';
 
 export default async function Page({
   searchParams,
@@ -15,10 +15,13 @@ export default async function Page({
     page?: string;
   };
 }) {
+
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchInvoicesPages(query);
+  const totalPages = await fetchCustomersPages(query);
 
   return (
     <div className="w-full">
@@ -27,7 +30,7 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search invoices..." />
-        <CreateInvoice />
+        <CreateCustomers />
       </div>
       <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
