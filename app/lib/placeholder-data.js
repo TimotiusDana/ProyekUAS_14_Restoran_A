@@ -1,3 +1,5 @@
+const { default: email } = require("next-auth/providers/email");
+
 const users = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
@@ -14,6 +16,7 @@ const customers = [
     address: 'Jalan Babarsari, Sleman',
     image_url: '/customers/delba-de-oliveira.png',
     payment_methods: 'cash',  
+    email: 'Asep21@gmail.com'
   },
   {
     id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
@@ -21,6 +24,7 @@ const customers = [
     address: 'Jalan Panembahan Senopati 15, Yogyakarta',
     image_url: '/customers/lee-robinson.png',
     payment_methods: 'Qris',
+    email: 'Leonard32@gmail.com'
   },
   {
     id: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
@@ -28,6 +32,7 @@ const customers = [
     address: 'Jalan Parangtritis KM 5',
     image_url: '/customers/hector-simpson.png',
     payment_methods: 'Qris',
+    email: 'HeriPriadi@gmail.com'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
@@ -35,6 +40,7 @@ const customers = [
     address: 'Jalan Kaliurang km 10, Yogyakarta',
     image_url: '/customers/steven-tey.png',
     payment_methods: 'Cash',
+    email: 'kevinSA@gmail.com'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
@@ -42,6 +48,7 @@ const customers = [
     address: 'Jalan Godean Km 14, Yogyakarta',
     image_url: '/customers/michael-novotny.png',
     payment_methods: 'Qris',
+    email: 'Yusuf@gmail.com'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
@@ -49,6 +56,7 @@ const customers = [
     address: 'Jalan Ks Tubun10, Yogyakarta',
     image_url: '/customers/jared-palmer.png',
     payment_methods: 'Cash',
+    email: 'Susanti@gmail.com'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
@@ -56,6 +64,7 @@ const customers = [
     address: 'Jalan Dongkelan, Bantul',
     image_url: '/customers/evil-rabbit.png',
     payment_methods: 'Cash',
+    email: 'Wawan@gmail.com'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
@@ -63,6 +72,7 @@ const customers = [
     address: 'Jalan Kaliurang km 10, Yogyakarta',
     image_url: '/customers/amy-burns.png',
     payment_methods: 'Qris',
+    email: 'Putri@gmail.com'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
@@ -70,6 +80,7 @@ const customers = [
     address: 'Jalan Sidoarum, Yogyakarta',
     image_url: '/customers/lee-robinson.png',
     payment_methods: 'Cash',
+    email: 'Santo@gmail.com'
   }
 ];
 

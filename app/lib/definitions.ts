@@ -14,6 +14,8 @@ export type Customer = {
   name: string;
   email: string;
   image_url: string;
+  payment_methods: string;
+  address: string; 
 };
 
 export type Invoice = {
@@ -56,6 +58,7 @@ export type InvoicesTable = {
   price: number;
   payment_methods: string;
   tax: number;
+  email: string;
   status: 'pending' | 'paid';
 };
 

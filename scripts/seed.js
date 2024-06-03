@@ -102,7 +102,8 @@ async function seedCustomers(client) {
         name VARCHAR(255) NOT NULL,
         address VARCHAR(255) NOT NULL,
         image_url VARCHAR(255) NOT NULL,
-        payment_methods VARCHAR(225) NOT NULL
+        payment_methods VARCHAR(225) NOT NULL,
+        email VARCHAR(225) NOT NULL
       );
     `;
 
@@ -112,8 +113,8 @@ async function seedCustomers(client) {
     const insertedCustomers = await Promise.all(
       customers.map(
         (customer) => client.sql`
-        INSERT INTO customers (id, name, address, image_url, payment_methods)
-        VALUES (${customer.id}, ${customer.name}, ${customer.address}, ${customer.image_url}, ${customer.payment_methods})
+        INSERT INTO customers (id, name, address, image_url, payment_methods, email)
+        VALUES (${customer.id}, ${customer.name}, ${customer.address}, ${customer.image_url}, ${customer.payment_methods}, ${customer.email})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
