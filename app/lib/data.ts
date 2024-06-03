@@ -1,16 +1,19 @@
-import { sql } from '@vercel/postgres';
+import { db, sql } from '@vercel/postgres';
 import {
   CustomerField,
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
   LatestInvoiceRaw,
+  LatestReservationRaw,
   User,
   Revenue,
   ReservationsTable,
-  ReservationForm
+  ReservationForm,
+  MenuForm
 } from './definitions';
 import { formatCurrency } from './utils';
+import { unstable_noStore } from 'next/cache';
 
 export async function fetchRevenue() {
   try {
@@ -42,15 +45,15 @@ export async function fetchLatestInvoices() {
   }
 }
 
+
 export async function fetchCardData() {
   try {
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`
-      SELECT
-        SUM(CASE WHEN status = 'paid' THEN price ELSE 0 END) AS "paid",
-        SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
-      FROM invoices`;
+    const invoiceStatusPromise = sql`SELECT
+         SUM(CASE WHEN status = 'paid' THEN price ELSE 0 END) AS "paid",
+         SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
+         FROM invoices`;
 
     const [invoiceCount, customerCount, invoiceStatus] = await Promise.all([
       invoiceCountPromise,
@@ -109,6 +112,7 @@ export async function fetchFilteredInvoices(query: string, currentPage: number) 
     throw new Error(`Failed to fetch invoices. Reason: ${error.message}`);
   }
 }
+
 
 export async function fetchInvoicesPages(query: string) {
   try {
@@ -216,7 +220,7 @@ export async function getUser(email: string) {
 
 export async function fetchLatestReservations() {
   try {
-    const data = await sql<LatestInvoiceRaw>`
+    const data = await sql<LatestReservationRaw>`
       SELECT reservations.address, reservations.price, reservations.special_request, reservations.reservation_date, reservations.email, customers.name, customers.image_url, reservations.id
       FROM reservations
       JOIN customers ON reservations.customer_id = customers.id
@@ -234,11 +238,16 @@ export async function fetchLatestReservations() {
   }
 }
 
+
+
+
 export async function fetchFilteredReservations(query: string, currentPage: number) {
+  unstable_noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const result = await sql<ReservationsTable>`
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const reservation = await db.query(`
       SELECT
         reservations.id,
         reservations.customer_id,
@@ -251,37 +260,41 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
       FROM reservations
       JOIN customers ON reservations.customer_id = customers.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        reservations.email ILIKE ${`%${query}%`} OR
-        reservations.address ILIKE ${`%${query}%`}
+        customers.name ILIKE $1 OR
+        reservations.email ILIKE $1 OR
+        reservations.address ILIKE $1
       ORDER BY reservations.reservation_date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
+      LIMIT $2 OFFSET $3
+    `, [`%${query}%`, ITEMS_PER_PAGE, offset]);
 
-    return result.rows;
+    return reservation.rows;
   } catch (error: any) {
     console.error('Database Error:', error);
-    throw new Error(`Failed to fetch reservations. Reason: ${error.message}`);
+    throw new Error(`Failed to fetch reservations. `);
   }
 }
 
 export async function fetchReservationsPages(query: string) {
   try {
-    const result = await sql`
+    const result = await db.query(`
       SELECT COUNT(*)
       FROM reservations
       JOIN customers ON reservations.customer_id = customers.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        reservations.email ILIKE ${`%${query}%`} OR
-        reservations.address ILIKE ${`%${query}%`}
-    `;
+        customers.name ILIKE $1 OR
+        reservations.email ILIKE $1 OR
+        reservations.address ILIKE $1
+    `, [`%${query}%`]);
 
-    return Math.ceil(Number(result.rows[0].count) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(result.rows[0].count / ITEMS_PER_PAGE);
+    return totalPages;
   } catch (error: any) {
     console.error('Database Error:', error);
     throw new Error(`Failed to fetch total number of reservations. Reason: ${error.message}`);
   }
 }
+
+
 
 export async function fetchReservationById(id: string) {
   try {
@@ -306,5 +319,118 @@ export async function fetchReservationById(id: string) {
   } catch (error: any) {
     console.error('Database Error:', error);
     throw new Error(`Failed to fetch reservation. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchCustomersPages(query: string) {
+  unstable_noStore();
+
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM customers`;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of customers.');
+  }
+}
+
+// export async function fetchCustomersById(id: string) {
+//   unstable_noStore();
+
+//   try {
+//     const data = await sql<Customers>`
+//       SELECT
+//         customers.id,
+//         customers.name,
+//         customers.email,
+//         customers.image_url
+//       FROM customers
+//       WHERE customers.id = ${id};
+//     `;
+
+//     const customer = data.rows.map((customer) => ({
+//       ...customer,
+//     }));
+
+//     return customer[0];
+//   } catch (error) {
+//     console.error('Database Error:', error);
+//     throw new Error('Failed to fetch customer.');
+//   }
+// }
+
+export async function fetchMenuPages(query: string){
+  try {
+    const count = await sql `SELECT COUNT (*)
+    from menu
+    
+   WHERE
+    
+    menu.name::text ILIKE ${`%${query}%`} OR
+    menu.category::text ILIKE ${`%${query}%`} OR
+    menu.price::text ILIKE ${`%${query}%`} 
+    `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch total number of menu. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchFilteredMenu (id: string) {
+  try{
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const data = await sql <MenuForm>`
+    SELECT
+    menu.id,
+    menu.name
+    menu.category
+    menu.price
+    FROM menu
+    WHERE menu.id = ${id}`;
+
+    const menu = data.rows.map((menu) => ({
+      ...menu,
+      price: menu.price / 100,
+    }));
+
+    return menu[0];
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
+
+
+  }
+}
+
+
+
+export async function fetchMenuById (id: string) {
+  try{
+    const data = await sql <MenuForm>`
+    SELECT
+    menu.id,
+    menu.name
+    menu.category
+    menu.price
+    FROM menu
+    WHERE menu.id = ${id}`;
+
+    const menu = data.rows.map((menu) => ({
+      ...menu,
+      price: menu.price / 100,
+    }));
+
+    return menu[0];
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
+
+
   }
 }

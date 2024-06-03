@@ -1,4 +1,4 @@
-import {ReservationsTableSkeleton, SearchSkeleton, CreateSkeleton} from '@/app/ui/skeletons';
+import {MenuTableSkeleton, SearchSkeleton, CreateSkeleton} from '@/app/ui/skeletons';
 import React from 'react'; 
 
 export default function Loading() {
@@ -6,7 +6,7 @@ export default function Loading() {
     <div>
       <SearchSkeleton />
       <CreateSkeleton />
-      <ReservationsTableSkeleton />
+      <MenuTableSkeleton />
     </div>
   );
 }

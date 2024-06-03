@@ -116,7 +116,7 @@ const invoices = [
     invoice_date: '2024-05-12',
   },
   {
-    customer_id: customers[4].id,
+    customer_id: customers[0].id,
     price: '32000',
     tax: '10',
     payment_methods: 'Qris',
@@ -124,7 +124,7 @@ const invoices = [
     invoice_date: '2024-03-21',
   },
   {
-    customer_id: customers[5].id,
+    customer_id: customers[0].id,
     price: '92000',
     tax: '10',
     payment_methods: 'Qris',
@@ -132,7 +132,7 @@ const invoices = [
     invoice_date: '2024-06-05',
   },
   {
-    customer_id: customers[6].id,
+    customer_id: customers[0].id,
     price: '27000',
     tax: '10',
     payment_methods: 'Cash',
@@ -140,7 +140,7 @@ const invoices = [
     invoice_date: '2024-05-04',
   },
   {
-    customer_id: customers[7].id,
+    customer_id: customers[0].id,
     price: '70000',
     tax: '10',
     payment_methods: 'Qris',
@@ -148,7 +148,7 @@ const invoices = [
     invoice_date: '2024-05-09',
   },
   {
-    customer_id: customers[8].id,
+    customer_id: customers[0].id,
     price: '60000',
     tax: '10',
     payment_methods: 'Cash',

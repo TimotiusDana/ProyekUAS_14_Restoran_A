@@ -117,6 +117,13 @@ export default function Page() {
               className="rounded-full"
             />
             <Image
+              src="/Noodle-Disp.jpeg"
+              alt="Welcome Image"
+              width={300}
+              height={300}
+              className="rounded-full"
+            />
+            <Image
               src="/dish2.jpg"
               alt="Popular Dish 2"
               width={300}
