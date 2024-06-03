@@ -15,6 +15,9 @@ export default async function Page({
     page?: string;
   };
 }) {
+  // Simulate network delay
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { UpdateReservation, DeleteReservation } from '@/app/ui/reservations/buttons';
-import ReservationStatus from '@/app/ui/reservations/status';
+// import ReservationStatus from '@/app/ui/reservations/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredReservations } from '@/app/lib/data';
 
@@ -37,8 +37,6 @@ export default async function ReservationsTable({
                     </div>
                     <p className="text-sm text-gray-500">{reservation.email}</p>
                   </div>
-                  {/* Uncomment this line if the ReservationStatus component is used */}
-                  {/* <ReservationStatus status={reservation.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -62,16 +60,19 @@ export default async function ReservationsTable({
                   Customer
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Address
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Price
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
+                  Special Request
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
                   Date
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                  Email
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -97,16 +98,19 @@ export default async function ReservationsTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {reservation.email}
+                    {reservation.address}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(reservation.price)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(reservation.date)}
+                    {reservation.special_request}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <ReservationStatus status={reservation.status} />
+                    {formatDateToLocal(reservation.reservation_date)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {reservation.email}
                   </td>
                   <td className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
                     <UpdateReservation id={reservation.id} />
