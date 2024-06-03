@@ -23,6 +23,9 @@ export default async function Page() {
     } = await fetchCardData();
     
 
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+
     return (
       <main>
         <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>

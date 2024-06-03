@@ -100,3 +100,22 @@ export type LatestReservation = {
   reservation_date: string;
   email: string;
 };
+
+export type ReservationsTable = {
+  id: string;
+  customer_id: string;
+  name: string;
+  image_url: string;
+  invoice_date: string;
+  price: number;
+  payment_methods: string;
+  tax: number;
+  status: 'pending' | 'paid';
+};
+
+export type ReservationForm = {
+  id: string;
+  customer_id: string;
+  price: number;
+  status: 'pending' | 'paid';
+};

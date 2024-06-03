@@ -1,5 +1,12 @@
-import DashboardSkeleton from '@/app/ui/skeletons';
- 
+import {InvoicesTableSkeleton, SearchSkeleton, CreateSkeleton} from '@/app/ui/skeletons';
+import React from 'react'; 
+
 export default function Loading() {
-  return <DashboardSkeleton />;
+  return (
+    <div>
+      <SearchSkeleton />
+      <CreateSkeleton />
+      <InvoicesTableSkeleton />
+    </div>
+  );
 }

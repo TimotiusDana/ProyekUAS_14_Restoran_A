@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { UpdateReservation, DeleteReservation } from '@/app/ui/reservations/buttons';
-// import ReservationStatus from '@/app/ui/reservations/status';
+import ReservationStatus from '@/app/ui/reservations/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredReservation } from '@/app/lib/data';
+import { fetchFilteredReservations } from '@/app/lib/data';
 
 export default async function ReservationsTable({
   query,
@@ -11,44 +11,45 @@ export default async function ReservationsTable({
   query: string;
   currentPage: number;
 }) {
-  const reservations = await fetchFilteredReservation(query, currentPage);
+  const reservations = await fetchFilteredReservations(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {reservations?.map((reservations) => (
+            {reservations?.map((reservation) => (
               <div
-                key={reservations.id}
+                key={reservation.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={reservations.image_url}
+                        src={reservation.image_url}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${reservations.name}'s profile picture`}
+                        alt={`${reservation.name}'s profile picture`}
                       />
-                      <p>{reservations.name}</p>
+                      <p>{reservation.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{reservations.email}</p>
+                    <p className="text-sm text-gray-500">{reservation.email}</p>
                   </div>
-                  <ReservationStatus status={reservations.status} />
-                </div>s
+                  {/* Uncomment this line if the ReservationStatus component is used */}
+                  {/* <ReservationStatus status={reservation.status} /> */}
+                </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(reservations.amount)}
+                      {formatCurrency(reservation.price)}
                     </p>
-                    <p>{formatDateToLocal(reservations.date)}</p>
+                    <p>{formatDateToLocal(reservation.date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateReservation id={reservations.id} />
-                    <DeleteReservation id={reservations.id} />
+                    <UpdateReservation id={reservation.id} />
+                    <DeleteReservation id={reservation.id} />
                   </div>
                 </div>
               </div>
@@ -64,7 +65,7 @@ export default async function ReservationsTable({
                   Email
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  Price
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
@@ -99,7 +100,7 @@ export default async function ReservationsTable({
                     {reservation.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(reservation.amount)}
+                    {formatCurrency(reservation.price)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(reservation.date)}
@@ -108,8 +109,8 @@ export default async function ReservationsTable({
                     <ReservationStatus status={reservation.status} />
                   </td>
                   <td className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
-                      <UpdateReservation id={reservation.id} />
-                      <DeleteReservation id={reservation.id} />
+                    <UpdateReservation id={reservation.id} />
+                    <DeleteReservation id={reservation.id} />
                   </td>
                 </tr>
               ))}
