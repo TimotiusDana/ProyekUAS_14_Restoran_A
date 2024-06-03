@@ -435,27 +435,3 @@ export async function fetchFilteredMenu (id: string) {
 
 
 
-export async function fetchMenuById (id: string) {
-  try{
-    const data = await sql <MenuForm>`
-    SELECT
-    menu.id,
-    menu.name
-    menu.category
-    menu.price
-    FROM menu
-    WHERE menu.id = ${id}`;
-
-    const menu = data.rows.map((menu) => ({
-      ...menu,
-      price: menu.price / 100,
-    }));
-
-    return menu[0];
-  } catch (error: any) {
-    console.error('Database Error:', error);
-    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-
-
-  }
-}
