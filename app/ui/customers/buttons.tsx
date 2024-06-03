@@ -13,8 +13,8 @@ export function UpdateCustomers({ id }: { id: string }) {
   );
 }
 
-export function deleteCustomers{ id }: { id: string }) {
-  const deleteCustomerswithId = deleteCustomers.bind(null, id);
+export function deleteMenu({ id }: { id: string }) {
+  const deleteCustomerswithId = deleteMenu.bind(null, id);
   return (
     <form action={deleteCustomerswithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
