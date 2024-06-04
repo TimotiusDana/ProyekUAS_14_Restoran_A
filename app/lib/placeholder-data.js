@@ -212,6 +212,20 @@ const menu = [
   },
 ];
 
+const cstms = [
+  {
+    customer_id: customers[3].id,
+    name: 'tosu',
+    address: 'Jalan Godean Km 14, Yogyakarta',
+    image_url: '/customers/michael-novotny.png',
+    payment_methods: 'Qris',
+    email: 'tosf@gmail.com',
+    price: 32000,
+    status: 'paid',
+    date: '2024-03-04'
+  },
+];
+
 const revenue = [
   { month: 'Jan', revenue: 2000 },
   { month: 'Feb', revenue: 1800 },
@@ -233,5 +247,6 @@ module.exports = {
   invoices,
   menu,
   reservations,
-  revenue
+  revenue,
+  cstms
 };
