@@ -1,16 +1,10 @@
+import React from 'react';
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
-import {
-  CustomersTableType,
-  FormattedCustomersTable,
-} from '@/app/lib/definitions';
+import { FormattedCustomersTable } from '@/app/lib/definitions';
 
-export default async function CustomersTable({
-  customers,
-}: {
-  customers: FormattedCustomersTable[];
-}) {
+export default function CustomersTable({ customers }: { customers: FormattedCustomersTable[] }) {
   return (
     <div className="w-full">
       <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
@@ -52,7 +46,7 @@ export default async function CustomersTable({
                         <p className="font-medium">{customer.payment_methods}</p>
                       </div>
                       <div className="flex w-1/2 flex-col">
-                        <p className="text-xs">email</p>
+                        <p className="text-xs">Email</p>
                         <p className="font-medium">{customer.email}</p>
                       </div>
                     </div>
@@ -72,7 +66,7 @@ export default async function CustomersTable({
                       Payment Method
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      email
+                      Email
                     </th>
                   </tr>
                 </thead>
@@ -101,9 +95,7 @@ export default async function CustomersTable({
                         {customer.email}
                       </td>
                     </tr>
-                  ),
-                  )
-                  }
+                  ))}
                 </tbody>
               </table>
             </div>
