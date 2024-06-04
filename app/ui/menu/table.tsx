@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { UpdateMenu, DeleteMenu } from '@/app/ui/menu/buttons';
+import { UpdateMenu, DeleteMenu} from '@/app/ui/menu/buttons';
 import { fetchFilteredMenu } from '@/app/lib/data';
 
 export default function Table({
@@ -10,7 +10,8 @@ export default function Table({
   currentPage: number;
 }) {
   // Ensure menus is initialized as an empty array if fetchFilteredMenu returns undefined or null
-  const menus = fetchFilteredMenu(query, currentPage) || []; 
+  const fetchedMenus = fetchFilteredMenu(query, currentPage);
+  const menus = Array.isArray(fetchedMenus) ? fetchedMenus : []; 
 
   return (
     <div className="mt-6 flow-root">
