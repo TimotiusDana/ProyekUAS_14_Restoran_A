@@ -145,3 +145,11 @@ export type MenuForm ={
   category: string;
   price: number;
   }
+
+  export type MenuTable ={
+    id: string;
+    name: string;
+    category: string;
+  price: number;
+  
+  }

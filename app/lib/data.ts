@@ -10,7 +10,8 @@ import {
   Revenue,
   ReservationsTable,
   ReservationForm,
-  MenuForm
+  MenuForm,
+  MenuTable
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore } from 'next/cache';
@@ -389,6 +390,7 @@ export async function fetchCustomersPages(query: string) {
 
 export async function fetchMenuPages(query: string){
   try {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     const count = await sql `SELECT COUNT (*)
     from menu
     
@@ -407,31 +409,40 @@ export async function fetchMenuPages(query: string){
   }
 }
 
-export async function fetchFilteredMenu (id: string) {
+export async function fetchFilteredMenu (query: string) {
   try{
+    console.log('Fetching menu data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    const data = await sql <MenuForm>`
+    const data = await sql <MenuTable>`
     SELECT
     menu.id,
-    menu.name
-    menu.category
+    menu.name,
+    menu.category,
     menu.price
     FROM menu
-    WHERE menu.id = ${id}`;
+    WHERE
+     menu.name ILIKE ${`%${query}%`} OR
+     menu.category ILIKE ${`%${query}%`}
+    GROUP BY menu.id, menu.price
+    ORDER BY menu.name ASC`;
 
     const menu = data.rows.map((menu) => ({
       ...menu,
-      price: menu.price / 100,
     }));
 
-    return menu[0];
+    return menu;
   } catch (error: any) {
     console.error('Database Error:', error);
     throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-
-
   }
 }
+  
+
+
+
+
+
+
 
 
 
