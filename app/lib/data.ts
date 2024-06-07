@@ -11,8 +11,6 @@ import {
   ReservationsTable,
   ReservationForm,
   MenuForm,
-  CstmTable,
-  CstmForm,
   MenuTable
 } from './definitions';
 import { formatCurrency } from './utils';
@@ -55,8 +53,8 @@ export async function fetchCardData() {
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN price ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
+         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
+         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM invoices`;
 
     const [invoiceCount, customerCount, invoiceStatus] = await Promise.all([
@@ -298,6 +296,52 @@ export async function fetchReservationsPages(query: string) {
   }
 }
 
+export async function fetchMenu() {
+  try {
+    const data = await sql<MenuForm>`
+      SELECT
+        menu.id,
+        menu.name,
+        menu.category,
+        menu.price
+      FROM menu
+      ORDER BY name ASC
+    `;
+
+    const menu = data.rows;
+    return menu;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchMenuById(id: string) {
+  try {
+    const data = await sql<MenuForm>`
+      SELECT
+        menu.id,
+        menu.name,
+        menu.category,
+        menu.price
+      FROM menu
+      WHERE menu.id = ${id}
+    `;
+
+    const menu = data.rows.map((menu) => ({
+      ...menu,
+      price: menu.price / 100,
+    }));
+
+    return menu[0];
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
+  }
+}
+
+
+
 
 
 export async function fetchReservationById(id: string) {
@@ -344,6 +388,7 @@ noStore();
 
 export async function fetchMenuPages(query: string){
   try {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     const count = await sql `SELECT COUNT (*)
     from menu
     
@@ -362,151 +407,40 @@ export async function fetchMenuPages(query: string){
   }
 }
 
-export async function fetchFilteredMenu (id: string) {
+export async function fetchFilteredMenu (query: string) {
   try{
+    console.log('Fetching menu data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    const data = await sql <MenuForm>`
+    const data = await sql <MenuTable>`
     SELECT
     menu.id,
-    menu.name
-    menu.category
+    menu.name,
+    menu.category,
     menu.price
     FROM menu
-    WHERE menu.id = ${id}`;
-
-    const menu = data.rows.map((menu) => ({
-      ...menu,
-      price: menu.price / 100,
-    }));
-
-    return menu[0];
-  } catch (error: any) {
-    console.error('Database Error:', error);
-    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-
-
-  }
-}
-
-
-
-export async function fetchMenuById (id: string) {
-  try{
-    const data = await sql <MenuForm>`
-    SELECT
-    menu.id,
-    menu.name
-    menu.category
-    menu.price
-    FROM menu
-    WHERE menu.id = ${id}`;
-
-    const menu = data.rows.map((menu) => ({
-      ...menu,
-      price: menu.price / 100,
-    }));
-
-    return menu[0];
-  } catch (error: any) {
-    console.error('Database Error:', error);
-    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-
-
-  }
-}
-
-export async function fetchFilteredCstms(query: string, currentPage: number) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-  noStore();
-
-  try {
-    console.log('Fetching customers data...');
-    await new Promise((resolve) => setTimeout(resolve, 4000));
-
-    const cstms = await sql<CstmTable>`
-      SELECT
-      cstms.id,
-      cstms.name,
-      cstms.address,
-      cstms.payment_methods,
-      cstms.email,
-      cstms.price,
-      cstms.date,
-      cstms.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM cstms
-      JOIN customers ON cstms.customer_id = customers.id
-      WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        cstms.name::text ILIKE ${`%${query}%`} OR
-        cstms.address::text ILIKE ${`%${query}%`} OR
-        cstms.payment_methods::text ILIKE ${`%${query}%`} OR
-        cstms.price::text ILIKE ${`%${query}%`} OR
-        cstms.date::text ILIKE ${`%${query}%`} OR
-        cstms.status ILIKE ${`%${query}%`}
-      ORDER BY cstms.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
-
-    console.log('Data fetch completed after 3 seconds.'); // Added message
-
-    return cstms.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch customers.');
-  }
-}
-
-export async function fetchCstmsPages(query: string) {
-  noStore();
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    const count = await sql`SELECT COUNT(*)
-    FROM cstms
-    JOIN customers ON cstms.customer_id = customers.id
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      cstms.price::text ILIKE ${`%${query}%`} OR
-      cstms.date::text ILIKE ${`%${query}%`} OR
-      cstms.status ILIKE ${`%${query}%`}
-  `;
+     menu.name ILIKE ${`%${query}%`} OR
+     menu.category ILIKE ${`%${query}%`}
+    GROUP BY menu.id, menu.price
+    ORDER BY menu.name ASC`;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of customers.');
-  }
-}
-
-export async function fetchCstmsById(id: string) {
-  noStore();
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const data = await sql<CstmForm>`
-      SELECT
-        cstms.id,
-        cstms.customer_id,
-        cstms.price,
-        cstms.status
-      FROM cstms
-      WHERE cstms.id = ${id};
-    `;
-
-    const customer = data.rows.map((customer) => ({
-      ...customer,
-      // Convert amount from cents to dollars
-      amount: customer.price / 100,
+    const menu = data.rows.map((menu) => ({
+      ...menu,
     }));
-    console.log(customer);
-    return customer[0];
-  } catch (error) {
+
+    return menu;
+  } catch (error: any) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch customer.');
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
   }
 }
+  
+
+
+
+
+
+
+
+
 

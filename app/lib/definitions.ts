@@ -45,6 +45,16 @@ export type LatestInvoice = {
   email: string;
 };
 
+export type Menu = {
+id: string;
+name: string;
+category: string;
+price: number;
+
+}
+
+
+
 export type LatestInvoiceRaw = Omit<LatestInvoice, 'price'> & {
   price: number;
 };
@@ -139,42 +149,21 @@ export type MenuForm ={
   name: string;
   category: string;
   price: number;
+  status: 'pending' | 'paid';
   }
-
-  export type CstmForm = {
-    bind(arg0: null, id: string): unknown;
-    id: string;
-    customer_id: string;
-    price: number;
-    status: 'pending' | 'paid';
-  };
-
-  export type Cstm = {
-    id: string;
-    customer_id: string;
-    address: string;
-    image_url: string;
-    payment_methods: string;
-    status: 'pending' | 'paid';
-  };
-
-  export type CstmTable = {
-    id: string;
-    customer_id: string;
-    name: string;
-    email: string;
-    image_url: string;
-    date: string;
-    price: number;
-    address: string;
-    payment_methods: string;
-    status: 'pending' | 'paid';
-  };
 
   export type MenuTable ={
     id: string;
     name: string;
     category: string;
   price: number;
+  
+  }
+
+  export type MenuField ={
+    id: string;
+    name: string;
+    category: string;
+    price: number;
   
   }
