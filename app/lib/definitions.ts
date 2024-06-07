@@ -1,3 +1,4 @@
+
 export type User = {
   id: string;
   name: string;
@@ -130,9 +131,49 @@ export type LatestReservationRaw = Omit<LatestReservation, 'amount'> & {
   amount: number;
 };
 
+
+
 export type MenuForm ={
   id: string;
   name: string;
   category: string;
   price: number;
+  }
+
+  export type CstmForm = {
+    bind(arg0: null, id: string): unknown;
+    id: string;
+    customer_id: string;
+    price: number;
+    status: 'pending' | 'paid';
+  };
+
+  export type Cstm = {
+    id: string;
+    customer_id: string;
+    address: string;
+    image_url: string;
+    payment_methods: string;
+    status: 'pending' | 'paid';
+  };
+
+  export type CstmTable = {
+    id: string;
+    customer_id: string;
+    name: string;
+    email: string;
+    image_url: string;
+    date: string;
+    price: number;
+    address: string;
+    payment_methods: string;
+    status: 'pending' | 'paid';
+  };
+
+  export type MenuTable ={
+    id: string;
+    name: string;
+    category: string;
+  price: number;
+  
   }

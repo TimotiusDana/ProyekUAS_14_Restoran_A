@@ -10,10 +10,14 @@ import {
   Revenue,
   ReservationsTable,
   ReservationForm,
-  MenuForm
+  MenuForm,
+  CstmTable,
+  CstmForm,
+  MenuTable
 } from './definitions';
 import { formatCurrency } from './utils';
-import { unstable_noStore } from 'next/cache';
+import { unstable_noStore as noStore } from 'next/cache';
+
 
 export async function fetchRevenue() {
   try {
@@ -55,16 +59,16 @@ export async function fetchCardData() {
          SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
          FROM invoices`;
 
-    const data = await Promise.all([
+    const [invoiceCount, customerCount, invoiceStatus] = await Promise.all([
       invoiceCountPromise,
       customerCountPromise,
       invoiceStatusPromise,
     ]);
 
-    const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
-    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
+    const numberOfInvoices = Number(invoiceCount.rows[0].count ?? '0');
+    const numberOfCustomers = Number(customerCount.rows[0].count ?? '0');
+    const totalPaidInvoices = formatCurrency(invoiceStatus.rows[0].paid ?? '0');
+    const totalPendingInvoices = formatCurrency(invoiceStatus.rows[0].pending ?? '0');
 
     return {
       numberOfCustomers,
@@ -242,7 +246,7 @@ export async function fetchLatestReservations() {
 
 
 export async function fetchFilteredReservations(query: string, currentPage: number) {
-  unstable_noStore();
+  noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
@@ -323,7 +327,7 @@ export async function fetchReservationById(id: string) {
 }
 
 export async function fetchCustomersPages(query: string) {
-  unstable_noStore();
+noStore();
 
   try {
     const count = await sql`SELECT COUNT(*)
@@ -336,31 +340,6 @@ export async function fetchCustomersPages(query: string) {
     throw new Error('Failed to fetch total number of customers.');
   }
 }
-
-// export async function fetchCustomersById(id: string) {
-//   unstable_noStore();
-
-//   try {
-//     const data = await sql<Customers>`
-//       SELECT
-//         customers.id,
-//         customers.name,
-//         customers.email,
-//         customers.image_url
-//       FROM customers
-//       WHERE customers.id = ${id};
-//     `;
-
-//     const customer = data.rows.map((customer) => ({
-//       ...customer,
-//     }));
-
-//     return customer[0];
-//   } catch (error) {
-//     console.error('Database Error:', error);
-//     throw new Error('Failed to fetch customer.');
-//   }
-// }
 
 export async function fetchMenuPages(query: string){
   try {
@@ -434,3 +413,92 @@ export async function fetchMenuById (id: string) {
 
   }
 }
+
+export async function fetchFilteredCstms(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  noStore();
+
+  try {
+    console.log('Fetching customers data...');
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+    const cstms = await sql<CstmTable>`
+      SELECT
+      cstms.id,
+      cstms.price,
+      cstms.date,
+      cstms.status,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM cstms
+      JOIN customers ON cstms.customer_id = customers.id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        cstms.price::text ILIKE ${`%${query}%`} OR
+        cstms.date::text ILIKE ${`%${query}%`} OR
+        cstms.status ILIKE ${`%${query}%`}
+      ORDER BY cstms.date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    console.log('Data fetch completed after 3 seconds.'); // Added message
+
+    return cstms.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customers.');
+  }
+}
+
+export async function fetchCstmsPages(query: string) {
+  noStore();
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const count = await sql`SELECT COUNT(*)
+    FROM cstms
+    JOIN customers ON cstms.customer_id = customers.id
+    WHERE
+      customers.name ILIKE ${`%${query}%`} OR
+      customers.email ILIKE ${`%${query}%`} OR
+      cstms.price::text ILIKE ${`%${query}%`} OR
+      cstms.date::text ILIKE ${`%${query}%`} OR
+      cstms.status ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of customers.');
+  }
+}
+
+export async function fetchCstmsById(id: string) {
+  noStore();
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const data = await sql<CstmForm>`
+      SELECT
+        cstms.id,
+        cstms.customer_id,
+        cstms.price,
+        cstms.status
+      FROM cstms
+      WHERE cstms.id = ${id};
+    `;
+
+    const customer = data.rows.map((customer) => ({
+      ...customer,
+      // Convert amount from cents to dollars
+      amount: customer.price / 100,
+    }));
+    console.log(customer);
+    return customer[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer.');
+  }
+}
+

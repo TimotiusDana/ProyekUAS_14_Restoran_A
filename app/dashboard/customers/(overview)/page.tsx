@@ -1,12 +1,12 @@
-import Pagination from '@/app/ui/invoices/pagination';
+import Pagination from '@/app/ui/customers/pagination';
 import Search from '@/app/ui/search';
-import CustomersTable from '@/app/ui/customers/table'; // Ensure this path is correct
+import Table from '@/app/ui/customers/table';
+import { Createcstms } from '@/app/ui/customers/buttons';
 import { lusitana } from '@/app/ui/fonts';
-import { CustomersTableSkeleton } from '@/app/ui/skeletons';
+import { CustomersTableSkeleton, InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchCustomersPages } from '@/app/lib/data';
-import { CreateCustomers } from '@/app/ui/customers/buttons';
-
+import { fetchCstmsPages } from '@/app/lib/data';
+ 
 export default async function Page({
   searchParams,
 }: {
@@ -15,28 +15,26 @@ export default async function Page({
     page?: string;
   };
 }) {
-  // Artificial delay for demonstration purposes
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchCustomersPages(query);
+  const totalPages = await fetchCstmsPages(query);
+
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Customers</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
-        <CreateCustomers />
+        <Search placeholder="Search customers..." />
+        <Createcstms />
       </div>
-      <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
-        <CustomersTable query={query} currentPage={currentPage} />
+        <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
+        <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+         <Pagination totalPages={totalPages} />
       </div>
     </div>
   );
