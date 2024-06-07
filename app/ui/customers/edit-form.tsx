@@ -30,7 +30,7 @@ const uuid = parts[parts.length - 2];
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="customers" className="mb-2 block text-sm font-medium">
-            Name
+            Nama
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
