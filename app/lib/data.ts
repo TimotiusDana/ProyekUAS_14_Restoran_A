@@ -310,7 +310,8 @@ export async function fetchReservationById(id: string) {
         reservations.tax,
         reservations.payment_methods,
         reservations.status,
-        reservations.reservation_date
+        reservations.reservation_date,
+        reservations.address
       FROM reservations
       WHERE reservations.id = ${id}`;
 
@@ -425,6 +426,10 @@ export async function fetchFilteredCstms(query: string, currentPage: number) {
     const cstms = await sql<CstmTable>`
       SELECT
       cstms.id,
+      cstms.name,
+      cstms.address,
+      cstms.payment_methods,
+      cstms.email,
       cstms.price,
       cstms.date,
       cstms.status,
@@ -436,6 +441,9 @@ export async function fetchFilteredCstms(query: string, currentPage: number) {
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
+        cstms.name::text ILIKE ${`%${query}%`} OR
+        cstms.address::text ILIKE ${`%${query}%`} OR
+        cstms.payment_methods::text ILIKE ${`%${query}%`} OR
         cstms.price::text ILIKE ${`%${query}%`} OR
         cstms.date::text ILIKE ${`%${query}%`} OR
         cstms.status ILIKE ${`%${query}%`}
