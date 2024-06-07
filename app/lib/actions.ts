@@ -5,6 +5,8 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { File } from 'buffer';
+import { signIn } from 'next-auth/react'; // Correct import for signIn
+import { AuthError } from 'next-auth';
 
 interface ValidatedFields {
   success: boolean;
@@ -15,6 +17,7 @@ interface ValidatedFields {
   };
   error?: any;
 }
+
 
 const updateSchema = z.object({
   customerId: z.string(),
@@ -378,4 +381,33 @@ export async function updateCstm(id: string, formData: FormData): Promise<{ mess
   redirect('/dashboard/customers');
 
   return { message: 'Customer updated successfully.' };
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+): Promise<string | undefined> {
+  try {
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+    });
+
+    if (result?.error) {
+      return result.error;
+    }
+
+    return undefined;
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
 }

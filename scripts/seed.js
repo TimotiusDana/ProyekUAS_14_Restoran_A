@@ -10,6 +10,7 @@ const {
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
+
 async function seedUsers(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -19,7 +20,8 @@ async function seedUsers(client) {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        role VARCHAR(50) NOT NULL
       );
     `;
 
@@ -30,8 +32,8 @@ async function seedUsers(client) {
       users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+        INSERT INTO users (id, name, email, password, role)
+        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword}, ${user.role})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -291,7 +293,11 @@ async function seedCstms(client) {
     customer_id UUID NOT NULL,
     price INT NOT NULL,
     status VARCHAR(255) NOT NULL,
-    date DATE NOT NULL
+    date DATE NOT NULL,
+    name VARCHAR(225) NOT NULL,
+    address VARCHAR(225) NOT NULL,
+    email VARCHAR(225) NOT NULL,
+    payment_methods VARCHAR(225) NOT NULL
   );
 `;
 
@@ -303,8 +309,8 @@ async function seedCstms(client) {
     const insertedcstms = await Promise.all(
       cstms.map(
         (cstm) => client.sql`
-        INSERT INTO cstms (customer_id, price, status, date)
-       VALUES (${cstm.customer_id}, ${cstm.price}, ${cstm.status}, ${cstm.date})
+        INSERT INTO cstms (customer_id, price, status, date, name, address, payment_methods, email)
+       VALUES (${cstm.customer_id}, ${cstm.price}, ${cstm.status}, ${cstm.date}, ${cstm.name}, ${cstm.address}, ${cstm.payment_methods}, ${cstm.email})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),

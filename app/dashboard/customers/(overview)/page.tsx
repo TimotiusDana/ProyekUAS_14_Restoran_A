@@ -3,7 +3,7 @@ import Search from '@/app/ui/search';
 import Table from '@/app/ui/customers/table';
 import { Createcstms } from '@/app/ui/customers/buttons';
 import { lusitana } from '@/app/ui/fonts';
-import { CustomersTableSkeleton } from '@/app/ui/skeletons';
+import { CustomersTableSkeleton, InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchCstmsPages } from '@/app/lib/data';
  
@@ -30,8 +30,8 @@ export default async function Page({
         <Search placeholder="Search customers..." />
         <Createcstms />
       </div>
-      <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
-        <CustomersTable query={query} currentPage={currentPage} />
+        <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
+        <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
          <Pagination totalPages={totalPages} />
