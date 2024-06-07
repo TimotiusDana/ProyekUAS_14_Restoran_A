@@ -1,3 +1,4 @@
+
 export type User = {
   id: string;
   name: string;
@@ -168,3 +169,11 @@ export type MenuForm ={
     payment_methods: string;
     status: 'pending' | 'paid';
   };
+
+  export type MenuTable ={
+    id: string;
+    name: string;
+    category: string;
+  price: number;
+  
+  }
