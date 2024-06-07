@@ -48,6 +48,7 @@ id: string;
 name: string;
 category: string;
 price: number;
+
 }
 
 
@@ -144,6 +145,7 @@ export type MenuForm ={
   name: string;
   category: string;
   price: number;
+  status: 'pending' | 'paid';
   }
 
   export type MenuTable ={
@@ -151,5 +153,13 @@ export type MenuForm ={
     name: string;
     category: string;
   price: number;
+  
+  }
+
+  export type MenuField ={
+    id: string;
+    name: string;
+    category: string;
+    price: number;
   
   }

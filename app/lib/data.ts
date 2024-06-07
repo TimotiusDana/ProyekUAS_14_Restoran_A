@@ -295,16 +295,37 @@ export async function fetchReservationsPages(query: string) {
   }
 }
 
-export async function fetchMenuById (id: string) {
-  try{
-    const data = await sql <MenuForm>`
-    SELECT
-    menu.id,
-    menu.name
-    menu.category
-    menu.price
-    FROM menu
-    WHERE menu.id = ${id}`;
+export async function fetchMenu() {
+  try {
+    const data = await sql<MenuForm>`
+      SELECT
+        menu.id,
+        menu.name,
+        menu.category,
+        menu.price
+      FROM menu
+      ORDER BY name ASC
+    `;
+
+    const menu = data.rows;
+    return menu;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
+  }
+}
+
+export async function fetchMenuById(id: string) {
+  try {
+    const data = await sql<MenuForm>`
+      SELECT
+        menu.id,
+        menu.name,
+        menu.category,
+        menu.price
+      FROM menu
+      WHERE menu.id = ${id}
+    `;
 
     const menu = data.rows.map((menu) => ({
       ...menu,
@@ -315,10 +336,10 @@ export async function fetchMenuById (id: string) {
   } catch (error: any) {
     console.error('Database Error:', error);
     throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-
-
   }
 }
+
+
 
 
 
