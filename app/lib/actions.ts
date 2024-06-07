@@ -43,6 +43,14 @@ const piss = z.object({
   image_url: z.string(),
 });
 
+const menuSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: z.string(),
+  price: z.coerce.number(),
+  image_url: z.string(),
+});
+
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 const CreateReservation = FormSchema.omit({ id: true, date: true });
@@ -51,6 +59,8 @@ const date = new Date().toISOString().split('T')[0];
 
 const CreateCustomer = piss.omit({ id: true });
 const UpdateCustomer = piss.omit({ id: true });
+const CreateMenu = menuSchema.omit({ id: true });
+const UpdateMenu = menuSchema.omit({ id: true });
 
 export type State = {
   errors?: {
@@ -298,6 +308,73 @@ export async function deleteMenu(id: string): Promise<{ message: string }> {
   } catch (error) {
     return { message: 'Database Error: Failed to Delete menu item.' };
   }
+}
+
+export async function createMenu(formData: FormData): Promise<{ message: string }> {
+  const img = formData.get('image');
+  let fileName = '';
+
+  if (img instanceof File) {
+    fileName = '/menu/' + img.name;
+  }
+
+  const validatedFields = CreateMenu.safeParse({
+    name: formData.get('name'),
+    category: formData.get('category'),
+    price: formData.get('price'),
+    image_url: fileName,
+  });
+
+  if (!validatedFields.success) {
+    return { message: 'Validation Error: Invalid input data.' };
+  }
+
+  const { name, category, price, image_url } = validatedFields.data!;
+
+  try {
+    await sql`
+      INSERT INTO menu (name, category, price, image_url)
+      VALUES (${name}, ${category}, ${price}, ${image_url})
+    `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Customer.',
+    };
+  }
+
+  revalidatePath('/dashboard/menu');
+  redirect('/dashboard/menu');
+
+  return { message: 'Menu baru berhasil ditambahkan.' };
+}
+
+export async function updateMenu(id: string, formData: FormData): Promise<{ message: string }> {
+  const validatedFields = UpdateMenu.safeParse({
+    name: formData.get('name'),
+    category: formData.get('description'),
+    price: parseFloat(formData.get('price') as string), // Ensure price is a number
+  });
+
+  if (!validatedFields.success) {
+    return { message: 'Validation Error: Invalid input data.' };
+  }
+
+  const { name, category, price } = validatedFields.data!;
+
+  try {
+    await sql`
+      UPDATE menu
+      SET name = ${name}, description = ${category}, price = ${price}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Menu item.' };
+  }
+
+  revalidatePath('/dashboard/menu');
+  redirect('/dashboard/menu');
+
+  return { message: 'Menu item updated successfully.' };
 }
 
 export async function createCstm(prevState: State, formData: FormData): Promise<{ errors?: any; message: string }> {
