@@ -256,6 +256,7 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
         reservations.id,
         reservations.customer_id,
         reservations.price,
+        reservations.address,
         reservations.special_request,
         reservations.reservation_date,
         reservations.email,
@@ -361,29 +362,31 @@ export async function fetchMenuPages(query: string){
   }
 }
 
-export async function fetchFilteredMenu (id: string) {
+export async function fetchFilteredMenu (query: string) {
   try{
+    console.log('Fetching menu data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    const data = await sql <MenuForm>`
+    const data = await sql <MenuTable>`
     SELECT
     menu.id,
-    menu.name
-    menu.category
+    menu.name,
+    menu.category,
     menu.price
     FROM menu
-    WHERE menu.id = ${id}`;
+    WHERE
+     menu.name ILIKE ${`%${query}%`} OR
+     menu.category ILIKE ${`%${query}%`}
+    GROUP BY menu.id, menu.price
+    ORDER BY menu.name ASC`;
 
     const menu = data.rows.map((menu) => ({
       ...menu,
-      price: menu.price / 100,
     }));
 
-    return menu[0];
+    return menu;
   } catch (error: any) {
     console.error('Database Error:', error);
     throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-
-
   }
 }
 
@@ -420,13 +423,15 @@ export async function fetchFilteredCstms(query: string, currentPage: number) {
 
   try {
     console.log('Fetching customers data...');
-    await new Promise((resolve) => setTimeout(resolve, 4000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const cstms = await sql<CstmTable>`
       SELECT
       cstms.id,
+      cstms.address,
       cstms.price,
       cstms.date,
+      cstms.payment_methods,
       cstms.status,
         customers.name,
         customers.email,
@@ -436,6 +441,7 @@ export async function fetchFilteredCstms(query: string, currentPage: number) {
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
+        cstms.address::text ILIKE ${`%${query}%`} OR
         cstms.price::text ILIKE ${`%${query}%`} OR
         cstms.date::text ILIKE ${`%${query}%`} OR
         cstms.status ILIKE ${`%${query}%`}
