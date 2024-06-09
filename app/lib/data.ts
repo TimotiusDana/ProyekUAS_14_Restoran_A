@@ -489,10 +489,14 @@ export async function fetchCstmsById(id: string) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const data = await sql<CstmForm>`
       SELECT
-        cstms.id,
-        cstms.customer_id,
-        cstms.price,
-        cstms.status
+      cstms.id,
+      cstms.name,
+      cstms.address,
+      cstms.payment_methods,
+      cstms.email,
+      cstms.price,
+      cstms.date,
+      cstms.status,
       FROM cstms
       WHERE cstms.id = ${id};
     `;
