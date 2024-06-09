@@ -1,8 +1,8 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteCstm } from '@/app/lib/actions';
+import { deleteCustomer } from '@/app/lib/actions';
 
-export function Updatecstms({ id }: { id: string }) {
+export function UpdateCus({ id }: { id: string }) {
   return (
     <Link
       href={`/dashboard/customers/${id}/edit`}
@@ -13,7 +13,7 @@ export function Updatecstms({ id }: { id: string }) {
   );
 }
 
-export function DeleteCstms({ id }: { id: string }) {
+export function deleteCustomer({ id }: { id: string }) {
   const deleteCstmwithId = deleteCstm.bind(null, id);
   return (
     <form action={deleteCstmwithId}>
@@ -25,7 +25,7 @@ export function DeleteCstms({ id }: { id: string }) {
   );
 }
 
-export function Createcstms() {
+export function Createcustomer() {
     return (
       <Link
         href="/dashboard/customers/create"

@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <Form customers={[customer]} />
+      <Form customer={[customer]} />
     </main>
   );
 }

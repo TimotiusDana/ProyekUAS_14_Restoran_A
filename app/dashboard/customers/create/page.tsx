@@ -5,7 +5,7 @@ import {
   InboxArrowDownIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createCustomer } from '@/app/lib/actions';
+import { createCstm } from '@/app/lib/actions';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function Form() {
   return (
-    <form action={createCustomer}>
+    <form action={createCstm}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
 
         {/* Customer Name */}
