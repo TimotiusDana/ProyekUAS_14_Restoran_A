@@ -1,6 +1,7 @@
 import Image from 'next/image';
-import { Updatecstms, DeleteCstms } from './buttons'; 
-import CstmsStatus from '../dashboard/Customers/status';
+import { Updatecstms, DeleteCstms } from './buttons';
+import CstmsPayment from '../dashboard/Customers/status';
+import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredCstms } from '@/app/lib/data';
 
 export default async function CustomerTable({
@@ -36,11 +37,14 @@ export default async function CustomerTable({
                     </div>
                     <p className="text-sm text-gray-500">{customer.address}</p>
                   </div>
-                  <CstmsStatus status={customer.status} />
+                  <CstmsPayment payment={customer.payment_methods} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-sm text-gray-500">{customer.payment_methods}</p>
+                    <p className="text-xl font-medium">
+                      {formatCurrency(customer.price)}
+                    </p>
+                    <p>{formatDateToLocal(customer.date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     <Updatecstms id={customer.id} />
@@ -54,13 +58,13 @@ export default async function CustomerTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Address
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Payment Methods
+                  Payment Method
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -89,7 +93,7 @@ export default async function CustomerTable({
                     {customer.address}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {customer.payment_methods}
+                    <CstmsPayment payment={customer.payment_methods} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
