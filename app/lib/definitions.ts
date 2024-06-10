@@ -145,6 +145,12 @@ export type MenuForm ={
     bind(arg0: null, id: string): unknown;
     id: string;
     customer_id: string;
+    name: string;
+    address: string;
+    image_url: string;
+    payment_methods: string;
+    email: string;
+    date: string;
     price: number;
     status: 'pending' | 'paid';
   };

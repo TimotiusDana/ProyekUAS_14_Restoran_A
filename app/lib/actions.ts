@@ -223,7 +223,7 @@ export async function deleteReservation(id: string): Promise<{ message: string }
 }
 
 export async function createCustomer(formData: FormData): Promise<{ message: string }> {
-  const img = formData.get('image') as File;
+  const img = formData.get('image') as unknown as File;
   let fileName = '';
 
   if (img instanceof File) {
@@ -261,7 +261,7 @@ export async function createCustomer(formData: FormData): Promise<{ message: str
 }
 
 export async function updateCustomer(id: string, formData: FormData): Promise<{ message: string }> {
-  const img = formData.get('image') as File;
+  const img = formData.get('image') as unknown as File;
   let fileName = '';
 
   if (img instanceof File) {
@@ -318,7 +318,7 @@ export async function deleteMenu(id: string): Promise<{ message: string }> {
 }
 
 export async function createMenu(formData: FormData): Promise<{ message: string }> {
-  const img = formData.get('image') as File;
+  const img = formData.get('image') as unknown as File;
   let fileName = '';
 
   if (img instanceof File) {
@@ -385,46 +385,40 @@ export async function updateMenu(id: string, formData: FormData): Promise<{ mess
   return { message: 'Menu item updated successfully.' };
 }
 
-export async function createCstm(formData: FormData): Promise<{ message: string }> {
-  const img = formData.get('image') as File;
-  let fileName = '';
+export async function createCstms(formData: FormData) {
+  const img = formData.get('image');
+  console.log(img);
 
+  let fileName = '';
   if (img instanceof File) {
     fileName = '/customers/' + img.name;
-  }
+    console.log('Image uploaded:', fileName);
+  };
 
-  const validatedFields = CreateCstm.safeParse({
+  const { name, address, image_url, email } = CreateCstm.parse({
     name: formData.get('name'),
     address: formData.get('address'),
-    email: formData.get('email'),
     image_url: fileName,
+    email: formData.get('email'),
   });
-
-  if (!validatedFields.success) {
-    return { message: 'Validation Error: Invalid input data.' };
-  }
-
-  const { name, address, email, image_url } = validatedFields.data!;
+  const date = new Date().toISOString().split('T')[0];
 
   try {
     await sql`
-      INSERT INTO customers (name, address, email, image_url)
-      VALUES (${name}, ${address}, ${email}, ${image_url})
-    `;
+        INSERT INTO customers (name, address, image_url, date, email)
+        VALUES (${name}, ${address}, ${image_url}, ${date}, ${email})
+      `;
   } catch (error) {
     return {
-      message: 'Database Error: Failed to Create Customer.',
+      message: 'Database Error: Failed to Create Customers.',
     };
   }
-
-  revalidatePath('/dashboard/customers');
-  redirect('/dashboard/customers');
-
-  return { message: 'Customer created successfully.' };
+  revalidatePath('/dashboard/customer');
+  redirect('/dashboard/customer');
 }
 
 export async function updateCstm(id: string, formData: FormData): Promise<{ message: string }> {
-  const img = formData.get('image') as File;
+  const img = formData.get('image') as unknown as File;
   let fileName = '';
 
   if (img instanceof File) {

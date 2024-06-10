@@ -230,7 +230,8 @@ const cstms = [
     email: 'tosf@gmail.com',
     price: 32000,
     status: 'paid',
-    date: '2024-03-04'
+    date: '2024-03-04',
+    status: 'paid'
   },
 ];
 
