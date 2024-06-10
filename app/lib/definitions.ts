@@ -1,4 +1,3 @@
-
 export type User = {
   id: string;
   name: string;
@@ -22,8 +21,6 @@ export type Invoice = {
   tax: number;
   payment_methods: string;
   invoice_date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
   status: 'pending' | 'paid';
 };
 
@@ -39,20 +36,17 @@ export type LatestInvoice = {
   price: number;
   tax: number;
   payment_methods: string;
-  status: string;
+  status: 'pending' | 'paid';
   invoice_date: string;
   email: string;
 };
 
 export type Menu = {
-id: string;
-name: string;
-category: string;
-price: number;
-
-}
-
-
+  id: string;
+  name: string;
+  category: 'makanan' | 'minuman';
+  price: number;
+};
 
 export type LatestInvoiceRaw = Omit<LatestInvoice, 'price'> & {
   price: number;
@@ -75,7 +69,7 @@ export type CustomersTableType = {
   id: string;
   name: string;
   email: string;
-  adress: string;
+  address: string;
   payment_methods: string;
   image_url: string;
   total_invoices: number;
@@ -90,9 +84,6 @@ export type FormattedCustomersTable = {
   address: string;
   payment_methods: string;
   image_url: string;
-  // total_invoices: number;
-  // total_pending: string;
-  // total_paid: string;
 };
 
 export type CustomerField = {
@@ -117,7 +108,6 @@ export type LatestReservation = {
   email: string;
 };
 
-
 export type ReservationsTable = {
   id: string;
   customer_id: string;
@@ -141,49 +131,53 @@ export type LatestReservationRaw = Omit<LatestReservation, 'amount'> & {
   amount: number;
 };
 
-
-
-export type MenuForm ={
+export type MenuForm = {
   id: string;
   name: string;
-  category: string;
+  category: 'makanan' | 'minuman';
   price: number;
-  }
+};
 
-  export type CstmForm = {
-    bind(arg0: null, id: string): unknown;
-    id: string;
-    customer_id: string;
-    price: number;
-    status: 'pending' | 'paid';
-  };
-
-  export type Cstm = {
-    id: string;
-    customer_id: string;
-    address: string;
-    image_url: string;
-    payment_methods: string;
-    status: 'pending' | 'paid';
-  };
-
-  export type CstmTable = {
-    id: string;
-    customer_id: string;
-    name: string;
-    email: string;
-    image_url: string;
-    date: string;
-    price: number;
-    address: string;
-    payment_methods: string;
-    status: 'pending' | 'paid';
-  };
-
-  export type MenuTable ={
-    id: string;
-    name: string;
-    category: string;
+export type CstmForm = {
+  bind(arg0: null, id: string): unknown;
+  id: string;
+  customer_id: string;
   price: number;
-  
-  }
+  status: 'pending' | 'paid';
+};
+
+export type Cstm = {
+  id: string;
+  customer_id: string;
+  address: string;
+  image_url: string;
+  payment_methods: string;
+  status: 'pending' | 'paid';
+};
+
+export type CstmTable = {
+  id: string;
+  customer_id: string;
+  name: string;
+  email: string;
+  image_url: string;
+  date: string;
+  price: number;
+  address: string;
+  payment_methods: string;
+  status: 'pending' | 'paid';
+};
+
+export type MenuTable = {
+  id: string;
+  name: string;
+  category: 'makanan' | 'minuman';
+  price: number;
+};
+
+export type MenuField = {
+  id: string;
+  name: string;
+  category: 'makanan' | 'minuman';
+  price: number;
+};

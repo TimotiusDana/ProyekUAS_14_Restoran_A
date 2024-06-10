@@ -1,23 +1,23 @@
-import Form from '@/app/ui/invoices/create-form';
+import Form from '@/app/ui/menu/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
- 
+import { fetchMenu } from '@/app/lib/data';
+
 export default async function Page() {
-  const customers = await fetchCustomers();
- 
+  const menu = await fetchMenu(); 
+
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Menu', href: '/dashboard/menu' },
+          { label: 'Menu ', href: '/dashboard/menu' },
           {
-            label: 'Buat Menu Baru',
+            label: 'BUAT MENU BARU',
             href: '/dashboard/menu/create',
             active: true,
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form menu={menu} /> 
     </main>
   );
 }

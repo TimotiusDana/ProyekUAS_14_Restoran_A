@@ -29,6 +29,8 @@ export async function fetchRevenue() {
   }
 }
 
+
+
 export async function fetchLatestInvoices() {
   try {
     const data = await sql<LatestInvoiceRaw>`
@@ -55,8 +57,8 @@ export async function fetchCardData() {
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
+         SUM(CASE WHEN status = 'paid' THEN price ELSE 0 END) AS "paid",
+         SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
          FROM invoices`;
 
     const [invoiceCount, customerCount, invoiceStatus] = await Promise.all([
@@ -299,52 +301,6 @@ export async function fetchReservationsPages(query: string) {
   }
 }
 
-export async function fetchMenu() {
-  try {
-    const data = await sql<MenuForm>`
-      SELECT
-        menu.id,
-        menu.name,
-        menu.category,
-        menu.price
-      FROM menu
-      ORDER BY name ASC
-    `;
-
-    const menu = data.rows;
-    return menu;
-  } catch (error: any) {
-    console.error('Database Error:', error);
-    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-  }
-}
-
-export async function fetchMenuById(id: string) {
-  try {
-    const data = await sql<MenuForm>`
-      SELECT
-        menu.id,
-        menu.name,
-        menu.category,
-        menu.price
-      FROM menu
-      WHERE menu.id = ${id}
-    `;
-
-    const menu = data.rows.map((menu) => ({
-      ...menu,
-      price: menu.price / 100,
-    }));
-
-    return menu[0];
-  } catch (error: any) {
-    console.error('Database Error:', error);
-    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-  }
-}
-
-
-
 
 
 export async function fetchReservationById(id: string) {
@@ -390,7 +346,6 @@ noStore();
 
 export async function fetchMenuPages(query: string){
   try {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
     const count = await sql `SELECT COUNT (*)
     from menu
     
@@ -437,6 +392,25 @@ export async function fetchFilteredMenu (query: string) {
   }
 }
 
+export async function fetchMenu() {
+  try {
+    const data = await sql<MenuForm>`
+      SELECT
+        menu.id,
+        menu.name,
+        menu.category,
+        menu.price
+      FROM menu
+      ORDER BY name ASC
+    `;
+
+    const menu = data.rows;
+    return menu;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
+  }
+}
 
 
 export async function fetchMenuById (id: string) {
@@ -461,6 +435,20 @@ export async function fetchMenuById (id: string) {
     throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
 
 
+  }
+}
+
+export async function fetchMenuItems() {
+  try {
+    const data = await sql<MenuTable>`
+      SELECT id, name, price, category
+      FROM menu
+      ORDER BY name ASC`;
+
+    return data.rows;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch menu items.');
   }
 }
 
@@ -554,4 +542,3 @@ export async function fetchCstmsById(id: string) {
     throw new Error('Failed to fetch customer.');
   }
 }
-
