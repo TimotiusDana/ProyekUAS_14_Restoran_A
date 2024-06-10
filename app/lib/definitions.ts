@@ -63,7 +63,7 @@ export type CustomersTableType = {
   id: string;
   name: string;
   email: string;
-  adress: string;
+  address: string;
   payment_methods: string;
   image_url: string;
 };
@@ -107,11 +107,8 @@ export type ReservationsTable = {
   customer_id: string;
   name: string;
   image_url: string;
-  invoice_date: string;
   price: number;
-  payment_methods: string;
-  tax: number;
-  status: 'pending' | 'paid';
+  special_request: string;
 };
 
 export type ReservationForm = {
@@ -121,8 +118,8 @@ export type ReservationForm = {
   special_request: string;
 };
 
-export type LatestReservationRaw = Omit<LatestReservation, 'amount'> & {
-  amount: number;
+export type LatestReservationRaw = Omit<LatestReservation, 'price'> & {
+  price: number;
 };
 
 
