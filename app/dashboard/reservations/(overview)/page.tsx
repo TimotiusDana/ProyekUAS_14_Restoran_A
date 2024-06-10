@@ -1,5 +1,3 @@
-// app/dashboard/reservations/(overview)/page.tsx
-
 import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/reservations/table';
@@ -36,6 +34,11 @@ export default async function Page({
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
+      </div>
+      <div className="mt-2 flex w-full justify-center">
+        <p className="text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </p>
       </div>
     </div>
   );

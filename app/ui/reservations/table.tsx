@@ -35,7 +35,7 @@ export default async function ReservationsTable({
                       />
                       <p>{reservation.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{reservation.email}</p>
+                    <p className="text-sm text-gray-500">{reservation.address}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">

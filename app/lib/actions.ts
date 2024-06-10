@@ -10,9 +10,10 @@ import { File, constants } from 'buffer';
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string(),
-  amount: z.coerce.number(),
+  price: z.coerce.number(),
   status: z.enum(['pending', 'paid']),
   date: z.string(),
+});
 });
 
 const MenuSchema = z.object({
@@ -24,6 +25,7 @@ const MenuSchema = z.object({
 const piss = z.object({
   id: z.string(),
   name: z.string(),
+  address: z.string(),
   email: z.string(),
   image_url: z.string(),
 });
@@ -44,7 +46,7 @@ const UpdateCustomer = piss.omit({ id: true });
 export type State = {
   errors?: {
     customerId?: string[];
-    amount?: string[];
+    price?: string[];
     status?: string[];
   };
   message?: string | null;
@@ -53,9 +55,10 @@ export type State = {
 export async function createInvoice(prevState: State, formData: FormData) {
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
+    price: parseFloat(formData.get('price') as string),
     status: formData.get('status'),
   });
+
 
   if (!validatedFields.success) {
     return {
@@ -80,21 +83,30 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
+
+  return {
+    message: 'Invoice created successfully.',
+  };
 }
 
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = UpdateInvoice.parse({
+export async function updateInvoice(id: string, formData: FormData): Promise<{ message: string }> {
+  const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
+    price: parseFloat(formData.get('price') as string),
     status: formData.get('status'),
   });
 
-  const amountInCents = amount * 100;
+  if (!validatedFields.success) {
+    return { message: 'Validation Error: Invalid input data.' };
+  }
+
+  const { customerId, price, status } = validatedFields.data!;
+  const priceInCents = price * 100;
 
   try {
     await sql`
       UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      SET customer_id = ${customerId}, price = ${priceInCents}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
@@ -103,13 +115,15 @@ export async function updateInvoice(id: string, formData: FormData) {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
+
+  return { message: 'Invoice updated successfully.' };
 }
 
 export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
-    return { message: 'Deleted Invoice.' };
+    return { message: 'Invoice deleted successfully.' };
   } catch (error) {
     return { message: 'Database Error: Failed to Delete Invoice.' };
   }
@@ -124,6 +138,7 @@ export async function createReservation(formData: FormData) {
 
   const amountInCents = amount * 100;
 
+  try {
   try {
     await sql`
       INSERT INTO reservations (customer_id, amount, status, date)
@@ -151,7 +166,7 @@ export async function updateReservation(id: string, formData: FormData) {
   try {
     await sql`
       UPDATE reservations
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}, date = ${date}
+      SET customer_id = ${customerId}, price = ${priceInCents}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
@@ -172,14 +187,12 @@ export async function deleteReservation(id: string) {
   }
 }
 
-export async function createCustomer(formData: FormData) {
-  const img = formData.get('image');
-  console.log(img);
-
+export async function createCustomer(formData: FormData): Promise<{ message: string }> {
+  const img = formData.get('image') as File;
   let fileName = '';
+
   if (img instanceof File) {
     fileName = '/customers/' + img.name;
-    console.log(fileName);
   }
 
   const { name, email, image_url } = CreateCustomer.parse({
@@ -195,20 +208,21 @@ export async function createCustomer(formData: FormData) {
 
   revalidatePath('/dashboard/customers');
   redirect('/dashboard/customers');
+
+  return { message: 'Customer created successfully.' };
 }
 
-export async function updateCustomer(id: string, formData: FormData) {
-  const img = formData.get('image');
-
-  console.log(img);
+export async function updateCustomer(id: string, formData: FormData): Promise<{ message: string }> {
+  const img = formData.get('image') as File;
   let fileName = '';
+
   if (img instanceof File) {
     fileName = '/customers/' + img.name;
-    console.log(fileName);
   }
 
-  const { name, email, image_url } = UpdateCustomer.parse({
+  const validatedFields = UpdateCstm.safeParse({
     name: formData.get('name'),
+    address: formData.get('address'),
     email: formData.get('email'),
     image_url: fileName,
   });
@@ -222,6 +236,8 @@ export async function updateCustomer(id: string, formData: FormData) {
 
   revalidatePath('/dashboard/customers');
   redirect('/dashboard/customers');
+
+  return { message: 'Customer updated successfully.' };
 }
 
 export async function deleteCustomer(id: string) {
@@ -288,7 +304,77 @@ export async function updateMenu(id: string, formData: FormData) {
   redirect('/dashboard/menu');
 }
 
-export async function deleteMenu(id: string) {
-  await sql`DELETE FROM menu WHERE id = ${id}`;
+export async function deleteMenu(id: string): Promise<{ message: string }> {
+  try {
+    await sql`DELETE FROM menu WHERE id = ${id}`;
+    revalidatePath('/dashboard/menu');
+    return { message: 'Deleted menu item.' };
+  } catch (error) {
+    return { message: 'Database Error: Failed to Delete menu item.' };
+  }
+}
+
+export async function createMenu(formData: FormData): Promise<{ message: string }> {
+  const img = formData.get('image') as File;
+  let fileName = '';
+
+  if (img instanceof File) {
+    fileName = '/menu/' + img.name;
+  }
+
+  const validatedFields = CreateMenu.safeParse({
+    name: formData.get('name'),
+    category: formData.get('category'),
+    price: parseFloat(formData.get('price') as string),
+    image_url: fileName,
+  });
+
+  if (!validatedFields.success) {
+    return { message: 'Validation Error: Invalid input data.' };
+  }
+
+  const { name, category, price, image_url } = validatedFields.data!;
+
+  try {
+    await sql`
+      INSERT INTO menu (name, category, price, image_url)
+      VALUES (${name}, ${category}, ${price}, ${image_url})
+    `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Menu item.',
+    };
+  }
+
+  revalidatePath('/dashboard/menu');
+  redirect('/dashboard/menu');
+
+  return { message: 'Menu created successfully.' };
+}
+
+export async function updateMenu(id: string, formData: FormData): Promise<{ message: string }> {
+  const validatedFields = UpdateMenu.safeParse({
+    name: formData.get('name'),
+    category: formData.get('category'),
+    price: parseFloat(formData.get('price') as string),
+    image_url: formData.get('image_url'),
+  });
+
+  if (!validatedFields.success) {
+    return { message: 'Validation Error: Invalid input data.' };
+  }
+
+  const { name, category, price, image_url } = validatedFields.data!;
+
+  try {
+    await sql`
+      UPDATE menu
+      SET name = ${name}, category = ${category}, price = ${price}, image_url = ${image_url}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Menu item.' };
+  }
+
   revalidatePath('/dashboard/menu');
 }

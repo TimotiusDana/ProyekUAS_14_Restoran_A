@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency,formatTaxCurrency } from '@/app/lib/utils';
+import PaymentMethod from './paymentmethod';
+import { formatDateToLocal, formatCurrency, formatTaxCurrency } from '@/app/lib/utils';
 import { fetchFilteredInvoices } from '@/app/lib/data';
 
 export default async function Table({
@@ -99,17 +100,17 @@ export default async function Table({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                  {formatCurrency(invoice.price)}
+                    {formatCurrency(invoice.price)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatTaxCurrency(invoice.price)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                  <InvoiceStatus status={invoice.status} />
+                    <InvoiceStatus status={invoice.status} />
                   </td>
-                  {/* <td className="whitespace-nowrap px-3 py-3">
-                     
-                  </td> */}
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <PaymentMethod status={invoice.status} />
+                  </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(invoice.invoice_date)}
                   </td>
