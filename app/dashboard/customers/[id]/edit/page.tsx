@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <Form cstms={customerWithBind} />
+      <Form customer={[customer]} />
     </main>
   );
 }
