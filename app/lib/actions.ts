@@ -10,9 +10,10 @@ const FormSchema = z.object({
   id: z.string(),
   customerId: z.string(),
   price: z.coerce.number(),
+  tax: z.string(),
   status: z.enum(['pending', 'paid']),
-  payment_method: z.enum(['qris', 'cash']),
-  date: z.string(),
+  payment_methods: z.enum(['qris', 'cash']),
+  invoice_date: z.date(),
 });
 
 const ResSchema = z.object({
@@ -21,7 +22,7 @@ const ResSchema = z.object({
   address: z.string(),
   price: z.coerce.number(),
   special_request: z.string(),
-  res_date: z.string(),
+  reservation_date: z.string(),
   email: z.string(),
 });
 
@@ -39,21 +40,26 @@ const menuSchema = z.object({
   name: z.string(),
   category: z.enum(['makanan', 'minuman']),
   price: z.coerce.number(),
-  image_url: z.string().url().nullable(),
 });
 
 const UpdateCust = z.object({
-  id: z.string(),
   name: z.string(),
-  address: z.string().nullable().default(''), // Allow null and provide default empty string
+  address: z.string(),
   email: z.string(),
-  image_url: z.string(), // Allow null and provide default null
-  payment_method: z.enum(['qris', 'cash']), // Enum validation for payment_method
+  payment_methods: z.enum(['qris', 'cash']).nullable(),  // Allow nullable
+  image_url: z.string(),
 });
 
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-const CreateReservation = ResSchema.omit({ id: true, date: true });
+const EditSchema = z.object({
+  id: z.string(),
+  customerId: z.string(),
+  price: z.coerce.number(),
+  status: z.enum(['pending', 'paid']),
+});
+
+const CreateInvoice = FormSchema.omit({ id: true, invoice_date: true });
+const UpdateInvoice = EditSchema.omit({ id: true, date: true });
+const CreateReservation = ResSchema.omit({ id: true, reservation_date: true });
 const UpdateReservation = ResSchema.omit({ id: true, date: true });
 const date = new Date().toISOString().split('T')[0];
 
@@ -72,18 +78,20 @@ export type State = {
 };
 
 export async function createInvoice(prevState: State, formData: FormData) {
-  const { customerId, price, status, payment_method } = CreateInvoice.parse({
-    customerId: formData.get('customerId'),
-    price: formData.get('price'),
-    status: formData.get('status'),
-    payment_method: formData.get('payment_method'),
+  const { customerId, price, tax, status, payment_methods } = CreateInvoice.parse({
+    customerId: formData.get('customerId') as string,
+    price: Number(formData.get('price')),
+    tax: formData.get('tax'),
+    status: formData.get('status') as 'pending' | 'paid',
+    payment_methods: formData.get('payment_methods') as 'qris' | 'cash',
   });
 
+ 
   const priceInCents = price * 100;
 
   await sql`
-    INSERT INTO invoices (customer_id, price, status, date)
-    VALUES (${customerId}, ${priceInCents}, ${status}, ${payment_method}, ${date})
+    INSERT INTO invoices (customer_id, price, tax,  status, payment_methods, invoice_date)
+    VALUES (${customerId}, ${priceInCents}, ${tax}, ${status}, ${payment_methods}, ${date})
   `;
 
   revalidatePath('/dashboard/invoices');
@@ -126,7 +134,7 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function createReservation(formData: FormData) {
-  const { customerId, address, price, special_request, res_date, email } = ResSchema.parse({
+  const { customerId, address, price, special_request, reservation_date, email } = CreateReservation.parse({
     customerId: formData.get('customerId'),
     address: formData.get('address'),
     price: formData.get('price'),
@@ -139,7 +147,7 @@ export async function createReservation(formData: FormData) {
 
   await sql`
     INSERT INTO reservations (customer_id, address, price, special_request, res_date, email)
-    VALUES (${customerId}, ${address}, ${priceInCents}, ${special_request}, ${res_date}, ${email})
+    VALUES (${customerId}, ${address}, ${priceInCents}, ${special_request}, ${reservation_date}, ${email})
   `;
 
   revalidatePath('/dashboard/reservations');
@@ -224,29 +232,25 @@ export async function updateCustomer(id: string, formData: FormData) {
     console.log(fileName);
   }
 
-  // Get payment_method and log its value for debugging
-  const paymentMethod = formData.get('payment_method');
-  console.log('Payment method:', paymentMethod);
-
-
-
-  const { name, address, email, payment_method, image_url } = UpdateCustomer.parse({
+  const { name, address, email, payment_methods, image_url } = UpdateCust.parse({
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
     image_url: fileName,
-    payment_method: paymentMethod,
+    payment_methods: formData.get('payment_methods') || 'cash' // Provide default value if null
   });
 
   await sql`
     UPDATE customers
-    SET name = ${name}, address = ${address}, email = ${email}, image_url = ${image_url}, payment_method = ${payment_method}
+    SET name = ${name}, address = ${address}, email = ${email}, image_url = ${image_url}, payment_methods = ${payment_methods}
     WHERE id = ${id}
   `;
 
   revalidatePath('/dashboard/customers');
   redirect('/dashboard/customers');
 }
+
+
 
 export async function deleteCustomer(id: string): Promise<{ message: string }> {
   try {
@@ -260,33 +264,24 @@ export async function deleteCustomer(id: string): Promise<{ message: string }> {
 
 export async function createMenu(formData: FormData) {
   const img = formData.get('image');
-  let fileName = '';
+  console.log(img);
 
-  if (img instanceof File) {
-    fileName = '/menus/' + img.name;
-  }
+  
 
-  const { name, category, price, image_url } = CreateMenu.parse({
+  const { name, category, price} = CreateMenu.parse({
     name: formData.get('name'),
     category: formData.get('category'),
     price: formData.get('price'),
-    image_url: fileName,
+   
   });
 
-  try {
-    await sql`
-      INSERT INTO menus (name, category, price, image_url)
-      VALUES (${name}, ${category}, ${price}, ${image_url})
-    `;
-  } catch (error) {
-    console.error('Database Error:', error);
-    return {
-      message: 'Database Error: Failed to Create Menu.',
-    };
-  }
+  await sql`
+    INSERT INTO menu (name, category, price)
+    VALUES (${name}, ${category}, ${price})
+  `;
 
-  revalidatePath('/dashboard/menus');
-  redirect('/dashboard/menus');
+  revalidatePath('/dashboard/menu');
+  redirect('/dashboard/menu');
 }
 
 export async function updateMenu(id: string, formData: FormData): Promise<{ message: string }> {
@@ -297,24 +292,20 @@ export async function updateMenu(id: string, formData: FormData): Promise<{ mess
     fileName = '/menus/' + img.name;
   }
 
-  const { name, category, price, image_url } = UpdateMenu.parse({
+  const { name, category, price} = UpdateMenu.parse({
     name: formData.get('name'),
     category: formData.get('category'),
     price: formData.get('price'),
     image_url: fileName || null,  // Ensure image_url is null if fileName is an empty string
   });
 
-  try {
+  
     await sql`
       UPDATE menus
-      SET name = ${name}, category = ${category}, price = ${price}, image_url = ${image_url}
+      SET name = ${name}, category = ${category}, price = ${price}
       WHERE id = ${id}
     `;
-  } catch (error) {
-    console.error('Database Error:', error);
-    return { message: 'Database Error: Failed to Update Menu.' };
-  }
-
+  
   revalidatePath('/dashboard/menus');
   redirect('/dashboard/menus');
 

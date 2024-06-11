@@ -164,7 +164,7 @@ export async function fetchInvoiceById(id: string) {
 export async function fetchCustomers() {
   noStore();
   try {
-    const data = await sql<CustomerField>`
+    const data = await sql <CustomerField>`
       SELECT
         id,
         name
@@ -407,6 +407,26 @@ export async function fetchFilteredMenu(query: string) {
   }
 }
 
+export async function fetchMenu() {
+  try {
+    const data = await sql<MenuForm>`
+      SELECT
+        menu.id,
+        menu.name,
+        menu.category,
+        menu.price
+      FROM menu
+      ORDER BY name ASC
+    `;
+
+    const menu = data.rows;
+    return menu;
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
+  }
+}
+
 export async function fetchMenuById(id: string) {
   try {
     const data = await sql<MenuForm>`
@@ -420,7 +440,7 @@ export async function fetchMenuById(id: string) {
 
     const menu = data.rows.map((menu) => ({
       ...menu,
-      price: menu.price / 100,
+      price: menu.price,
     }));
 
     return menu[0];
