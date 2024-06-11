@@ -15,7 +15,7 @@ export default async function Page( { params }: { params: { id: string } }) {
           { label: 'Invoices', href: '/dashboard/invoices' },
           {
             label: 'Edit Invoice',
-            href: `/dashboard/invoices/${id}/edit`,
+            href: `/dashboard/invoices`,
             active: true,
           },
         ]}

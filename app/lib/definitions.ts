@@ -24,6 +24,7 @@ export type Invoice = {
   payment_methods: 'qris' | 'cash';
   invoice_date: string;
   status: 'pending' | 'paid';
+  name: string;
 };
 
 export type Revenue = {
@@ -90,7 +91,10 @@ export type InvoiceForm = {
   tax: number;
   status: 'pending' | 'paid';
   payment_methods: 'qris' | 'cash';
+  date: string;
+  name: string;
 };
+
 
 export type LatestReservation = {
   id: string;

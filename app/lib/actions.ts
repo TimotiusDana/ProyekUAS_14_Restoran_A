@@ -71,24 +71,38 @@ export type State = {
   message?: string | null;
 };
 
-export async function createInvoice(prevState: State, formData: FormData) {
-  const { customerId, price, status, payment_method } = CreateInvoice.parse({
-    customerId: formData.get('customerId'),
+export async function createInvoice(formData: FormData) {
+  const img = formData.get('image_url');
+  console.log(img);
+
+  let fileName = '';
+  if (img instanceof File) {
+    fileName = '/invoices/' + img.name;
+    console.log(fileName);
+  }
+
+  const baseURL = 'http://localhost:3000'; // Adjust to your actual base URL
+  const imageURL = fileName ? new URL(fileName, baseURL).toString() : null;
+
+  const { name, price, status, payment_method } = CreateInvoice.parse({
+    name: formData.get('name'),
     price: formData.get('price'),
     status: formData.get('status'),
     payment_method: formData.get('payment_method'),
+    image_url: imageURL, // Use the constructed URL
   });
 
   const priceInCents = price * 100;
 
   await sql`
-    INSERT INTO invoices (customer_id, price, status, date)
-    VALUES (${customerId}, ${priceInCents}, ${status}, ${payment_method}, ${date})
+    INSERT INTO invoices (name, price, status, payment_method, image_url, date)
+    VALUES (${name}, ${priceInCents}, ${status}, ${payment_method}, ${imageURL}, NOW())
   `;
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
+
 
 export async function updateInvoice(id: string, formData: FormData) {
   const { customerId, price, status } = UpdateInvoice.parse({
