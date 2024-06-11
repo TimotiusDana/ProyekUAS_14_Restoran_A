@@ -124,6 +124,7 @@ export type ReservationForm = {
   customer_id: string;
   price: number;
   special_request: string;
+  reservation_date?: string;
 };
 
 export type LatestReservationRaw = Omit<LatestReservation, 'price'> & {

@@ -5,6 +5,21 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { File } from 'buffer';
+import { reservations } from './placeholder-data';
+
+
+
+
+const CreateReservationSchema = z.object({
+  customerId: z.string(),
+  address: z.string(),
+  price: z.number().min(0),
+  special_request: z.string(),
+  email: z.string().email(),
+  reservation_date: z.string().optional(),
+});
+
+
 
 const FormSchema = z.object({
   id: z.string(),
@@ -138,22 +153,23 @@ export async function createReservation(formData: FormData) {
   const { customerId, address, price, special_request, reservation_date, email } = CreateReservation.parse({
     customerId: formData.get('customerId'),
     address: formData.get('address'),
-    price: formData.get('price'),
+    price: Number(formData.get('price')), // Ensure price is a number
     special_request: formData.get('special_request'),
     email: formData.get('email'),
-    res_date: formData.get('res_date') || new Date().toISOString(), // Set to current date if not provided
+    reservation_date: formData.get('reservation_date') || new Date().toISOString(), // Set to current date if not provided
   });
 
   const priceInCents = price * 100;
 
   await sql`
-    INSERT INTO reservations (customer_id, address, price, special_request, res_date, email)
+    INSERT INTO reservations (customer_id, address, price, special_request, reservation_date, email)
     VALUES (${customerId}, ${address}, ${priceInCents}, ${special_request}, ${reservation_date}, ${email})
   `;
 
   revalidatePath('/dashboard/reservations');
   redirect('/dashboard/reservations');
 }
+
 
 export async function updateReservation(id: string, formData: FormData): Promise<{ message: string }> {
   const { customerId, address, price, special_request } = UpdateReservation.parse({

@@ -2,6 +2,7 @@ import Form from '@/app/ui/customers/edit-form';
 import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
 import { fetchCustomersById } from '@/app/lib/data';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Edit Customer',
@@ -10,6 +11,10 @@ export const metadata: Metadata = {
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
   const customer = await fetchCustomersById(id);
+
+  if (!customer) {
+    notFound();
+  }
 
   return (
     <main>

@@ -51,14 +51,14 @@ export default function EditInvoiceForm({
 
         {/* Invoice Amount */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Choose an amount
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">
+            ubah harga
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amount"
-                name="amount"
+                id="price"
+                name="price"
                 type="number"
                 step="0.01"
                 defaultValue={invoice.price}
