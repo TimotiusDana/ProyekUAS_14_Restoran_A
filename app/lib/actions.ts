@@ -43,6 +43,7 @@ const menuSchema = z.object({
 });
 
 const UpdateCust = z.object({
+  customer_id: z.string(),
   name: z.string(),
   address: z.string(),
   email: z.string(),
@@ -88,12 +89,16 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
  
   const priceInCents = price * 100;
-
+try{
   await sql`
     INSERT INTO invoices (customer_id, price, tax,  status, payment_methods, invoice_date)
     VALUES (${customerId}, ${priceInCents}, ${tax}, ${status}, ${payment_methods}, ${date})
   `;
-
+} catch (error){
+  return{
+    message: 'Database Error: Failed to Create invoice',
+  };
+}
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
@@ -119,17 +124,17 @@ export async function updateInvoice(id: string, formData: FormData) {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
-
-  return { message: 'Invoice updated successfully.' };
 }
 
 export async function deleteInvoice(id: string) {
+  throw new Error('Failed to Delete Invoice');
+ 
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
-    return { message: 'Invoice deleted successfully.' };
+    return { message: 'Deleted Invoice' };
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Invoice.' };
+    return { message: 'Database Error: Failed to Delete Invoice' };
   }
 }
 
@@ -232,7 +237,8 @@ export async function updateCustomer(id: string, formData: FormData) {
     console.log(fileName);
   }
 
-  const { name, address, email, payment_methods, image_url } = UpdateCust.parse({
+  const { customer_id, name, address, email, payment_methods, image_url } = UpdateCust.parse({
+    customer_id: formData.get('id'),
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
@@ -242,7 +248,7 @@ export async function updateCustomer(id: string, formData: FormData) {
 
   await sql`
     UPDATE customers
-    SET name = ${name}, address = ${address}, email = ${email}, image_url = ${image_url}, payment_methods = ${payment_methods}
+    SET name = $ {customer_id}, ${name}, address = ${address}, email = ${email}, image_url = ${image_url}, payment_methods = ${payment_methods}
     WHERE id = ${id}
   `;
 

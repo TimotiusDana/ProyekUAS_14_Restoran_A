@@ -111,7 +111,7 @@ export type ReservationsTable = {
   special_request: string;
   address: string;
   email: string;
-  res_date: string;
+  reservation_date: string;
 };
 
 export type ReservationForm = {

@@ -154,6 +154,7 @@ export async function fetchInvoiceById(id: string) {
       price: invoice.price / 100,
     }));
 
+    console.log(invoice);
     return invoice[0];
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -311,6 +312,7 @@ export async function fetchReservationById(id: string) {
       price: reservation.price / 100,
     }));
 
+    console.log(reservation);
     return reservation[0];
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -337,6 +339,7 @@ export async function fetchCustomersById(id: string) {
       ...customer,
     }));
 
+    console.log(customer);
     return customer[0];
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -443,6 +446,7 @@ export async function fetchMenuById(id: string) {
       price: menu.price,
     }));
 
+    console.log(menu);
     return menu[0];
   } catch (error: any) {
     console.error('Database Error:', error);

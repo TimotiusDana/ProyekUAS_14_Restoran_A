@@ -42,7 +42,7 @@ export default async function ReservationsTable({
                     <p className="text-xl font-medium">
                       {formatCurrency(reservation.price)}
                     </p>
-                    <p>{formatDateToLocal(reservation.res_date)}</p>
+                    <p>{formatDateToLocal(reservation.reservation_date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateReservation id={reservation.id} />
@@ -106,7 +106,7 @@ export default async function ReservationsTable({
                     {reservation.special_request}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(reservation.res_date)}
+                    {formatDateToLocal(reservation.reservation_date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {reservation.email}
