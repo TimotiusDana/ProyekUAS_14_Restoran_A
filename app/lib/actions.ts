@@ -6,20 +6,39 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { File } from 'buffer';
 
-interface ValidatedFields {
-  success: boolean;
-  data?: {
-    customerId: string;
-    price: number;
-    status: string;
-  };
-  error?: any;
-}
+
+const ResSchema = z.object({
+  id: z.string(),
+  customerId: z.string(),
+  address: z.string(),
+  price: z.coerce.number(),
+  special_request: z.string(),
+ 
+  email: z.string(),
+});
 
 const updateSchema = z.object({
   customerId: z.string(),
   price: z.number(),
   status: z.string(),
+});
+
+const piss = z.object({
+  id: z.string(),
+  name: z.string(),
+  address: z.string(),
+  payment_methods: z.enum(['Qris', 'cash']),
+  email: z.string(),
+  image_url: z.string().url().nullable(),
+});
+
+const UpdateCust = z.object({
+  id: z.string(),
+  name: z.string(),
+  address: z.string().nullable().default(''), // Allow null and provide default empty string
+  email: z.string(),
+  image_url: z.string(), // Allow null and provide default null
+  payment_method: z.enum(['qris', 'cash']), // Enum validation for payment_method
 });
 
 const createSchema = z.object({
@@ -38,13 +57,7 @@ const FormSchema = z.object({
   category: z.enum(['makanan', 'minuman']),
 });
 
-const piss = z.object({
-  id: z.string(),
-  name: z.string(),
-  address: z.string(),
-  email: z.string(),
-  image_url: z.string(),
-});
+
 
 const MenuSchema = z.object({
   id: z.string(),
@@ -67,12 +80,12 @@ const UpdateMenu = z.object({
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-const CreateReservation = FormSchema.omit({ id: true, date: true });
-const UpdateReservation = FormSchema.omit({ id: true, date: true });
+const CreateReservation = ResSchema.omit({ id: true, date: true });
+const UpdateReservation = ResSchema.omit({ id: true, date: true });
 const date = new Date().toISOString().split('T')[0];
 
-const CreateCstm = piss.omit({ id: true });
-const UpdateCstm = piss.omit({ id: true });
+const CreateCustomer = piss.omit({ id: true });
+const UpdateCustomer = UpdateCust.omit({ id: true });
 
 export type State = {
   errors?: {
@@ -159,58 +172,45 @@ export async function deleteInvoice(id: string) {
   }
 }
 
-export async function createReservation(formData: FormData): Promise<{ message: string }> {
-  const validatedFields = CreateReservation.safeParse({
+export async function createReservation(formData: FormData) {
+  const { id, customerId, address, price, special_request, email } = ResSchema.parse({
+  
     customerId: formData.get('customerId'),
-    price: parseFloat(formData.get('price') as string),
-    status: formData.get('status'),
+    address: formData.get('address'),
+    price: formData.get('price'),
+    special_request: formData.get('special_request'),
+    email: formData.get('email'),
   });
 
-  if (!validatedFields.success) {
-    return { message: 'Validation Error: Invalid input data.' };
-  }
-
-  const { customerId, price, status } = validatedFields.data!;
   const priceInCents = price * 100;
 
-  try {
-    await sql`
-      INSERT INTO reservations (customer_id, price, status, date)
-      VALUES (${customerId}, ${priceInCents}, ${status}, ${date})
-    `;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Reservation.',
-    };
-  }
+  await sql`
+    INSERT INTO reservations (id, customer_id, address, price, special_request, email)
+    VALUES (${id}, ${customerId}, ${address}, ${priceInCents}, ${special_request}, ${email})
+  `;
 
   revalidatePath('/dashboard/reservations');
   redirect('/dashboard/reservations');
-
-  return { message: 'Reservation created successfully.' };
 }
 
 export async function updateReservation(id: string, formData: FormData): Promise<{ message: string }> {
-  const validatedFields = UpdateReservation.safeParse({
+  const { customerId, address, price, special_request } = UpdateReservation.parse({
     customerId: formData.get('customerId'),
+    address: formData.get('address'),
     price: parseFloat(formData.get('price') as string),
-    status: formData.get('status'),
+    special_request: formData.get('special_request'),
   });
 
-  if (!validatedFields.success) {
-    return { message: 'Validation Error: Invalid input data.' };
-  }
-
-  const { customerId, price, status } = validatedFields.data!;
   const priceInCents = price * 100;
 
   try {
     await sql`
       UPDATE reservations
-      SET customer_id = ${customerId}, price = ${priceInCents}, status = ${status}
+      SET customer_id = ${customerId}, address = ${address}, price = ${priceInCents}, special_request = ${special_request}
       WHERE id = ${id}
     `;
   } catch (error) {
+    console.error('Database Error:', error);
     return { message: 'Database Error: Failed to Update Reservation.' };
   }
 
@@ -230,80 +230,70 @@ export async function deleteReservation(id: string): Promise<{ message: string }
   }
 }
 
-export async function createCustomer(formData: FormData): Promise<{ message: string }> {
-  const img = formData.get('image') as File;
-  let fileName = '';
+export async function createCustomer(formData: FormData) {
+  const img = formData.get('image');
+  console.log(img);
 
+  let fileName = '';
   if (img instanceof File) {
     fileName = '/customers/' + img.name;
+    console.log(fileName);
   }
 
-  const validatedFields = CreateCstm.safeParse({
+  const baseURL = 'http://localhost:3000'; // Adjust to your actual base URL
+  const imageURL = fileName ? new URL(fileName, baseURL).toString() : null;
+
+  const { name, address, payment_methods, email } = CreateCustomer.parse({
+    name: formData.get('name'),
+    address: formData.get('address'),
+    payment_methods: formData.get('payment_methods'),
+    email: formData.get('email'),
+    image_url: imageURL, // Use the constructed URL
+  });
+
+  await sql`
+    INSERT INTO customers (name, address, payment_methods, email, image_url)
+    VALUES (${name}, ${address}, ${payment_methods}, ${email}, ${imageURL})
+  `;
+
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
+}
+
+export async function updateCustomer(id: string, formData: FormData) {
+  const img = formData.get('image');
+  console.log(img);
+
+  let fileName = '';
+  if (img instanceof File) {
+    fileName = '/customers/' + img.name;
+    console.log(fileName);
+  }
+
+  // Get payment_method and log its value for debugging
+  const paymentMethod = formData.get('payment_method');
+  console.log('Payment method:', paymentMethod);
+
+
+
+  const { name, address, email, payment_method, image_url } = UpdateCustomer.parse({
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
     image_url: fileName,
+    payment_method: paymentMethod,
   });
 
-  if (!validatedFields.success) {
-    return { message: 'Validation Error: Invalid input data.' };
-  }
-
-  const { name, address, email, image_url } = validatedFields.data!;
-
-  try {
-    await sql`
-      INSERT INTO customers (name, address, email, image_url)
-      VALUES (${name}, ${address}, ${email}, ${image_url})
-    `;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Customer.',
-    };
-  }
+  await sql`
+    UPDATE customers
+    SET name = ${name}, address = ${address}, email = ${email}, image_url = ${image_url}, payment_method = ${payment_method}
+    WHERE id = ${id}
+  `;
 
   revalidatePath('/dashboard/customers');
   redirect('/dashboard/customers');
-
-  return { message: 'Customer created successfully.' };
 }
 
-export async function updateCustomer(id: string, formData: FormData): Promise<{ message: string }> {
-  const img = formData.get('image') as File;
-  let fileName = '';
-
-  if (img instanceof File) {
-    fileName = '/customers/' + img.name;
-  }
-
-  const validatedFields = UpdateCstm.safeParse({
-    name: formData.get('name'),
-    address: formData.get('address'),
-    email: formData.get('email'),
-    image_url: fileName,
-  });
-
-  if (!validatedFields.success) {
-    return { message: 'Validation Error: Invalid input data.' };
-  }
-
-  const { name, address, email, image_url } = validatedFields.data!;
-
-  try {
-    await sql`
-      UPDATE customers
-      SET name = ${name}, address = ${address}, email = ${email}, image_url = ${image_url}
-      WHERE id = ${id}
-    `;
-  } catch (error) {
-    return { message: 'Database Error: Failed to Update Customer.' };
-  }
-
-  revalidatePath('/dashboard/customers');
-  redirect('/dashboard/customers');
-
-  return { message: 'Customer updated successfully.' };
-}
 
 export async function deleteCustomer(id: string): Promise<{ message: string }> {
   try {
@@ -327,7 +317,7 @@ export async function deleteMenu(id: string): Promise<{ message: string }> {
 
 export async function createMenu(formData: FormData): Promise<{ errors?: any; message: string }> {
   const name = formData.get('name') as string | null;
-  const price = formData.get('price') as string | null;
+  const price = formData.get('price') as number  | null;
   const category = formData.get('category') as string | null;
 
   if (!name || !price || !category) {

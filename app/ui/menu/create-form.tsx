@@ -94,7 +94,7 @@ export default function Form({ menu }: { menu: MenuField[] }) {
               <input
                 id="amount"
                 name="amount"
-                type="number"
+                type="string"
                 step="0.01"
                 placeholder="Enter the price"
                 className="peer block w-full rounded-md border border-blue-400 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"

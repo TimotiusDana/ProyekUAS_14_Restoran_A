@@ -5,6 +5,15 @@ export type User = {
   password: string;
 };
 
+export type Reservation = {
+id: string;
+  customer_id: string;
+  name: string;
+  image_url: string;
+  price: number;
+  special_request: string;
+};
+
 export type Customer = {
   id: string;
   name: string;
@@ -72,9 +81,6 @@ export type CustomersTableType = {
   address: string;
   payment_methods: string;
   image_url: string;
-  total_invoices: number;
-  total_pending: number;
-  total_paid: number;
 };
 
 export type FormattedCustomersTable = {
@@ -113,23 +119,21 @@ export type ReservationsTable = {
   customer_id: string;
   name: string;
   image_url: string;
-  invoice_date: string;
   price: number;
-  payment_methods: string;
-  tax: number;
-  status: 'pending' | 'paid';
+  special_request: string;
 };
 
 export type ReservationForm = {
   id: string;
   customer_id: string;
   price: number;
-  status: 'pending' | 'paid';
+  special_request: string;
 };
 
-export type LatestReservationRaw = Omit<LatestReservation, 'amount'> & {
-  amount: number;
+export type LatestReservationRaw = Omit<LatestReservation, 'price'> & {
+  price: number;
 };
+
 
 export type MenuForm = {
   id: string;
@@ -138,35 +142,10 @@ export type MenuForm = {
   price: number;
 };
 
-export type CstmForm = {
-  bind(arg0: null, id: string): unknown;
-  id: string;
-  customer_id: string;
-  price: number;
-  status: 'pending' | 'paid';
-};
 
-export type Cstm = {
-  id: string;
-  customer_id: string;
-  address: string;
-  image_url: string;
-  payment_methods: string;
-  status: 'pending' | 'paid';
-};
 
-export type CstmTable = {
-  id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  date: string;
-  price: number;
-  address: string;
-  payment_methods: string;
-  status: 'pending' | 'paid';
-};
+
+
 
 export type MenuTable = {
   id: string;
