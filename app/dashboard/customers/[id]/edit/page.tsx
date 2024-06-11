@@ -1,8 +1,7 @@
 import Form from '@/app/ui/customers/edit-form';
 import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
-import { fetchCstmsById } from '@/app/lib/data';
+import { fetchCustomersById } from '@/app/lib/data';
 import { Metadata } from 'next';
-import { CstmForm } from '@/app/lib/definitions';
 
 export const metadata: Metadata = {
   title: 'Edit Customer',
@@ -10,16 +9,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
-  const customer = await fetchCstmsById(id);
-
-  // Ensure the customer object includes the `bind` method
-  const customerWithBind: CstmForm = {
-    ...customer,
-    bind: (arg0: null, id: string) => {
-      // Provide the actual implementation of the bind method or a mock function if necessary
-      return null;
-    },
-  };
+  const customer = await fetchCustomersById(id);
 
   return (
     <main>
@@ -33,7 +23,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <Form customer={[customer]} />
+      <Form customer={customer} />
     </main>
   );
 }

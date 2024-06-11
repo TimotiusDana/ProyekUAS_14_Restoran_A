@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { UpdateReservation, DeleteReservation } from '@/app/ui/reservations/buttons';
-// import ReservationStatus from '@/app/ui/reservations/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredReservations } from '@/app/lib/data';
 
@@ -43,7 +42,7 @@ export default async function ReservationsTable({
                     <p className="text-xl font-medium">
                       {formatCurrency(reservation.price)}
                     </p>
-                    <p>{formatDateToLocal(reservation.date)}</p>
+                    <p>{formatDateToLocal(reservation.res_date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateReservation id={reservation.id} />
@@ -107,7 +106,7 @@ export default async function ReservationsTable({
                     {reservation.special_request}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(reservation.reservation_date)}
+                    {formatDateToLocal(reservation.res_date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {reservation.email}
