@@ -109,7 +109,7 @@ export default async function Table({
                     <InvoiceStatus status={invoice.status} />
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <PaymentMethod status={invoice.status} />
+                    <PaymentMethod status={invoice.payment_methods} />
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(invoice.invoice_date)}

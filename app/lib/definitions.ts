@@ -13,7 +13,7 @@ export type Customer = {
   email: string;
   image_url: string;
   payment_methods: string;
-  address: string; 
+  address: string;
 };
 
 export type Invoice = {
@@ -114,6 +114,9 @@ export type ReservationsTable = {
   image_url: string;
   price: number;
   special_request: string;
+  address: string;
+  email: string;
+  res_date: string;
 };
 
 export type ReservationForm = {
@@ -129,17 +132,23 @@ export type LatestReservationRaw = Omit<LatestReservation, 'price'> & {
 
 
 
-export type MenuForm ={
+export type MenuForm = {
   id: string;
   name: string;
-  category: string;
+  category: 'makanan' | 'minuman' ;
   price: number;
-  }
+}
 
-  export type MenuTable ={
-    id: string;
-    name: string;
-    category: string;
+export type MenuTable = {
+  id: string;
+  name: string;
+  category: 'makanan' | 'minuman';
   price: number;
-  
-  }
+
+}
+
+export type MenuField = {
+  id: string;
+  name: string;
+  category: 'makanan' | 'minuman';
+}

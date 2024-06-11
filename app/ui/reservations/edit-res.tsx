@@ -18,9 +18,20 @@ export default function EditReservationForm({
   reservation: ReservationForm;
   customers: CustomerField[];
 }) {
-  const updateReservationWithId = updateReservation.bind(null, reservation.id);
+  const updateReservationWithId = async (formData: FormData) => {
+    try {
+      await updateReservation(reservation.id, formData);
+    } catch (error) {
+      console.error('Failed to update reservation:', error);
+    }
+  };
+
   return (
-    <form action={updateReservationWithId}>
+    <form onSubmit={async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      await updateReservationWithId(formData);
+    }}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -56,7 +67,7 @@ export default function EditReservationForm({
             <div className="relative">
               <input
                 id="amount"
-                name="amount"
+                name="price"
                 type="number"
                 step="0.01"
                 defaultValue={reservation.price}
