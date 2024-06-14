@@ -1,13 +1,16 @@
 import Image from 'next/image';
+import { UpdateMenu, DeleteMenuButton } from './buttons'
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
-import type { MenuTable } from '@/app/lib/definitions';
+import { fetchMenu } from '@/app/lib/data';
 
-export default function MenuTable({
-  menu,
+export default async function MenuTable({
+  query,
 }: {
-  menu: MenuTable[];
+  query: string;
 }) {
+  const menu = await fetchMenu(query);
+
   return (
     <div className="w-full">
       <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
@@ -38,13 +41,11 @@ export default function MenuTable({
                     </div>
                     <div className="flex w-full items-center justify-between pt-4">
                       <div>
-                       
-                       
                       </div>
                       <div>
-                        
-                      
                       </div>
+                      <UpdateMenu id={menu.id} />
+                      <DeleteMenuButton id={menu.id} />
                     </div>
                   </div>
                 ))}
@@ -60,7 +61,7 @@ export default function MenuTable({
                     </th>
                     <th scope="col" className="px-3 py-5 font-bold bg-yellow-500">
                       Price
-                    </th>
+                    </th>  
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-gray-900">
@@ -76,6 +77,12 @@ export default function MenuTable({
                       </td>
                       <td className="whitespace-nowrap bg-yellow-100 px-4 py-5 text-sm">
                         {menu.price}
+                      </td>
+                      <td className="whitespace-nowrap bg-yellow-100 px-4 py-5 text-sm">
+                        <div className="flex justify-end gap-3">
+                          <UpdateMenu id={menu.id} />
+                          <DeleteMenuButton id={menu.id} />
+                        </div>
                       </td>
                     </tr>
                   ))}

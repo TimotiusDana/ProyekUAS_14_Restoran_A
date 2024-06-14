@@ -26,9 +26,7 @@ const ResSchema = z.object({
   email: z.string(),
 });
 
-
-
-const MenuSchema = z.object({
+const piss = z.object({
   id: z.string(),
   name: z.string(),
   address: z.string(),
@@ -37,7 +35,8 @@ const MenuSchema = z.object({
   image_url: z.string().url().nullable(),
 });
 
-const UpdateMenu = z.object({
+const menuSchema = z.object({
+  id: z.string(),
   name: z.string(),
   category: z.enum(['makanan', 'minuman']),
   price: z.coerce.number(),
@@ -290,7 +289,7 @@ export async function updateMenu(id: string, formData: FormData): Promise<{ mess
   let fileName = '';
 
   if (img instanceof File) {
-    fileName = '/menus/' + img.name;
+    fileName = '/menu/' + img.name;
   }
 
   const { name, category, price} = UpdateMenu.parse({
@@ -302,21 +301,26 @@ export async function updateMenu(id: string, formData: FormData): Promise<{ mess
 
   
     await sql`
-      UPDATE menus
+      UPDATE menu
       SET name = ${name}, category = ${category}, price = ${price}
       WHERE id = ${id}
     `;
   
-  revalidatePath('/dashboard/menus');
-  redirect('/dashboard/menus');
+  revalidatePath('/dashboard/menu');
+  redirect('/dashboard/menu');
 
   return { message: 'Menu updated successfully.' };
 }
 
+
+
+  
+  
+
 export async function deleteMenu(id: string): Promise<{ message: string }> {
   try {
-    await sql`DELETE FROM menus WHERE id = ${id}`;
-    revalidatePath('/dashboard/menus');
+    await sql`DELETE FROM menu WHERE id = ${id}`;
+    revalidatePath('/dashboard/menu');
     return { message: 'Deleted menu.' };
   } catch (error) {
     return { message: 'Database Error: Failed to Delete Menu.' };
