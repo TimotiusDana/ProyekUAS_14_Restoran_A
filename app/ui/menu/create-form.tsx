@@ -5,6 +5,7 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
+  InboxArrowDownIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createMenu } from '@/app/lib/actions';
@@ -16,29 +17,22 @@ export default function Form({ menu }: { menu: MenuField[] }) {
   return (
     
     <form action={createMenu}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Customer Name */}
+       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-            Choose menu
+          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+            Nama
           </label>
-          <div className="relative">
-            <select
-              id="menu"
-              name="MenuId"
-              className="peer block w-full cursor-pointer rounded-md border border-red-600 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select a menu
-              </option>
-              {menu.map((menu) => (
-                <option key={menu.id} value={menu.id}>
-                  {menu.name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Masukkan Nama"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              />
+              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
           </div>
         </div>
 
@@ -94,8 +88,7 @@ export default function Form({ menu }: { menu: MenuField[] }) {
               <input
                 id="amount"
                 name="amount"
-                type="string"
-                step="0.01"
+                type="number"
                 placeholder="Enter the price"
                 className="peer block w-full rounded-md border border-blue-400 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
@@ -105,7 +98,6 @@ export default function Form({ menu }: { menu: MenuField[] }) {
         </div>
       </div>
 
-     
 
       <div className="mt-6 flex justify-end gap-4">
         <Link

@@ -11,12 +11,12 @@ import {
   ReservationsTable,
   ReservationForm,
   MenuForm,
-  
+  Customer,
   MenuTable
 } from './definitions';
-import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
+// Removed the import of formatCurrency
 
 export async function fetchRevenue() {
   try {
@@ -41,7 +41,7 @@ export async function fetchLatestInvoices() {
 
     const latestInvoices = data.rows.map((invoice) => ({
       ...invoice,
-      price: formatCurrency(invoice.price),
+      price: invoice.price / 100, // Removed formatCurrency
     }));
     return latestInvoices;
   } catch (error: any) {
@@ -49,7 +49,6 @@ export async function fetchLatestInvoices() {
     throw new Error(`Failed to fetch the latest invoices. Reason: ${error.message}`);
   }
 }
-
 
 export async function fetchCardData() {
   try {
@@ -68,8 +67,8 @@ export async function fetchCardData() {
 
     const numberOfInvoices = Number(invoiceCount.rows[0].count ?? '0');
     const numberOfCustomers = Number(customerCount.rows[0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(invoiceStatus.rows[0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(invoiceStatus.rows[0].pending ?? '0');
+    const totalPaidInvoices = invoiceStatus.rows[0].paid / 100;
+    const totalPendingInvoices = invoiceStatus.rows[0].pending / 100;
 
     return {
       numberOfCustomers,
@@ -117,7 +116,6 @@ export async function fetchFilteredInvoices(query: string, currentPage: number) 
     throw new Error(`Failed to fetch invoices. Reason: ${error.message}`);
   }
 }
-
 
 export async function fetchInvoicesPages(query: string) {
   try {
@@ -168,7 +166,7 @@ export async function fetchInvoiceById(id: string) {
 export async function fetchCustomers() {
   noStore();
   try {
-    const data = await sql<CustomerField>`
+    const data = await sql <CustomerField>`
       SELECT
         id,
         name
@@ -241,6 +239,8 @@ export async function fetchLatestReservations() {
   }
 }
 
+
+// Fetch filtered reservations
 export async function fetchFilteredReservations(query: string, currentPage: number) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -320,32 +320,31 @@ export async function fetchReservationById(id: string) {
   }
 }
 
-export async function fetchReservations() {
+export async function fetchCustomersById(id: string) {
+  noStore();
+
   try {
-    const data = await sql<ReservationForm>`
+    const data = await sql<Customer>`
       SELECT
-        reservations.id,
-       reservations.customer_id,
-         reservations.price,
-        reservations.special_request
-      FROM reservations
-      ORDER BY reservations.id ASC
+        customers.id,
+        customers.name,
+        customers.address,
+        customers.email,
+        customers.image_url
+      FROM customers
+      WHERE customers.id = ${id};
     `;
 
-    const menu = data.rows;
-    return menu;
+    const customer = data.rows.map((customer) => ({
+      ...customer,
+    }));
+
+    return customer[0];
   } catch (error: any) {
     console.error('Database Error:', error);
-    throw new Error(`Failed to fetch reservations. Reason: ${error.message}`);
+    throw new Error('Failed to fetch customer.');
   }
 }
-
-
-
-
-
-
-
 
 export async function fetchCustomersPages(query: string) {
   noStore();
@@ -361,7 +360,8 @@ export async function fetchCustomersPages(query: string) {
     throw new Error('Failed to fetch total number of customers.');
   }
 }
-export async function fetchMenuPages(query: string){
+
+export async function fetchMenuPages(query: string) {
   try {
     const count = await sql `SELECT COUNT (*)
     from menu
@@ -381,11 +381,11 @@ export async function fetchMenuPages(query: string){
   }
 }
 
-export async function fetchFilteredMenu (query: string) {
-  try{
+export async function fetchFilteredMenu(query: string) {
+  try {
     console.log('Fetching menu data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    const data = await sql <MenuTable>`
+    const data = await sql<MenuTable>`
     SELECT
     menu.id,
     menu.name,
@@ -429,71 +429,25 @@ export async function fetchMenu() {
   }
 }
 
-
-export async function fetchMenuById (id: string) {
-  try{
-    const data = await sql <MenuForm>`
+export async function fetchMenuById(id: string) {
+  try {
+    const data = await sql<MenuForm>`
     SELECT
     menu.id,
-    menu.name
-    menu.category
+    menu.name,
+    menu.category,
     menu.price
     FROM menu
     WHERE menu.id = ${id}`;
 
     const menu = data.rows.map((menu) => ({
       ...menu,
-      price: menu.price / 100,
+      price: menu.price,
     }));
 
     return menu[0];
   } catch (error: any) {
     console.error('Database Error:', error);
     throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
-
-
-  }
-}
-
-export async function fetchMenuItems() {
-  try {
-    const data = await sql<MenuTable>`
-      SELECT id, name, price, category
-      FROM menu
-      ORDER BY name ASC`;
-
-    return data.rows;
-  } catch (error: any) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch menu items.');
-  }
-}
-
-
-
-
-export async function fetchCustomersById(id: string) {
-  noStore();
-
-  try {
-    const data = await sql<Customer>`
-      SELECT
-        customers.id,
-        customers.name,
-        customers.address,
-        customers.email,
-        customers.image_url
-      FROM customers
-      WHERE customers.id = ${id};
-    `;
-
-    const customer = data.rows.map((customer) => ({
-      ...customer,
-    }));
-
-    return customer[0];
-  } catch (error: any) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch customer.');
   }
 }

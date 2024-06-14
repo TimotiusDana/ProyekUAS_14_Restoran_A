@@ -20,7 +20,7 @@ export type Customer = {
   email: string;
   image_url: string;
   payment_methods: string;
-  address: string; 
+  address: string;
 };
 
 export type Invoice = {
@@ -28,7 +28,7 @@ export type Invoice = {
   customer_id: string;
   price: number;
   tax: number;
-  payment_methods: string;
+  payment_methods: 'qris' | 'cash';
   invoice_date: string;
   status: 'pending' | 'paid';
 };
@@ -68,7 +68,7 @@ export type InvoicesTable = {
   image_url: string;
   invoice_date: string;
   price: number;
-  payment_methods: string;
+  payment_methods: 'qris' | 'cash';
   tax: number;
   email: string;
   status: 'pending' | 'paid';
@@ -101,7 +101,9 @@ export type InvoiceForm = {
   id: string;
   customer_id: string;
   price: number;
+  tax: number;
   status: 'pending' | 'paid';
+  payment_methods: 'qris' | 'cash';
 };
 
 export type LatestReservation = {
@@ -121,6 +123,9 @@ export type ReservationsTable = {
   image_url: string;
   price: number;
   special_request: string;
+  address: string;
+  email: string;
+  res_date: string;
 };
 
 export type ReservationForm = {
@@ -135,28 +140,24 @@ export type LatestReservationRaw = Omit<LatestReservation, 'price'> & {
 };
 
 
+
 export type MenuForm = {
   id: string;
   name: string;
-  category: 'makanan' | 'minuman';
+  category: 'makanan' | 'minuman' ;
   price: number;
-};
-
-
-
-
-
+}
 
 export type MenuTable = {
   id: string;
   name: string;
   category: 'makanan' | 'minuman';
   price: number;
-};
+
+}
 
 export type MenuField = {
   id: string;
   name: string;
   category: 'makanan' | 'minuman';
-  price: number;
-};
+}

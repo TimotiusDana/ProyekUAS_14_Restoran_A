@@ -49,7 +49,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             <input
               id="email"
               name="email"
-              type="string"
+              type="email"
               placeholder="Masukkan email"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             />
@@ -62,7 +62,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             <input
               id="address"
               name="address"
-              type="string"
+              type="text"
               placeholder="Masukkan Alamat"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             />
@@ -75,7 +75,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             <input
               id="special_request"
               name="special_request"
-              type="string"
+              type="text"
               placeholder="Masukkan Permintaan Khusus"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             />

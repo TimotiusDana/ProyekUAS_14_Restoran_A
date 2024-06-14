@@ -1,3 +1,5 @@
+'use client';
+
 import { CustomerField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
@@ -7,10 +9,25 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
+import { createInvoice } from '@/app/lib/actions';
+import { useState } from 'react';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
+  const [date, setDate] = useState('');
+  
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      await createInvoice({}, formData); // Assuming {} as the prevState, adjust as needed
+    } catch (error) {
+      console.error('Failed to create invoice:', error);
+    }
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -46,9 +63,27 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             <div className="relative">
               <input
                 id="amount"
-                name="amount"
+                name="price"
                 type="number"
                 step="0.01"
+                placeholder="Masukkan dalam jumlah Rupiah"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              />
+              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+            Masukkan Total Harga
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="tax"
+                name="tax"
+                type="text"
                 placeholder="Masukkan dalam jumlah Rupiah"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
@@ -97,6 +132,64 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             </div>
           </div>
         </fieldset>
+
+        {/* Payment Method */}
+        <fieldset>
+          <legend className="mb-2 block text-sm font-medium">
+            Pilih Metode Pembayaran
+          </legend>
+          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+            <div className="flex gap-4">
+              <div className="flex items-center">
+                <input
+                  id="payment_methods"
+                  name="payment_methods"
+                  type="radio"
+                  value="qris"
+                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                />
+                <label
+                  htmlFor="qris"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                >
+                  QRIS <ClockIcon className="h-4 w-4" />
+                </label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  id="payment_methods"
+                  name="payment_methods"
+                  type="radio"
+                  value="cash"
+                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                />
+                <label
+                  htmlFor="cash"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+                >
+                  Cash <CheckIcon className="h-4 w-4" />
+                </label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        {/* Date */}
+        <div className="mb-4">
+          <label htmlFor="invoice_date" className="mb-2 block text-sm font-medium">
+            Tanggal
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <input
+              id="invoice_date"
+              name="invoice_date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+            />
+          </div>
+        </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
