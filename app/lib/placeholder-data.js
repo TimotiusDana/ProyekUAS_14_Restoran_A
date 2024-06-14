@@ -1,10 +1,18 @@
 const users = [
   {
-    id: '410544b2-4001-4271-9855-fec4b6a6442a',
-    name: 'User',
-    email: 'user@nextmail.com',
-    password: '123456',
+    id: '410544b2-4001-4271-9855-fec4b6a6442a',  // Ensure the ID is unique and in UUID format
+    name: 'Admin User',
+    email: 'admin@example.com',
+    password: 'adminpassword',  // Make sure to hash the password in real scenarios
+    role: 'ADMIN',
   },
+  {
+    id: '410544b2-3002-4271-9855-fec4b6a6442a',  // Ensure the ID is unique and in UUID format
+    name: 'Regular User',
+    email: 'user@example.com',
+    password: 'userpassword',  // Make sure to hash the password in real scenarios
+    role: 'USER',
+  }
 ];
 
 const customers = [
@@ -12,73 +20,74 @@ const customers = [
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
     name: 'Dendi Anoma',
     address: 'Jalan Babarsari, Sleman',
-    image_url: '/customers/delba-de-oliveira.png',
-    payment_methods: 'cash',  
+    image_url: '/customers/delba-de-oliveira.png',  
     email: 'Asep21@gmail.com',
+    phone_number: '08123456'
   },
   {
     id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
     name: 'Leonardo',
     address: 'Jalan Panembahan Senopati 15, Yogyakarta',
     image_url: '/customers/lee-robinson.png',
-    payment_methods: 'Qris',
     email: 'Leonard32@gmail.com',
+    phone_number: '08654321'
   },
   {
     id: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
     name: 'Heri Priadi',
     address: 'Jalan Parangtritis KM 5',
     image_url: '/customers/hector-simpson.png',
-    payment_methods: 'Qris',
     email: 'HeriPriadi@gmail.com',
+    phone_number: '08231654'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
     name: 'Kevin Sanjaya',
     address: 'Jalan Kaliurang km 10, Yogyakarta',
     image_url: '/customers/steven-tey.png',
-    payment_methods: 'Cash',
     email: 'kevinSA@gmail.com',
+    phone_number: '08654123'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
     name: 'yusuf Sanjaya',
     address: 'Jalan Godean Km 14, Yogyakarta',
     image_url: '/customers/michael-novotny.png',
-    payment_methods: 'Qris',
     email: 'Yusuf@gmail.com',
+    phone_number: '08321456'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
     name: 'Susanti',
     address: 'Jalan Ks Tubun10, Yogyakarta',
     image_url: '/customers/jared-palmer.png',
-    payment_methods: 'Cash',
     email: 'Susanti@gmail.com',
+    phone_number: '08465213'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
     name: 'Wawan',
     address: 'Jalan Dongkelan, Bantul',
     image_url: '/customers/evil-rabbit.png',
-    payment_methods: 'Cash',
     email: 'Wawan@gmail.com',
+    phone_number: '08564231'
+    
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
     name: 'Putri',
     address: 'Jalan Kaliurang km 10, Yogyakarta',
     image_url: '/customers/amy-burns.png',
-    payment_methods: 'Qris',
     email: 'Putri@gmail.com',
+    phone_number: '08312546'
   },
   {
     id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
     name: 'Santo',
     address: 'Jalan Sidoarum, Yogyakarta',
     image_url: '/customers/lee-robinson.png',
-    payment_methods: 'Cash',
     email: 'Santo@gmail.com',
+    phone_number: '08554232'
   }
 ];
 
@@ -161,7 +170,6 @@ const reservations = [
   {
     customer_id: customers[0].id,
     address: 'Jalan Babarsari, Sleman',
-    price: '92000',
     special_request: 'meja dekat lobby',
     reservation_date: '2024-03-04',
     email: 'Asep23@gmail.com',
@@ -169,7 +177,6 @@ const reservations = [
   {
     customer_id: customers[1].id,
     address: 'Jalan Babarsari, Sleman',
-    price: '100000',
     special_request: 'meja 4 dekat jendela',
     reservation_date: '2024-03-04',
     email: 'Samsul21@gmail.com',
@@ -177,7 +184,6 @@ const reservations = [
   {
     customer_id: customers[2].id,
     address: 'Jalan Babarsari, Sleman',
-    price: '340000',
     special_request: 'meja 3 VIP',
     reservation_date: '2024-03-04',
     email: 'Arip242@gmail.com',
@@ -212,19 +218,6 @@ const menu = [
   },
 ];
 
-const cstms = [
-  {
-    customer_id: customers[3].id,
-    name: 'tosu',
-    address: 'Jalan Godean Km 14, Yogyakarta',
-    image_url: '/customers/michael-novotny.png',
-    payment_methods: 'Qris',
-    email: 'tosf@gmail.com',
-    price: 32000,
-    status: 'paid',
-    date: '2024-03-04'
-  },
-];
 
 const revenue = [
   { month: 'Jan', revenue: 2000 },
@@ -247,6 +240,5 @@ module.exports = {
   invoices,
   menu,
   reservations,
-  revenue,
-  cstms
+  revenue
 };

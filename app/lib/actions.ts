@@ -20,7 +20,6 @@ const ResSchema = z.object({
   id: z.string(),
   customerId: z.string(),
   address: z.string(),
-  price: z.coerce.number(),
   special_request: z.string(),
   reservation_date: z.string(),
   email: z.string(),
@@ -30,7 +29,7 @@ const piss = z.object({
   id: z.string(),
   name: z.string(),
   address: z.string(),
-  payment_methods: z.enum(['Qris', 'cash']),
+  phone_number: z.string(),
   email: z.string(),
   image_url: z.string().url().nullable(),
 });
@@ -47,7 +46,7 @@ const UpdateCust = z.object({
   name: z.string(),
   address: z.string(),
   email: z.string(),
-  payment_methods: z.enum(['qris', 'cash']).nullable(),  // Allow nullable
+  phone_number: z.string(),
   image_url: z.string(),
 });
 
@@ -87,12 +86,10 @@ export async function createInvoice(prevState: State, formData: FormData) {
     payment_methods: formData.get('payment_methods') as 'qris' | 'cash',
   });
 
- 
-  const priceInCents = price * 100;
 try{
   await sql`
     INSERT INTO invoices (customer_id, price, tax,  status, payment_methods, invoice_date)
-    VALUES (${customerId}, ${priceInCents}, ${tax}, ${status}, ${payment_methods}, ${date})
+    VALUES (${customerId}, ${price}, ${tax}, ${status}, ${payment_methods}, ${date})
   `;
 } catch (error){
   return{
@@ -139,20 +136,18 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function createReservation(formData: FormData) {
-  const { customerId, address, price, special_request, reservation_date, email } = CreateReservation.parse({
+  const { customerId, address, special_request, reservation_date, email } = CreateReservation.parse({
     customerId: formData.get('customerId'),
     address: formData.get('address'),
-    price: formData.get('price'),
     special_request: formData.get('special_request'),
     email: formData.get('email'),
     res_date: formData.get('res_date') || new Date().toISOString(), // Set to current date if not provided
   });
 
-  const priceInCents = price * 100;
 
   await sql`
-    INSERT INTO reservations (customer_id, address, price, special_request, res_date, email)
-    VALUES (${customerId}, ${address}, ${priceInCents}, ${special_request}, ${reservation_date}, ${email})
+    INSERT INTO reservations (customer_id, address, special_request, reservation_date, email)
+    VALUES (${customerId}, ${address}, ${special_request}, ${reservation_date}, ${email})
   `;
 
   revalidatePath('/dashboard/reservations');
@@ -160,19 +155,17 @@ export async function createReservation(formData: FormData) {
 }
 
 export async function updateReservation(id: string, formData: FormData): Promise<{ message: string }> {
-  const { customerId, address, price, special_request } = UpdateReservation.parse({
+  const { customerId, address, special_request } = UpdateReservation.parse({
     customerId: formData.get('customerId'),
     address: formData.get('address'),
-    price: parseFloat(formData.get('price') as string),
     special_request: formData.get('special_request'),
   });
 
-  const priceInCents = price * 100;
 
   try {
     await sql`
       UPDATE reservations
-      SET customer_id = ${customerId}, address = ${address}, price = ${priceInCents}, special_request = ${special_request}
+      SET customer_id = ${customerId}, address = ${address}, special_request = ${special_request}
       WHERE id = ${id}
     `;
   } catch (error) {
@@ -209,17 +202,16 @@ export async function createCustomer(formData: FormData) {
   const baseURL = 'http://localhost:3000'; // Adjust to your actual base URL
   const imageURL = fileName ? new URL(fileName, baseURL).toString() : null;
 
-  const { name, address, payment_methods, email } = CreateCustomer.parse({
+  const { name, address, email } = CreateCustomer.parse({
     name: formData.get('name'),
     address: formData.get('address'),
-    payment_methods: formData.get('payment_methods'),
     email: formData.get('email'),
     image_url: imageURL, // Use the constructed URL
   });
 
   await sql`
-    INSERT INTO customers (name, address, payment_methods, email, image_url)
-    VALUES (${name}, ${address}, ${payment_methods}, ${email}, ${imageURL})
+    INSERT INTO customers (name, address, email, image_url)
+    VALUES (${name}, ${address}, ${email}, ${imageURL})
   `;
 
   revalidatePath('/dashboard/customers');
@@ -237,18 +229,17 @@ export async function updateCustomer(id: string, formData: FormData) {
     console.log(fileName);
   }
 
-  const { customer_id, name, address, email, payment_methods, image_url } = UpdateCust.parse({
+  const { customer_id, name, address, email, image_url } = UpdateCust.parse({
     customer_id: formData.get('id'),
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
     image_url: fileName,
-    payment_methods: formData.get('payment_methods') || 'cash' // Provide default value if null
   });
 
   await sql`
     UPDATE customers
-    SET name = $ {customer_id}, ${name}, address = ${address}, email = ${email}, image_url = ${image_url}, payment_methods = ${payment_methods}
+    SET name = $ {customer_id}, ${name}, address = ${address}, email = ${email}, image_url = ${image_url}
     WHERE id = ${id}
   `;
 

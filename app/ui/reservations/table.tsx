@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { UpdateReservation, DeleteReservation } from '@/app/ui/reservations/buttons';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+import { formatDateToLocal} from '@/app/lib/utils';
 import { fetchFilteredReservations } from '@/app/lib/data';
 
 export default async function ReservationsTable({
@@ -39,9 +39,6 @@ export default async function ReservationsTable({
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-xl font-medium">
-                      {formatCurrency(reservation.price)}
-                    </p>
                     <p>{formatDateToLocal(reservation.reservation_date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
@@ -60,9 +57,6 @@ export default async function ReservationsTable({
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Address
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Price
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Special Request
@@ -98,9 +92,6 @@ export default async function ReservationsTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {reservation.address}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(reservation.price)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {reservation.special_request}
