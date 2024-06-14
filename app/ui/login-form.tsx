@@ -1,4 +1,4 @@
-import { lusitana, inter } from '@/app/ui/fonts';
+import { lusitana, inter, kanit } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,
   KeyIcon,
@@ -10,8 +10,8 @@ import { Button } from './button';
 export default function LoginForm() {
   return (
     <form className="space-y-3">
-      <div className="flex-1 rounded-lg bg-yellow-100 px-6 pb-4 pt-8">
-        <h1 className={`${inter.className} mb-3 text-2xl`}>
+      <div className="flex-1 rounded-lg bg-gray-400 px-6 pb-4 pt-8">
+        <h1 className={`${kanit.className} mb-3 text-2xl`}>
           Log in untuk melanjutkan.
         </h1>
         <div className="w-full">
