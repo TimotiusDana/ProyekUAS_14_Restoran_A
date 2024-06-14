@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { UpdateCus, DeleteCus } from './buttons';
-import CstmsPayment from '../dashboard/Customers/status';
 import { fetchFilteredCustomers } from '@/app/lib/data';
 
 export default async function CustomerTable({
@@ -38,7 +37,7 @@ export default async function CustomerTable({
                     </div>
                     <p className="text-sm text-gray-500">{customer.address}</p>
                   </div>
-                  <CstmsPayment payment={customer.payment_methods} />
+                  <p className="text-sm text-gray-500">{customer.phone_number}</p>
                 </div>
                 <div className="flex justify-end gap-2">
                   <UpdateCus id={customer.id} />
@@ -57,7 +56,7 @@ export default async function CustomerTable({
                   Address
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Payment Method
+                  Phone Number
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Email
@@ -91,7 +90,7 @@ export default async function CustomerTable({
                     {customer.address}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <CstmsPayment payment={customer.payment_methods} />
+                    {customer.phone_number}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {customer.email}

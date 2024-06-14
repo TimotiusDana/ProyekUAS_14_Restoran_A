@@ -19,7 +19,7 @@ export type Customer = {
   name: string;
   email: string;
   image_url: string;
-  payment_methods: string;
+  phone_number: string;
   address: string;
 };
 
@@ -79,7 +79,7 @@ export type CustomersTableType = {
   name: string;
   email: string;
   address: string;
-  payment_methods: string;
+  phone_number: string;
   image_url: string;
 };
 
@@ -88,7 +88,7 @@ export type FormattedCustomersTable = {
   name: string;
   email: string;
   address: string;
-  payment_methods: string;
+  phone_number: string;
   image_url: string;
 };
 
@@ -110,7 +110,6 @@ export type LatestReservation = {
   id: string;
   customer_id: string;
   address: string;
-  price: number;
   special_request: string;
   reservation_date: string;
   email: string;
@@ -121,17 +120,15 @@ export type ReservationsTable = {
   customer_id: string;
   name: string;
   image_url: string;
-  price: number;
   special_request: string;
   address: string;
   email: string;
-  res_date: string;
+  reservation_date: string;
 };
 
 export type ReservationForm = {
   id: string;
   customer_id: string;
-  price: number;
   special_request: string;
 };
 

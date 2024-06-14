@@ -156,6 +156,7 @@ export async function fetchInvoiceById(id: string) {
       price: invoice.price / 100,
     }));
 
+    console.log(invoice);
     return invoice[0];
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -190,7 +191,7 @@ export async function fetchFilteredCustomers(query: string, currentPage: number)
         customers.id,
         customers.name,
         customers.address,
-        customers.payment_methods,
+        customers.phone_number,
         customers.email,
         customers.image_url
       FROM customers
@@ -222,7 +223,7 @@ export async function getUser(email: string) {
 export async function fetchLatestReservations() {
   try {
     const data = await sql<LatestReservationRaw>`
-      SELECT reservations.address, reservations.price, reservations.special_request, reservations.reservation_date, reservations.email, customers.name, customers.image_url, reservations.id
+      SELECT reservations.address, reservations.special_request, reservations.reservation_date, reservations.email, customers.name, customers.image_url, reservations.id
       FROM reservations
       JOIN customers ON reservations.customer_id = customers.id
       ORDER BY reservations.reservation_date DESC
@@ -230,7 +231,6 @@ export async function fetchLatestReservations() {
 
     const latestReservations = data.rows.map((reservation) => ({
       ...reservation,
-      price: reservation.price / 100, // Removed formatCurrency
     }));
     return latestReservations;
   } catch (error: any) {
@@ -250,7 +250,6 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
       SELECT
         reservations.id,
         reservations.customer_id,
-        reservations.price,
         reservations.address,
         reservations.special_request,
         reservations.reservation_date,
@@ -300,7 +299,6 @@ export async function fetchReservationById(id: string) {
       SELECT
         reservations.id,
         reservations.customer_id,
-        reservations.price,
         reservations.tax,
         reservations.payment_methods,
         reservations.status,
@@ -310,9 +308,9 @@ export async function fetchReservationById(id: string) {
 
     const reservation = data.rows.map((reservation) => ({
       ...reservation,
-      price: reservation.price / 100,
     }));
 
+    console.log(reservation);
     return reservation[0];
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -339,6 +337,7 @@ export async function fetchCustomersById(id: string) {
       ...customer,
     }));
 
+    console.log(customer);
     return customer[0];
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -445,6 +444,7 @@ export async function fetchMenuById(id: string) {
       price: menu.price,
     }));
 
+    console.log(menu);
     return menu[0];
   } catch (error: any) {
     console.error('Database Error:', error);

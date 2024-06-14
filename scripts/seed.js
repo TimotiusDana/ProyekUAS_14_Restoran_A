@@ -5,9 +5,10 @@ const {
   users,
   menu,
   reservations,
-  revenue 
+  revenue,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
+
 
 async function seedUsers(client) {
   try {
@@ -18,7 +19,8 @@ async function seedUsers(client) {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        role VARCHAR(50) NOT NULL
       );
     `;
 
@@ -29,8 +31,8 @@ async function seedUsers(client) {
       users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+        INSERT INTO users (id, name, email, password, role)
+        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword}, ${user.role})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -102,8 +104,8 @@ async function seedCustomers(client) {
         name VARCHAR(255) NOT NULL,
         address VARCHAR(255) NOT NULL,
         image_url VARCHAR(255) NOT NULL,
-        payment_methods VARCHAR(225) NOT NULL,
-        email VARCHAR(225) NOT NULL
+        email VARCHAR(225) NOT NULL,
+        phone_number INT NOT NULL
       );
     `;
 
@@ -113,8 +115,8 @@ async function seedCustomers(client) {
     const insertedCustomers = await Promise.all(
       customers.map(
         (customer) => client.sql`
-        INSERT INTO customers (id, name, address, image_url, payment_methods, email)
-        VALUES (${customer.id}, ${customer.name}, ${customer.address}, ${customer.image_url}, ${customer.payment_methods}, ${customer.email})
+        INSERT INTO customers (id, name, address, image_url, email, phone_number)
+        VALUES (${customer.id}, ${customer.name}, ${customer.address}, ${customer.image_url}, ${customer.email}, ${customer.phone_number})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -212,7 +214,6 @@ async function seedReservations(client) {
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       customer_id UUID NOT NULL,
       address VARCHAR(255) NOT NULL,
-      price INT NOT NULL,
       special_request VARCHAR(255) NOT NULL,
       reservation_date DATE NOT NULL,
       email VARCHAR(225) NOT NULL
@@ -224,8 +225,8 @@ async function seedReservations(client) {
     const insertedReservations = await Promise.all(
       reservations.map(
         (reservation) => client.sql`
-        INSERT INTO reservations (customer_id, address, price, special_request, reservation_date, email)
-       VALUES (${reservation.customer_id}, ${reservation.address}, ${reservation.price}, ${reservation.special_request}, ${reservation.reservation_date}, ${reservation.email})
+        INSERT INTO reservations (customer_id, address, special_request, reservation_date, email)
+       VALUES (${reservation.customer_id}, ${reservation.address}, ${reservation.special_request}, ${reservation.reservation_date}, ${reservation.email})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -277,6 +278,7 @@ async function seedRevenue(client) {
     throw error;
   }
 }
+
 
 async function main() {
   const client = await db.connect();
