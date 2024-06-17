@@ -28,8 +28,6 @@ export async function fetchRevenue() {
   }
 }
 
-
-
 export async function fetchLatestInvoices() {
   try {
     const data = await sql<LatestInvoiceRaw>`

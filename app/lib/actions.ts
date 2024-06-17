@@ -229,12 +229,13 @@ export async function updateCustomer(id: string, formData: FormData) {
     console.log(fileName);
   }
 
-  const { customer_id, name, address, email, image_url } = UpdateCust.parse({
+  const { customer_id, name, address, email, image_url, phone_number } = UpdateCust.parse({
     customer_id: formData.get('id'),
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
     image_url: fileName,
+    phone_number: formData.get('')
   });
 
   await sql`
