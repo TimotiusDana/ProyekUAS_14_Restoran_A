@@ -2,14 +2,14 @@ import { Revenue } from './definitions';
 
 // Function to format currency
 export const formatCurrency = (amount: number) => {
-  return (amount).toLocaleString('en-US', {
+  return (amount).toLocaleString('en-ID', {
     style: 'currency',
     currency: 'IDR',
   });
 };
 
 export const formatTaxCurrency = (amount: number) => {
-  return (amount/10).toLocaleString('en-US', {
+  return (amount/10).toLocaleString('en-ID', {
     style: 'currency',
     currency: 'IDR',
   });
@@ -44,7 +44,7 @@ export const generateYAxis = (revenue: Revenue[]) => {
   const topLabel = Math.ceil(highestRecord / 1000) * 1000;
 
   for (let i = topLabel; i >= 0; i -= 1000) {
-    yAxisLabels.push(`$${i / 1000}K`);
+    yAxisLabels.push(`${i / 1000}K`);
   }
 
   return { yAxisLabels, topLabel };

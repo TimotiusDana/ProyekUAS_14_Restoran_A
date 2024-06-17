@@ -1,6 +1,6 @@
 'use client';
 
-import {MenuForm} from '@/app/lib/definitions';
+import { Menu } from '@/app/lib/definitions';
 import {
   CheckIcon,
   ClockIcon,
@@ -10,53 +10,43 @@ import {
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateMenu } from '@/app/lib/actions';
-import { UpdateMenu } from './buttons';
+import { usePathname } from 'next/navigation';
 
-export default function EditMenuForm({
-  menu
-}: {
-  menu: MenuForm;
-}) {
-  const updateMenuWithId = UpdateMenu.bind(null, menu.id);
+export default function EditMenuForm({ menu }: { menu: Menu }) {
+  const path = usePathname();
+  const parts = path.split('/');
+  const uuid = parts[parts.length - 2];
+  const updateMenuWithId = updateMenu.bind(null, uuid);
+
   return (
-    <form>
-      
+    <form action={updateMenuWithId}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Nama Menu */}
+        {/* Menu Name */}
         <div className="mb-4">
-          <label htmlFor="menu" className="mb-2 block text-sm font-medium">
-            Pilih Menu
+          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+            Nama Menu
           </label>
-          <div className="relative">
-            <select
-              id="menu"
-              name="menuId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={menu.id}
-            >
-              <option value="" disabled>
-                Pilih menu
-              </option>
-              {menu.map((menu) => (
-                <option key={menu.id} value={menu.id}>
-                  {menu.name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            defaultValue={menu.name}
+            placeholder="Masukkan Nama Menu"
+            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+          />
+          <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
         </div>
 
-        {/* Invoice Amount */}
+        {/* Menu Price */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">
             Ubah Harga
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amount"
-                name="amount"
+                id="price"
+                name="price"
                 type="number"
                 step="0.01"
                 defaultValue={menu.price}
@@ -68,12 +58,9 @@ export default function EditMenuForm({
           </div>
         </div>
 
-        <div>
-
+        {/* Menu Category */}
         <fieldset>
-          <legend className="mb-2 block text-sm font-medium">
-            Pilih Kategori Menu
-          </legend>
+          <legend className="mb-2 block text-sm font-medium">Pilih Kategori Menu</legend>
           <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
             <div className="flex gap-4">
               <div className="flex items-center">
@@ -111,15 +98,16 @@ export default function EditMenuForm({
             </div>
           </div>
         </fieldset>
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/menu"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Cancel
-        </Link>
-        <Button type="submit">Edit Menu</Button>
+
+        <div className="mt-6 flex justify-end gap-4">
+          <Link
+            href="/dashboard/menu"
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            Cancel
+          </Link>
+          <Button type="submit">Edit Menu</Button>
+        </div>
       </div>
     </form>
   );

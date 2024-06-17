@@ -4,7 +4,7 @@ import {
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
-  UserCircleIcon,
+  CakeIcon,
   InboxArrowDownIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
@@ -31,7 +31,7 @@ export default function Form({ menu }: { menu: MenuField[] }) {
                 placeholder="Masukkan Nama"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -80,14 +80,14 @@ export default function Form({ menu }: { menu: MenuField[] }) {
         </fieldset>
          {/* Invoice Amount */}
       <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">
             Input the price
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amount"
-                name="amount"
+                id="price"
+                name="price"
                 type="number"
                 placeholder="Enter the price"
                 className="peer block w-full rounded-md border border-blue-400 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"

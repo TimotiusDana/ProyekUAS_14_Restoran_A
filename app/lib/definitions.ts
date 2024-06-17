@@ -5,6 +5,15 @@ export type User = {
   password: string;
 };
 
+export type Reservation = {
+id: string;
+  customer_id: string;
+  name: string;
+  image_url: string;
+  price: number;
+  special_request: string;
+};
+
 export type Customer = {
   id: string;
   name: string;
@@ -36,9 +45,16 @@ export type LatestInvoice = {
   price: number;
   tax: number;
   payment_methods: string;
-  status: string;
+  status: 'pending' | 'paid';
   invoice_date: string;
   email: string;
+};
+
+export type Menu = {
+  id: string;
+  name: string;
+  category: 'makanan' | 'minuman';
+  price: number;
 };
 
 export type LatestInvoiceRaw = Omit<LatestInvoice, 'price'> & {
@@ -98,7 +114,6 @@ export type LatestReservation = {
   reservation_date: string;
   email: string;
 };
-
 
 export type ReservationsTable = {
   id: string;
