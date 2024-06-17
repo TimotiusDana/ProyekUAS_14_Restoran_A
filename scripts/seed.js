@@ -6,7 +6,6 @@ const {
   menu,
   reservations,
   revenue,
-  cstms 
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -105,8 +104,8 @@ async function seedCustomers(client) {
         name VARCHAR(255) NOT NULL,
         address VARCHAR(255) NOT NULL,
         image_url VARCHAR(255) NOT NULL,
-        payment_methods VARCHAR(225) NOT NULL,
-        email VARCHAR(225) NOT NULL
+        email VARCHAR(225) NOT NULL,
+        phone_number INT NOT NULL
       );
     `;
 
@@ -116,8 +115,8 @@ async function seedCustomers(client) {
     const insertedCustomers = await Promise.all(
       customers.map(
         (customer) => client.sql`
-        INSERT INTO customers (id, name, address, image_url, payment_methods, email)
-        VALUES (${customer.id}, ${customer.name}, ${customer.address}, ${customer.image_url}, ${customer.payment_methods}, ${customer.email})
+        INSERT INTO customers (id, name, address, image_url, email, phone_number)
+        VALUES (${customer.id}, ${customer.name}, ${customer.address}, ${customer.image_url}, ${customer.email}, ${customer.phone_number})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -215,7 +214,6 @@ async function seedReservations(client) {
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       customer_id UUID NOT NULL,
       address VARCHAR(255) NOT NULL,
-      price INT NOT NULL,
       special_request VARCHAR(255) NOT NULL,
       reservation_date DATE NOT NULL,
       email VARCHAR(225) NOT NULL
@@ -227,8 +225,8 @@ async function seedReservations(client) {
     const insertedReservations = await Promise.all(
       reservations.map(
         (reservation) => client.sql`
-        INSERT INTO reservations (customer_id, address, price, special_request, reservation_date, email)
-       VALUES (${reservation.customer_id}, ${reservation.address}, ${reservation.price}, ${reservation.special_request}, ${reservation.reservation_date}, ${reservation.email})
+        INSERT INTO reservations (customer_id, address, special_request, reservation_date, email)
+       VALUES (${reservation.customer_id}, ${reservation.address}, ${reservation.special_request}, ${reservation.reservation_date}, ${reservation.email})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -281,54 +279,6 @@ async function seedRevenue(client) {
   }
 }
 
-async function seedCstms(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-
-    // Create the "invoices" table if it doesn'tnv exist
-    const createTable = await client.sql`
-    CREATE TABLE IF NOT EXISTS cstms (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    customer_id UUID NOT NULL,
-    price INT NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    date DATE NOT NULL,
-    name VARCHAR(225) NOT NULL,
-    address VARCHAR(225) NOT NULL,
-    email VARCHAR(225) NOT NULL,
-    payment_methods VARCHAR(225) NOT NULL
-  );
-`;
-
-
-    console.log(`Created "cstms" table`);
-
-
-    // Insert data into the "reservations" table
-    const insertedcstms = await Promise.all(
-      cstms.map(
-        (cstm) => client.sql`
-        INSERT INTO cstms (customer_id, price, status, date, name, address, payment_methods, email)
-       VALUES (${cstm.customer_id}, ${cstm.price}, ${cstm.status}, ${cstm.date}, ${cstm.name}, ${cstm.address}, ${cstm.payment_methods}, ${cstm.email})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
-    );
-
-
-    console.log(`Seeded ${insertedcstms.length} cstms`);
-
-
-    return {
-      createTable,
-      cstms: insertedcstms,
-    };
-  } catch (error) {
-    console.error('Error seeding cstm:', error);
-    throw error;
-  }
-}
 
 async function main() {
   const client = await db.connect();
@@ -339,7 +289,6 @@ async function main() {
   await seedMenu(client);
   await seedReservations(client);
   await seedRevenue(client);
-  await seedCstms(client);
 
   await client.end();
 }
