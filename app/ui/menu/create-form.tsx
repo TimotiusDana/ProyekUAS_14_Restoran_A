@@ -1,11 +1,11 @@
+
 import { MenuField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
-  CakeIcon,
-  InboxArrowDownIcon
+  UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createMenu } from '@/app/lib/actions';

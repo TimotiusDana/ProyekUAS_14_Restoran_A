@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { UpdateMenu, DeleteMenuButton } from './buttons'
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
-import { fetchMenu } from '@/app/lib/data';
+import { MenuTable } from '@/app/lib/definitions';
 
 export default async function MenuTable({
   query,
