@@ -10,8 +10,8 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-import { updateCustomer } from '@/app/lib/actions';
 import { usePathname } from 'next/navigation';
+import { updateCustomer } from '@/app/lib/actions';
 
 export default function EditCustomerForm({
   customer,
@@ -129,7 +129,6 @@ export default function EditCustomerForm({
             </div>
           </div>
         </div>
-
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link

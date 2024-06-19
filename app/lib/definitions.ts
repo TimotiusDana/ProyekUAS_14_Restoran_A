@@ -143,18 +143,26 @@ export type MenuForm = {
   name: string;
   category: 'makanan' | 'minuman' ;
   price: number;
-}
-
-export type MenuTable = {
-  id: string;
-  name: string;
-  category: 'makanan' | 'minuman';
-  price: number;
 
 }
+
 
 export type MenuField = {
   id: string;
   name: string;
   category: 'makanan' | 'minuman';
+  status: 'pending' | 'paid';  
+  
 }
+
+  
+
+  export type MenuTable ={
+    id: string;
+    name: string;
+    category: string;
+  price: number;
+  
+  }
+
+  
