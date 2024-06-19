@@ -143,25 +143,19 @@ export type MenuForm = {
   name: string;
   category: 'makanan' | 'minuman' ;
   price: number;
-<<<<<<< HEAD
-}
-
-export type MenuTable = {
-  id: string;
-  name: string;
-  category: 'makanan' | 'minuman';
-  price: number;
 
 }
+
 
 export type MenuField = {
   id: string;
   name: string;
   category: 'makanan' | 'minuman';
+  status: 'pending' | 'paid';  
+  
 }
-=======
-  status: 'pending' | 'paid';
-  }
+
+  
 
   export type MenuTable ={
     id: string;
@@ -171,11 +165,4 @@ export type MenuField = {
   
   }
 
-  export type MenuField ={
-    id: string;
-    name: string;
-    category: string;
-    price: number;
   
-  }
->>>>>>> origin/DanielChristianJap
