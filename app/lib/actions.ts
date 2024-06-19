@@ -201,7 +201,7 @@ export async function createCustomer(formData: FormData) {
   const baseURL = 'http://localhost:3000'; // Adjust to your actual base URL
   const imageURL = fileName ? new URL(fileName, baseURL).toString() : null;
 
-  const { name, address, email } = CreateCustomer.parse({
+  const { name, address, email, phone_number } = CreateCustomer.parse({
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
@@ -209,8 +209,8 @@ export async function createCustomer(formData: FormData) {
   });
 
   await sql`
-    INSERT INTO customers (name, address, email, image_url)
-    VALUES (${name}, ${address}, ${email}, ${imageURL})
+    INSERT INTO customers (name, address, email, image_url, phone_number)
+    VALUES (${name}, ${address}, ${email}, ${imageURL}, ${phone_number})
   `;
 
   revalidatePath('/dashboard/customers');

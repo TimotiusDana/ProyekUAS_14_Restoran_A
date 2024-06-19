@@ -50,29 +50,31 @@ export async function fetchLatestInvoices() {
 
 export async function fetchCardData() {
   try {
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+    const invoiceCountPromise = sql`SELECT COUNT(*) AS number FROM invoices`;
+
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
+
     const invoiceStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN price ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
          FROM invoices`;
 
-    const [invoiceCount, customerCount, invoiceStatus] = await Promise.all([
+    const data = await Promise.all([
       invoiceCountPromise,
       customerCountPromise,
-      invoiceStatusPromise,
+      invoiceStatusPromise
     ]);
 
-    const numberOfInvoices = Number(invoiceCount.rows[0].count ?? '0');
-    const numberOfCustomers = Number(customerCount.rows[0].count ?? '0');
-    const totalPaidInvoices = invoiceStatus.rows[0].paid / 100;
-    const totalPendingInvoices = invoiceStatus.rows[0].pending / 100;
+    const numberOfInvoices = Number(data[0].rows[0].number ?? '0');
+    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
+    const totalPaidInvoices = Number(data[2].rows[0].paid ?? '0');
+    const totalPendingInvoices = Number(data[2].rows[0].pending ?? '0');
 
     return {
-      numberOfCustomers,
       numberOfInvoices,
+      numberOfCustomers,
       totalPaidInvoices,
-      totalPendingInvoices,
+      totalPendingInvoices
     };
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -80,7 +82,7 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 
 export async function fetchFilteredInvoices(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
