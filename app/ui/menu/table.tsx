@@ -1,4 +1,4 @@
-import Image from 'next/image';
+  import Image from 'next/image';
 import { UpdateMenu, DeleteMenuButton } from './buttons'
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';

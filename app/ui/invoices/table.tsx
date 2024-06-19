@@ -45,6 +45,7 @@ export default async function Table({
                     <p className="text-xl font-medium">
                       {formatCurrency(invoice.price)}
                     </p>
+                    <p>{invoice.menu_name}</p> {/* Display the menu name */}
                     <p>{formatDateToLocal(invoice.invoice_date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
@@ -75,6 +76,9 @@ export default async function Table({
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Menu 
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -113,6 +117,9 @@ export default async function Table({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(invoice.invoice_date)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {invoice.menu_name} {/* Display the menu name */}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
