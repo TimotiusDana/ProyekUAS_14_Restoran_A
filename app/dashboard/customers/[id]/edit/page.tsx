@@ -23,7 +23,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           { label: 'Customers', href: '/dashboard/customers' },
           {
             label: 'Edit Customer',
-            href: `/dashboard/customers/${id}/edit`,
+            href: `/dashboard/customers`,
             active: true,
           },
         ]}

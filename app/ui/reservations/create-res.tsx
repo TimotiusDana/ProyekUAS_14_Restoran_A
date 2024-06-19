@@ -4,6 +4,8 @@ import { CurrencyDollarIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/app/ui/button';
 import { createReservation } from '@/app/lib/actions';
 
+
+
 export default function Form({ customers }: { customers: CustomerField[] }) {
   return (
     <form action={createReservation}>
@@ -27,11 +29,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">Masukkan Biaya Down Payment</label>
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">Masukkan Biaya Down Payment</label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amount"
+                id="price"
                 name="price"
                 type="number"
                 step="0.01"

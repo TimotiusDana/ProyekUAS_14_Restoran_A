@@ -11,9 +11,11 @@ import {
   ReservationsTable,
   ReservationForm,
   MenuForm,
+<<<<<<< HEAD
   Customer,
-  MenuTable,
-  
+=======
+>>>>>>> origin/DanielChristianJap
+  MenuTable
 } from './definitions';
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -28,8 +30,6 @@ export async function fetchRevenue() {
     throw new Error('Failed to fetch revenue data.');
   }
 }
-
-
 
 export async function fetchLatestInvoices() {
   try {
@@ -451,4 +451,18 @@ export async function fetchMenuById(id: string) {
     console.error('Database Error:', error);
     throw new Error(`Failed to fetch menu. Reason: ${error.message}`);
   }
+<<<<<<< HEAD
 }
+=======
+}
+  
+
+
+
+
+
+
+
+
+
+>>>>>>> origin/DanielChristianJap

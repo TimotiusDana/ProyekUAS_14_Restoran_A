@@ -3,8 +3,8 @@ import {
   UserCircleIcon,
   EnvelopeIcon,
   InboxArrowDownIcon,
-  ClockIcon,
-  CheckIcon,
+  MapIcon,
+  PhoneIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createCustomer } from '@/app/lib/actions';
@@ -50,53 +50,31 @@ export default function Form() {
                 placeholder="Masukkan Alamat"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
 
-        {/* Payment Method */}
-        <fieldset>
-          <legend className="mb-2 block text-sm font-medium">
-            Pilih Metode Pembayaran
-          </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="qris"
-                  name="payment_methods"
-                  type="radio"
-                  value="Qris"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="qris"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
-                >
-                  QRIS <ClockIcon className="h-4 w-4" />
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="cash"
-                  name="payment_methods"
-                  type="radio"
-                  value="cash"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="cash"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
-                >
-                  Cash <CheckIcon className="h-4 w-4" />
-                </label>
-              </div>
+{/* Nomor Telepon */}
+        <div className="mb-4">
+          <label htmlFor="address" className="mb-2 block text-sm font-medium">
+            Nomor Telepon
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="phone_number"
+                name="phone_number"
+                type="text"
+                placeholder="Masukkan Nomor Telepon"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              />
+              <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
-        </fieldset>
+        </div>
 
-        {/* Customer Image */}
+        
         <div className="mb-4">
           <label htmlFor="image" className="mb-2 block text-sm font-medium">
             Unggah Gambar
