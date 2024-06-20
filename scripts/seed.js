@@ -106,7 +106,7 @@ async function seedCustomers(client) {
         address VARCHAR(255) NOT NULL,
         image_url VARCHAR(255) NOT NULL,
         email VARCHAR(225) NOT NULL,
-        phone_number VARCHAR NOT NULL
+        phone_number VARCHAR(225) NOT NULL
       );
     `;
 
