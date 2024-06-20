@@ -111,7 +111,7 @@ export type LatestReservation = {
   customer_id: string;
   address: string;
   special_request: string;
-  reservation_date: string;
+  res_date: string;
   email: string;
 };
 
@@ -123,7 +123,7 @@ export type ReservationsTable = {
   special_request: string;
   address: string;
   email: string;
-  reservation_date: string;
+  res_date: string;
 };
 
 export type ReservationForm = {
@@ -151,7 +151,7 @@ export type MenuField = {
   id: string;
   name: string;
   category: 'makanan' | 'minuman';
-  status: 'pending' | 'paid';  
+  price: number;
   
 }
 

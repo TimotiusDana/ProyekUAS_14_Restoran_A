@@ -223,7 +223,7 @@ export async function getUser(email: string) {
 export async function fetchLatestReservations() {
   try {
     const data = await sql<LatestReservationRaw>`
-      SELECT reservations.address, reservations.special_request, reservations.reservation_date, reservations.email, customers.name, customers.image_url, reservations.id
+      SELECT reservations.address, reservations.special_request, reservations.res_date, reservations.email, customers.name, customers.image_url, reservations.id
       FROM reservations
       JOIN customers ON reservations.customer_id = customers.id
       ORDER BY reservations.reservation_date DESC
@@ -252,7 +252,7 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
         reservations.customer_id,
         reservations.address,
         reservations.special_request,
-        reservations.reservation_date,
+        reservations.res_date,
         reservations.email,
         customers.name,
         customers.image_url
@@ -262,7 +262,7 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
         customers.name ILIKE ${'%'+query+'%'} OR
         reservations.email ILIKE ${'%'+query+'%'} OR
         reservations.address ILIKE ${'%'+query+'%'}
-      ORDER BY reservations.reservation_date DESC
+      ORDER BY reservations.res_date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -299,10 +299,7 @@ export async function fetchReservationById(id: string) {
       SELECT
         reservations.id,
         reservations.customer_id,
-        reservations.tax,
-        reservations.payment_methods,
-        reservations.status,
-        reservations.reservation_date
+        reservations.res_date
       FROM reservations
       WHERE reservations.id = ${id}`;
 

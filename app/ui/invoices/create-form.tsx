@@ -18,14 +18,18 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
   const [date, setDate] = useState('');
   const [price, setPrice] = useState('');
   const [tax, setTax] = useState('');
+  const [selectedMenuItem, setSelectedMenuItem] = useState('');
 
-  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setPrice(value);
+  const handleMenuChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedMenuId = event.target.value;
+    setSelectedMenuItem(selectedMenuId);
 
-    // Calculate and format tax
-    const formattedTax = formatTaxCurrency(parseFloat(value) || 0);
-    setTax(formattedTax);
+    const menuItem = menu.find(item => item.id === selectedMenuId);
+    if (menuItem) {
+      setPrice(menuItem.price.toString());
+      const formattedTax = formatTaxCurrency(parseFloat(menuItem.price) || 0);
+      setTax(formattedTax);
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -77,7 +81,8 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
               id="menu"
               name="menuId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
+              value={selectedMenuItem}
+              onChange={handleMenuChange}
             >
               <option value="" disabled>
                 Select a menu item
@@ -107,7 +112,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
                 placeholder="Masukkan dalam jumlah Rupiah"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 value={price}
-                onChange={handlePriceChange}
+                readOnly
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>

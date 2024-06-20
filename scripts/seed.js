@@ -63,7 +63,8 @@ async function seedInvoices(client) {
       tax VARCHAR(225) NOT NULL,
       status VARCHAR(255) NOT NULL,
       payment_methods VARCHAR(225) NOT NULL,
-      invoice_date DATE NOT NULL
+      invoice_date DATE NOT NULL,
+      menu VARCHAR NOT NULL
     );
     `;
 
@@ -73,8 +74,8 @@ async function seedInvoices(client) {
     const insertedInvoices = await Promise.all(
       invoices.map(
         (invoice) => client.sql`
-        INSERT INTO invoices (customer_id, price, tax, status, payment_methods, invoice_date)
-        VALUES (${invoice.customer_id}, ${invoice.price}, ${invoice.tax}, ${invoice.status}, ${invoice.payment_methods}, ${invoice.invoice_date})
+        INSERT INTO invoices (customer_id, price, tax, status, payment_methods, invoice_date, menu)
+        VALUES (${invoice.customer_id}, ${invoice.price}, ${invoice.tax}, ${invoice.status}, ${invoice.payment_methods}, ${invoice.invoice_date}, ${invoice.menu})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -105,7 +106,7 @@ async function seedCustomers(client) {
         address VARCHAR(255) NOT NULL,
         image_url VARCHAR(255) NOT NULL,
         email VARCHAR(225) NOT NULL,
-        phone_number INT NOT NULL
+        phone_number VARCHAR NOT NULL
       );
     `;
 
@@ -215,7 +216,7 @@ async function seedReservations(client) {
       customer_id UUID NOT NULL,
       address VARCHAR(255) NOT NULL,
       special_request VARCHAR(255) NOT NULL,
-      reservation_date DATE NOT NULL,
+      res_date DATE NOT NULL,
       email VARCHAR(225) NOT NULL
     );
     `;
@@ -225,8 +226,8 @@ async function seedReservations(client) {
     const insertedReservations = await Promise.all(
       reservations.map(
         (reservation) => client.sql`
-        INSERT INTO reservations (customer_id, address, special_request, reservation_date, email)
-       VALUES (${reservation.customer_id}, ${reservation.address}, ${reservation.special_request}, ${reservation.reservation_date}, ${reservation.email})
+        INSERT INTO reservations (customer_id, address, special_request, res_date, email)
+       VALUES (${reservation.customer_id}, ${reservation.address}, ${reservation.special_request}, ${reservation.res_date}, ${reservation.email})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),

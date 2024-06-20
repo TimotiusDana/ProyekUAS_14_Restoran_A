@@ -171,22 +171,22 @@ const reservations = [
     customer_id: customers[0].id,
     address: 'Jalan Babarsari, Sleman',
     special_request: 'meja dekat lobby',
-    reservation_date: '2024-03-04',
-    email: 'Asep23@gmail.com',
+    res_date: '2024-03-04',
+    email: 'asep23@gmail.com',
   },
   {
     customer_id: customers[1].id,
     address: 'Jalan Babarsari, Sleman',
     special_request: 'meja 4 dekat jendela',
-    reservation_date: '2024-03-04',
-    email: 'Samsul21@gmail.com',
+    res_date: '2024-03-04',
+    email: 'samsul21@gmail.com',
   },
   {
     customer_id: customers[2].id,
     address: 'Jalan Babarsari, Sleman',
     special_request: 'meja 3 VIP',
-    reservation_date: '2024-03-04',
-    email: 'Arip242@gmail.com',
+    res_date: '2024-03-04',
+    email: 'arip242@gmail.com',
   },
 ];
 

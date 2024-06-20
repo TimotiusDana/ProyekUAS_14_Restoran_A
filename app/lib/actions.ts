@@ -21,7 +21,7 @@ const ResSchema = z.object({
   customerId: z.string(),
   address: z.string(),
   special_request: z.string(),
-  reservation_date: z.string(),
+  res_date: z.string(),
   email: z.string(),
 });
 
@@ -41,14 +41,6 @@ const menuSchema = z.object({
   price: z.coerce.number(),
 });
 
-const UpdateCust = z.object({
-  customer_id: z.string(),
-  name: z.string(),
-  address: z.string(),
-  email: z.string(),
-  phone_number: z.string(),
-  image_url: z.string(),
-});
 
 const EditSchema = z.object({
   id: z.string(),
@@ -64,9 +56,10 @@ const UpdateReservation = ResSchema.omit({ id: true, date: true });
 const date = new Date().toISOString().split('T')[0];
 
 const CreateCustomer = piss.omit({ id: true });
-const UpdateCustomer = UpdateCust.omit({ id: true });
+const UpdateCustomer = piss.omit({ id: true });
 const CreateMenu = menuSchema.omit({ id: true });
 const UpdateMenu = menuSchema.omit({ id: true });
+
 
 export type State = {
   errors?: {
@@ -123,8 +116,6 @@ export async function updateInvoice(id: string, formData: FormData) {
 }
 
 export async function deleteInvoice(id: string) {
-  throw new Error('Failed to Delete Invoice');
- 
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
@@ -135,7 +126,7 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function createReservation(formData: FormData) {
-  const { customerId, address, special_request, reservation_date, email } = CreateReservation.parse({
+  const { customerId, address, special_request, res_date, email } = CreateReservation.parse({
     customerId: formData.get('customerId'),
     address: formData.get('address'),
     special_request: formData.get('special_request'),
@@ -145,8 +136,8 @@ export async function createReservation(formData: FormData) {
 
 
   await sql`
-    INSERT INTO reservations (customer_id, address, special_request, reservation_date, email)
-    VALUES (${customerId}, ${address}, ${special_request}, ${reservation_date}, ${email})
+    INSERT INTO reservations (customer_id, address, special_request, res_date, email)
+    VALUES (${customerId}, ${address}, ${special_request}, ${res_date}, ${email})
   `;
 
   revalidatePath('/dashboard/reservations');
@@ -205,6 +196,7 @@ export async function createCustomer(formData: FormData) {
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
+    phone_number: formData.get('phone_number'),
     image_url: imageURL, // Use the constructed URL
   });
 
@@ -228,8 +220,7 @@ export async function updateCustomer(id: string, formData: FormData) {
     console.log(fileName);
   }
 
-  const { customer_id, name, address, email, image_url, phone_number } = UpdateCust.parse({
-    customer_id: formData.get('id'),
+  const { name, address, email, image_url, phone_number } = UpdateCustomer.parse({
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
@@ -239,7 +230,7 @@ export async function updateCustomer(id: string, formData: FormData) {
 
   await sql`
     UPDATE customers
-    SET name = $ {customer_id}, ${name}, address = ${address}, email = ${email}, image_url = ${image_url}
+    SET name =${name}, address = ${address}, email = ${email}, image_url = ${image_url}, phone_number = ${phone_number}
     WHERE id = ${id}
   `;
 
