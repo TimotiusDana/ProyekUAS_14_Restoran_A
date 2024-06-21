@@ -21,8 +21,8 @@ const ResSchema = z.object({
   customerId: z.string(),
   address: z.string(),
   special_request: z.string(),
-  res_date: z.string(),
-  email: z.string(),
+  reservation_date: z.string(),
+  email: z.string().email(),
 });
 
 const piss = z.object({
@@ -30,7 +30,7 @@ const piss = z.object({
   name: z.string(),
   address: z.string(),
   phone_number: z.string(),
-  email: z.string(),
+  email: z.string().email(),
   image_url: z.string().url().nullable(),
 });
 
@@ -41,7 +41,6 @@ const menuSchema = z.object({
   price: z.coerce.number(),
 });
 
-
 const EditSchema = z.object({
   id: z.string(),
   customerId: z.string(),
@@ -51,15 +50,15 @@ const EditSchema = z.object({
 
 const CreateInvoice = FormSchema.omit({ id: true, invoice_date: true });
 const UpdateInvoice = EditSchema.omit({ id: true, date: true });
-const CreateReservation = ResSchema.omit({ id: true, reservation_date: true });
-const UpdateReservation = ResSchema.omit({ id: true, date: true });
-const date = new Date().toISOString().split('T')[0];
+const CreateReservation = ResSchema.omit({ id: true, res_date: true });
+const UpdateReservation = ResSchema.omit({ id: true, res_date: true });
 
 const CreateCustomer = piss.omit({ id: true });
 const UpdateCustomer = piss.omit({ id: true });
 const CreateMenu = menuSchema.omit({ id: true });
 const UpdateMenu = menuSchema.omit({ id: true });
 
+const date = new Date().toISOString().split('T')[0];
 
 export type State = {
   errors?: {
@@ -79,16 +78,16 @@ export async function createInvoice(prevState: State, formData: FormData) {
     payment_methods: formData.get('payment_methods') as 'qris' | 'cash',
   });
 
-try{
-  await sql`
-    INSERT INTO invoices (customer_id, price, tax,  status, payment_methods, invoice_date)
-    VALUES (${customerId}, ${price}, ${tax}, ${status}, ${payment_methods}, ${date})
-  `;
-} catch (error){
-  return{
-    message: 'Database Error: Failed to Create invoice',
-  };
-}
+  try {
+    await sql`
+      INSERT INTO invoices (customer_id, price, tax, status, payment_methods, invoice_date)
+      VALUES (${customerId}, ${price}, ${tax}, ${status}, ${payment_methods}, ${date})
+    `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create invoice',
+    };
+  }
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
@@ -110,7 +109,6 @@ export async function updateInvoice(id: string, formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
-
 export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
@@ -122,19 +120,23 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function createReservation(formData: FormData) {
-  const { customerId, address, special_request, res_date, email } = CreateReservation.parse({
+  const { customerId, address, special_request, reservation_date, email } = CreateReservation.parse({
     customerId: formData.get('customerId'),
     address: formData.get('address'),
     special_request: formData.get('special_request'),
     email: formData.get('email'),
-    res_date: formData.get('res_date') || new Date().toISOString(), // Set to current date if not provided
+    res_date: formData.get('reservation_date') || new Date().toISOString(), // Set to current date if not provided
   });
 
-
-  await sql`
-    INSERT INTO reservations (customer_id, address, special_request, res_date, email)
-    VALUES (${customerId}, ${address}, ${special_request}, ${res_date}, ${email})
-  `;
+  try {
+    await sql`
+      INSERT INTO reservations (customer_id, address, special_request, reservation_date, email)
+      VALUES (${customerId}, ${address}, ${special_request}, ${reservation_date}, ${email})
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database Error: Failed to Create Reservation' };
+  }
 
   revalidatePath('/dashboard/reservations');
   redirect('/dashboard/reservations');
@@ -146,7 +148,6 @@ export async function updateReservation(id: string, formData: FormData): Promise
     address: formData.get('address'),
     special_request: formData.get('special_request'),
   });
-
 
   try {
     await sql`
@@ -193,18 +194,22 @@ export async function createCustomer(formData: FormData) {
     address: formData.get('address'),
     email: formData.get('email'),
     phone_number: formData.get('phone_number'),
-    image_url: imageURL, // Use the constructed URL
+    image_url: imageURL,
   });
 
-  await sql`
-    INSERT INTO customers (name, address, email, image_url, phone_number)
-    VALUES (${name}, ${address}, ${email}, ${imageURL}, ${phone_number})
-  `;
+  try {
+    await sql`
+      INSERT INTO customers (name, address, email, image_url, phone_number)
+      VALUES (${name}, ${address}, ${email}, ${imageURL}, ${phone_number})
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database Error: Failed to Create Customer' };
+  }
 
   revalidatePath('/dashboard/customers');
   redirect('/dashboard/customers');
 }
-
 
 export async function updateCustomer(id: string, formData: FormData) {
   const img = formData.get('image');
@@ -216,24 +221,31 @@ export async function updateCustomer(id: string, formData: FormData) {
     console.log(fileName);
   }
 
-  const { name, address, email, image_url, phone_number } = UpdateCustomer.parse({
+  const baseURL = 'http://localhost:3000'; // Adjust to your actual base URL
+  const imageURL = fileName ? new URL(fileName, baseURL).toString() : null;
+
+  const { name, address, email, phone_number } = UpdateCustomer.parse({
     name: formData.get('name'),
     address: formData.get('address'),
-    image_url: fileName,
-    phone_number: formData.get('phone_number')
+    email: formData.get('email'),
+    phone_number: formData.get('phone_number'),
+    image_url: imageURL,
   });
 
-  await sql`
-    UPDATE customers
-    SET name =${name}, address = ${address}, email = ${email}, image_url = ${image_url}, phone_number = ${phone_number}
-    WHERE id = ${id}
-  `;
+  try {
+    await sql`
+      UPDATE customers
+      SET name = ${name}, address = ${address}, email = ${email}, image_url = ${imageURL}, phone_number = ${phone_number}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database Error: Failed to Update Customer' };
+  }
 
   revalidatePath('/dashboard/customers');
   redirect('/dashboard/customers');
 }
-
-
 
 export async function deleteCustomer(id: string): Promise<{ message: string }> {
   try {
@@ -249,19 +261,21 @@ export async function createMenu(formData: FormData) {
   const img = formData.get('image');
   console.log(img);
 
-  
-
-  const { name, category, price} = CreateMenu.parse({
+  const { name, category, price } = CreateMenu.parse({
     name: formData.get('name'),
     category: formData.get('category'),
     price: formData.get('price'),
-   
   });
 
-  await sql`
-    INSERT INTO menu (name, category, price)
-    VALUES (${name}, ${category}, ${price})
-  `;
+  try {
+    await sql`
+      INSERT INTO menu (name, category, price)
+      VALUES (${name}, ${category}, ${price})
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database Error: Failed to Create Menu' };
+  }
 
   revalidatePath('/dashboard/menu');
   redirect('/dashboard/menu');
@@ -275,30 +289,29 @@ export async function updateMenu(id: string, formData: FormData): Promise<{ mess
     fileName = '/menu/' + img.name;
   }
 
-  const { name, category, price} = UpdateMenu.parse({
+  const { name, category, price } = UpdateMenu.parse({
     name: formData.get('name'),
     category: formData.get('category'),
     price: formData.get('price'),
-    image_url: fileName || null,  // Ensure image_url is null if fileName is an empty string
+    image_url: fileName || null, // Ensure image_url is null if fileName is an empty string
   });
 
-  
+  try {
     await sql`
       UPDATE menu
       SET name = ${name}, category = ${category}, price = ${price}
       WHERE id = ${id}
     `;
-  
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database Error: Failed to Update Menu' };
+  }
+
   revalidatePath('/dashboard/menu');
   redirect('/dashboard/menu');
 
   return { message: 'Menu updated successfully.' };
 }
-
-
-
-  
-  
 
 export async function deleteMenu(id: string): Promise<{ message: string }> {
   try {

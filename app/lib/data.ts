@@ -41,7 +41,7 @@ export async function fetchLatestInvoices() {
 
     const latestInvoices = data.rows.map((invoice) => ({
       ...invoice,
-      price: invoice.price // Removed formatCurrency
+      price: invoice.price / 100, // Removed formatCurrency
     }));
     return latestInvoices;
   } catch (error: any) {
@@ -199,7 +199,8 @@ export async function fetchFilteredCustomers(query: string, currentPage: number)
         customers.address,
         customers.phone_number,
         customers.email,
-        customers.image_url
+        customers.image_url,
+        customers.phone_number
       FROM customers
       WHERE
         customers.name ILIKE ${`%${query}%`} OR

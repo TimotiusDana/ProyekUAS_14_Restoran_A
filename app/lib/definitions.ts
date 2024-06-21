@@ -19,7 +19,7 @@ export type Customer = {
   name: string;
   email: string;
   image_url: string;
-  phone_number: string;
+  phone_number: number;
   address: string;
 };
 
@@ -88,7 +88,7 @@ export type FormattedCustomersTable = {
   name: string;
   email: string;
   address: string;
-  phone_number: string;
+  phone_number: number;
   image_url: string;
 };
 
