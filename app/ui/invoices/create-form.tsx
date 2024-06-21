@@ -36,8 +36,21 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
+    const invoiceData = {
+      customerId: formData.get('customerId') as string,
+      menuId: formData.get('menuId') as string,
+      price: formData.get('price') as string,
+      tax: formData.get('tax') as string,
+      payment_methods: formData.get('payment_methods') as string,
+      status: formData.get('status') as string,
+      date: formData.get('date') as string,
+    };
+
+    console.log('Invoice Data:', invoiceData); // Debugging line
+
     try {
-      await createInvoice({}, formData); 
+      await createInvoice({}, invoiceData); 
+      console.log('Invoice created successfully');
     } catch (error) {
       console.error('Failed to create invoice:', error);
     }
@@ -148,7 +161,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
-                  id="payment_methods"
+                  id="qris"
                   name="payment_methods"
                   type="radio"
                   value="qris"
@@ -163,7 +176,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
               </div>
               <div className="flex items-center">
                 <input
-                  id="payment_methods"
+                  id="cash"
                   name="payment_methods"
                   type="radio"
                   value="cash"

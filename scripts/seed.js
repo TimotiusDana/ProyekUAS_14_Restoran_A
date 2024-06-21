@@ -63,7 +63,7 @@ async function seedInvoices(client) {
       status VARCHAR(255) NOT NULL,
       payment_methods VARCHAR(225) NOT NULL,
       invoice_date DATE NOT NULL,
-      menu VARCHAR NOT NULL
+      menu VARCHAR(255) NOT NULL
     );
     `;
 
