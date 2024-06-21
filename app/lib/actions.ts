@@ -176,12 +176,11 @@ export async function updateInvoice(id: string, formData: FormData) {
     status: formData.get('status'),
   });
 
-  const priceInCents = price * 100;
 
   try {
     await sql`
       UPDATE invoices
-      SET customer_id = ${customerId}, price = ${priceInCents}, status = ${status}
+      SET customer_id = ${customerId}, price = ${price}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
