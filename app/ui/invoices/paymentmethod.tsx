@@ -1,4 +1,4 @@
-import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { DevicePhoneMobileIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
 export default function PaymentMethod({ status }: { status: string }) {
@@ -7,7 +7,7 @@ export default function PaymentMethod({ status }: { status: string }) {
       className={clsx(
         'inline-flex items-center rounded-full px-2 py-1 text-xs',
         {
-          'bg-gray-100 text-gray-500': status === 'qris',
+          'bg-blue-500 text-white': status === 'qris',
           'bg-green-500 text-white': status === 'cash',
         },
       )}
@@ -15,13 +15,13 @@ export default function PaymentMethod({ status }: { status: string }) {
       {status === 'qris' ? (
         <>
           QRIS
-          <ClockIcon className="ml-1 w-4 text-gray-500" />
+          <DevicePhoneMobileIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}
       {status === 'cash' ? (
         <>
           Cash
-          <CheckIcon className="ml-1 w-4 text-white" />
+          <CurrencyDollarIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}
     </span>

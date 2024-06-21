@@ -1,3 +1,6 @@
+'use client';
+
+
 import { lusitana, inter, kanit } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,

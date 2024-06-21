@@ -4,6 +4,7 @@ import InvoiceStatus from '@/app/ui/invoices/status';
 import PaymentMethod from './paymentmethod';
 import { formatDateToLocal, formatCurrency, formatTaxCurrency } from '@/app/lib/utils';
 import { fetchFilteredInvoices } from '@/app/lib/data';
+import { menu } from '@/app/lib/placeholder-data';
 
 export default async function Table({
   query,
@@ -45,7 +46,7 @@ export default async function Table({
                     <p className="text-xl font-medium">
                       {formatCurrency(invoice.price)}
                     </p>
-                    <p>{invoice.menu_name}</p> {/* Display the menu name */}
+                    <p>{menu[0].name}</p> {/* Display the first menu name */}
                     <p>{formatDateToLocal(invoice.invoice_date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
@@ -119,7 +120,7 @@ export default async function Table({
                     {formatDateToLocal(invoice.invoice_date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.menu_name} {/* Display the menu name */}
+                    {menu[0].name} {/* Display the first menu name */}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
