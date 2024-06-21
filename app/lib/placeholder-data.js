@@ -99,6 +99,7 @@ const invoices = [
     payment_methods: 'Cash',
     status: 'Paid',
     invoice_date: '2024-05-04',
+    menu:'Ceker Ayam',
   },
   {
     customer_id: customers[1].id,
@@ -107,6 +108,7 @@ const invoices = [
     payment_methods: 'Qris',
     status: 'Pending',
     invoice_date: '2024-05-10',
+    menu:'Mie Ayam Jumbo',
   },
   {
     customer_id: customers[2].id,
@@ -115,6 +117,8 @@ const invoices = [
     payment_methods: 'Cash',
     status: 'Pending',
     invoice_date: '2024-05-20',
+    menu:'Bakso Jumbo',
+    
   },
   {
     customer_id: customers[3].id,
@@ -123,6 +127,7 @@ const invoices = [
     payment_methods: 'Qris',
     status: 'Paid',
     invoice_date: '2024-05-12',
+    menu: 'Bakso biasa',
   },
   {
     customer_id: customers[0].id,
@@ -131,6 +136,7 @@ const invoices = [
     payment_methods: 'Qris',
     status: 'Paid',
     invoice_date: '2024-03-21',
+    menu: 'Bakso Tetelan',
   },
   {
     customer_id: customers[0].id,
@@ -139,6 +145,7 @@ const invoices = [
     payment_methods: 'Qris',
     status: 'Paid',
     invoice_date: '2024-06-05',
+    menu: 'Bakso Urat',
   },
   {
     customer_id: customers[0].id,
@@ -147,6 +154,7 @@ const invoices = [
     payment_methods: 'Cash',
     status: 'Paid',
     invoice_date: '2024-05-04',
+    menu:'Bakso Jumbo',
   },
   {
     customer_id: customers[0].id,
@@ -155,6 +163,7 @@ const invoices = [
     payment_methods: 'Qris',
     status: 'Paid',
     invoice_date: '2024-05-09',
+    menu:'Mie Ayam Jumbo',
   },
   {
     customer_id: customers[0].id,
@@ -163,6 +172,7 @@ const invoices = [
     payment_methods: 'Cash',
     status: 'Paid',
     invoice_date: '2024-05-01',
+    menu:'Mie Ayam tetelan',
   },
 ];
 

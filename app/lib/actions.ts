@@ -94,17 +94,12 @@ try{
 }
 
 export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, price, status } = UpdateInvoice.parse({
-    customerId: formData.get('customerId'),
-    price: formData.get('price'),
-    status: formData.get('status'),
-  });
-
+  const status = formData.get('status') as 'pending' | 'paid';
 
   try {
     await sql`
       UPDATE invoices
-      SET customer_id = ${customerId}, price = ${price}, status = ${status}
+      SET status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
@@ -114,6 +109,7 @@ export async function updateInvoice(id: string, formData: FormData) {
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
+
 
 export async function deleteInvoice(id: string) {
   try {
