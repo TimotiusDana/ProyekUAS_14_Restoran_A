@@ -6,6 +6,7 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
+  CakeIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createMenu } from '@/app/lib/actions';

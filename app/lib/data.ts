@@ -19,6 +19,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 // Removed the import of formatCurrency
 
 export async function fetchRevenue() {
+  noStore();
   try {
     const data = await sql<Revenue>`SELECT * FROM revenue`;
     return data.rows;
@@ -29,6 +30,7 @@ export async function fetchRevenue() {
 }
 
 export async function fetchLatestInvoices() {
+  noStore();
   try {
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.price, invoices.tax, invoices.payment_methods, invoices.status, invoices.invoice_date, customers.name, customers.image_url, invoices.id
@@ -39,7 +41,7 @@ export async function fetchLatestInvoices() {
 
     const latestInvoices = data.rows.map((invoice) => ({
       ...invoice,
-      price: invoice.price / 100, // Removed formatCurrency
+      price: invoice.price // Removed formatCurrency
     }));
     return latestInvoices;
   } catch (error: any) {
@@ -49,30 +51,33 @@ export async function fetchLatestInvoices() {
 }
 
 export async function fetchCardData() {
+  noStore();
   try {
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+    const invoiceCountPromise = sql`SELECT COUNT(*) AS number FROM invoices`;
+
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
+
     const invoiceStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN price ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN price ELSE 0 END) AS "pending"
          FROM invoices`;
 
-    const [invoiceCount, customerCount, invoiceStatus] = await Promise.all([
+    const data = await Promise.all([
       invoiceCountPromise,
       customerCountPromise,
-      invoiceStatusPromise,
+      invoiceStatusPromise
     ]);
 
-    const numberOfInvoices = Number(invoiceCount.rows[0].count ?? '0');
-    const numberOfCustomers = Number(customerCount.rows[0].count ?? '0');
-    const totalPaidInvoices = invoiceStatus.rows[0].paid / 100;
-    const totalPendingInvoices = invoiceStatus.rows[0].pending / 100;
+    const numberOfInvoices = Number(data[0].rows[0].number ?? '0');
+    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
+    const totalPaidInvoices = Number(data[2].rows[0].paid ?? '0');
+    const totalPendingInvoices = Number(data[2].rows[0].pending ?? '0');
 
     return {
-      numberOfCustomers,
       numberOfInvoices,
+      numberOfCustomers,
       totalPaidInvoices,
-      totalPendingInvoices,
+      totalPendingInvoices
     };
   } catch (error: any) {
     console.error('Database Error:', error);
@@ -80,9 +85,10 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 
 export async function fetchFilteredInvoices(query: string, currentPage: number) {
+  noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
@@ -116,6 +122,7 @@ export async function fetchFilteredInvoices(query: string, currentPage: number) 
 }
 
 export async function fetchInvoicesPages(query: string) {
+  noStore();
   try {
     const count = await sql`SELECT COUNT(*)
       FROM invoices
@@ -136,6 +143,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
+  noStore();
   try {
     const data = await sql<InvoiceForm>`
       SELECT
@@ -219,9 +227,10 @@ export async function getUser(email: string) {
 }
 
 export async function fetchLatestReservations() {
+  noStore();
   try {
     const data = await sql<LatestReservationRaw>`
-      SELECT reservations.address, reservations.special_request, reservations.reservation_date, reservations.email, customers.name, customers.image_url, reservations.id
+      SELECT reservations.address, reservations.special_request, reservations.res_date, reservations.email, customers.name, customers.image_url, reservations.id
       FROM reservations
       JOIN customers ON reservations.customer_id = customers.id
       ORDER BY reservations.reservation_date DESC
@@ -250,7 +259,7 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
         reservations.customer_id,
         reservations.address,
         reservations.special_request,
-        reservations.reservation_date,
+        reservations.res_date,
         reservations.email,
         customers.name,
         customers.image_url
@@ -260,7 +269,7 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
         customers.name ILIKE ${'%'+query+'%'} OR
         reservations.email ILIKE ${'%'+query+'%'} OR
         reservations.address ILIKE ${'%'+query+'%'}
-      ORDER BY reservations.reservation_date DESC
+      ORDER BY reservations.res_date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -272,6 +281,7 @@ export async function fetchFilteredReservations(query: string, currentPage: numb
 }
 
 export async function fetchReservationsPages(query: string) {
+  noStore();
   try {
     const result = await sql`
       SELECT COUNT(*)
@@ -292,15 +302,13 @@ export async function fetchReservationsPages(query: string) {
 }
 
 export async function fetchReservationById(id: string) {
+  noStore();
   try {
     const data = await sql<ReservationForm>`
       SELECT
         reservations.id,
         reservations.customer_id,
-        reservations.tax,
-        reservations.payment_methods,
-        reservations.status,
-        reservations.reservation_date
+        reservations.res_date
       FROM reservations
       WHERE reservations.id = ${id}`;
 
@@ -359,6 +367,7 @@ export async function fetchCustomersPages(query: string) {
 }
 
 export async function fetchMenuPages(query: string) {
+  noStore();
   try {
     const count = await sql `SELECT COUNT (*)
     from menu
@@ -379,6 +388,7 @@ export async function fetchMenuPages(query: string) {
 }
 
 export async function fetchFilteredMenu(query: string) {
+  noStore();
   try {
     console.log('Fetching menu data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -407,6 +417,7 @@ export async function fetchFilteredMenu(query: string) {
 }
 
 export async function fetchMenu() {
+  noStore();
   try {
     const data = await sql<MenuForm>`
       SELECT
@@ -427,6 +438,7 @@ export async function fetchMenu() {
 }
 
 export async function fetchMenuById(id: string) {
+  noStore();
   try {
     const data = await sql<MenuForm>`
     SELECT

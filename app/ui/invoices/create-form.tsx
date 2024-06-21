@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomerField } from '@/app/lib/definitions';
+import { CustomerField, MenuField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -14,18 +14,22 @@ import { createInvoice } from '@/app/lib/actions';
 import { formatTaxCurrency } from '@/app/lib/utils';
 import { useState } from 'react';
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
+export default function Form({ customers, menu }: { customers: CustomerField[]; menu: MenuField[] }) {
   const [date, setDate] = useState('');
   const [price, setPrice] = useState('');
   const [tax, setTax] = useState('');
+  const [selectedMenuItem, setSelectedMenuItem] = useState('');
 
-  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setPrice(value);
+  const handleMenuChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedMenuId = event.target.value;
+    setSelectedMenuItem(selectedMenuId);
 
-    // Calculate and format tax
-    const formattedTax = formatTaxCurrency(parseFloat(value) || 0);
-    setTax(formattedTax);
+    const menuItem = menu.find(item => item.id === selectedMenuId);
+    if (menuItem) {
+      setPrice(menuItem.price.toString());
+      const formattedTax = formatTaxCurrency(parseFloat(menuItem.price) || 0);
+      setTax(formattedTax);
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +37,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
     const formData = new FormData(event.currentTarget);
 
     try {
-      await createInvoice({}, formData); // Assuming {} as the prevState, adjust as needed
+      await createInvoice({}, formData); 
     } catch (error) {
       console.error('Failed to create invoice:', error);
     }
@@ -67,6 +71,32 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           </div>
         </div>
 
+        {/* Menu Item */}
+        <div className="mb-4">
+          <label htmlFor="menu" className="mb-2 block text-sm font-medium">
+            Choose menu item
+          </label>
+          <div className="relative">
+            <select
+              id="menu"
+              name="menuId"
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              value={selectedMenuItem}
+              onChange={handleMenuChange}
+            >
+              <option value="" disabled>
+                Select a menu item
+              </option>
+              {menu.map((menuItem) => (
+                <option key={menuItem.id} value={menuItem.id}>
+                  {menuItem.name}
+                </option>
+              ))}
+            </select>
+            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+          </div>
+        </div>
+
         {/* Invoice Amount */}
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
@@ -82,7 +112,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                 placeholder="Masukkan dalam jumlah Rupiah"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 value={price}
-                onChange={handlePriceChange}
+                readOnly
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -198,8 +228,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           </label>
           <div  className="relative mt-2 rounded-md">
             <input
-              id="invoice_date"
-              name="invoice_date"
+              id="date"
+              name="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
@@ -208,15 +238,10 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/invoices"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Cancel
-        </Link>
-        <Button type="submit">Create Invoice</Button>
+
+        <Button type="submit" className="w-full">
+          Buat Invoice
+        </Button>
       </div>
     </form>
   );

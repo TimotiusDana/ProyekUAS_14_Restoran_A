@@ -39,7 +39,7 @@ export default async function ReservationsTable({
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p>{formatDateToLocal(reservation.reservation_date)}</p>
+                    <p>{formatDateToLocal(reservation.res_date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateReservation id={reservation.id} />
@@ -97,7 +97,7 @@ export default async function ReservationsTable({
                     {reservation.special_request}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(reservation.reservation_date)}
+                    {formatDateToLocal(reservation.res_date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {reservation.email}

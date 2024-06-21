@@ -1,6 +1,6 @@
 import { CustomerField } from '@/app/lib/definitions';
 import Link from 'next/link';
-import { CurrencyDollarIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, EnvelopeIcon, MapIcon, StarIcon} from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createReservation } from '@/app/lib/actions';
 
@@ -28,22 +28,6 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           </div>
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="price" className="mb-2 block text-sm font-medium">Masukkan Biaya Down Payment</label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="price"
-                name="price"
-                type="number"
-                step="0.01"
-                placeholder="Masukkan dalam Bentuk Rupiah"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-        </div>
 
         <div className="mb-4">
           <label htmlFor="email" className="mb-2 block text-sm font-medium">Masukkan Email</label>
@@ -55,6 +39,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               placeholder="Masukkan email"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             />
+            <EnvelopeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
 
@@ -68,6 +53,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               placeholder="Masukkan Alamat"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             />
+            <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
 
@@ -81,6 +67,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               placeholder="Masukkan Permintaan Khusus"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             />
+            <StarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
       </div>

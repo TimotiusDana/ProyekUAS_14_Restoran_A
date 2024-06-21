@@ -1,6 +1,6 @@
 import Form from '@/app/ui/reservations/create-res';
 import Breadcrumbs from '@/app/ui/reservations/breadcrumbs';
-import { fetchReservations } from '@/app/lib/data';
+
 import { fetchCustomers } from '@/app/lib/data'
 import { Metadata } from 'next';
  
@@ -10,7 +10,6 @@ export const metadata: Metadata = {
  
 export default async function Page() {
   const customers = await  fetchCustomers();
-  const reservations = await  fetchReservations(); 
  
   return (
     <main>
