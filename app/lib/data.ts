@@ -41,7 +41,7 @@ export async function fetchLatestInvoices() {
 
     const latestInvoices = data.rows.map((invoice) => ({
       ...invoice,
-      price: invoice.price / 100, // Removed formatCurrency
+      price: invoice.price // Removed formatCurrency
     }));
     return latestInvoices;
   } catch (error: any) {
