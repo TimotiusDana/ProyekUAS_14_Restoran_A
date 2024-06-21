@@ -4,7 +4,7 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';  // Importing the Image component
  
-// import { signOut } from '@/auth';
+import { signOut } from '@/auth';
  
 export default function SideNav() {
   return (
@@ -43,17 +43,17 @@ export default function SideNav() {
           </form>
         </Link>
  
-        {/* <form
+         <form
         action={async () => {
-          'use server';modif
+          'use server';
           await signOut();
         }}
-        > */}
+        >
           <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-red-800 p-3 text-sm font-medium hover:bg-red-600 hover:text-black-600 md:flex-none md:justify-start md:p-2 md:px-3">
             <PowerIcon className="w-6" />
             <div className="hidden md:block">Keluar</div>
           </button>
-        {/* </form> */}
+        </form>
       </div>
     </div>
   );

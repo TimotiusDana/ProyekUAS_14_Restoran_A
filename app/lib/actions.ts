@@ -5,9 +5,11 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { File } from 'buffer';
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 
 const FormSchema = z.object({
-  id: z.string(),
+
   customerId: z.string(),
   price: z.coerce.number(),
   tax: z.string(),
@@ -69,27 +71,28 @@ export type State = {
   message?: string | null;
 };
 
-export async function createInvoice(prevState: State, formData: FormData) {
-  const { customerId, price, tax, status, payment_methods } = CreateInvoice.parse({
-    customerId: formData.get('customerId') as string,
-    price: Number(formData.get('price')),
-    tax: formData.get('tax'),
-    status: formData.get('status') as 'pending' | 'paid',
-    payment_methods: formData.get('payment_methods') as 'qris' | 'cash',
-  });
-
+export async function createInvoice(prevState: State, data: any) {
   try {
+    const { customerId, price, tax, status, payment_methods } = CreateInvoice.parse({
+      customerId: data.customerId,
+      price: Number(data.price),
+      tax: data.tax,
+      status: data.status as 'pending' | 'paid',
+      payment_methods: data.payment_methods as 'qris' | 'cash',
+    });
+
+    revalidatePath('/dashboard/invoices');
+    redirect('/dashboard/invoices');
+
     await sql`
-      INSERT INTO invoices (customer_id, price, tax, status, payment_methods, invoice_date)
-      VALUES (${customerId}, ${price}, ${tax}, ${status}, ${payment_methods}, ${date})
-    `;
+    INSERT INTO invoices (customer_id, price, tax,  status, payment_methods, invoice_date)
+    VALUES (${customerId}, ${price}, ${tax}, ${status}, ${payment_methods}, ${date})
+  `;
   } catch (error) {
     return {
       message: 'Database Error: Failed to Create invoice',
     };
   }
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
 }
 
 export async function updateInvoice(id: string, formData: FormData) {
@@ -261,10 +264,13 @@ export async function createMenu(formData: FormData) {
   const img = formData.get('image');
   console.log(img);
 
+
+
   const { name, category, price } = CreateMenu.parse({
     name: formData.get('name'),
     category: formData.get('category'),
     price: formData.get('price'),
+
   });
 
   try {
@@ -296,22 +302,23 @@ export async function updateMenu(id: string, formData: FormData): Promise<{ mess
     image_url: fileName || null, // Ensure image_url is null if fileName is an empty string
   });
 
-  try {
-    await sql`
+
+  await sql`
       UPDATE menu
       SET name = ${name}, category = ${category}, price = ${price}
       WHERE id = ${id}
     `;
-  } catch (error) {
-    console.error('Database Error:', error);
-    return { message: 'Database Error: Failed to Update Menu' };
-  }
 
   revalidatePath('/dashboard/menu');
   redirect('/dashboard/menu');
 
   return { message: 'Menu updated successfully.' };
 }
+
+
+
+
+
 
 export async function deleteMenu(id: string): Promise<{ message: string }> {
   try {
@@ -320,5 +327,24 @@ export async function deleteMenu(id: string): Promise<{ message: string }> {
     return { message: 'Deleted menu.' };
   } catch (error) {
     return { message: 'Database Error: Failed to Delete Menu.' };
+  }
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
   }
 }

@@ -14,6 +14,13 @@ const iconMap = {
   invoices: InboxIcon,
 };
 
+function formatRupiah(number: number): string {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  }).format(number);
+}
+
 export default async function CardWrapper() {
   try {
     const {
@@ -25,8 +32,8 @@ export default async function CardWrapper() {
 
     return (
       <>
-        <Card title="Terbayar" value={totalPaidInvoices} type="collected" />
-        <Card title="Pending" value={totalPendingInvoices} type="pending" />
+        <Card title="Terbayar" value={formatRupiah(totalPaidInvoices)} type="collected" />
+        <Card title="Pending" value={formatRupiah(totalPendingInvoices)} type="pending" />
         <Card title="Jumlah Invoice" value={numberOfInvoices} type="invoices" />
         <Card title="Total Customers" value={numberOfCustomers} type="customers" />
       </>
