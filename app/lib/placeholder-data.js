@@ -1,18 +1,10 @@
 const users = [
   {
-    id: '410544b2-4001-4271-9855-fec4b6a6442a',  // Ensure the ID is unique and in UUID format
-    name: 'Admin User',
-    email: 'admin@example.com',
-    password: 'adminpassword',  // Make sure to hash the password in real scenarios
-    role: 'ADMIN',
+    id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    name: 'Admin',
+    email: 'admin@nextmail.com',
+    password: '123456',
   },
-  {
-    id: '410544b2-3002-4271-9855-fec4b6a6442a',  // Ensure the ID is unique and in UUID format
-    name: 'Regular User',
-    email: 'user@example.com',
-    password: 'userpassword',  // Make sure to hash the password in real scenarios
-    role: 'USER',
-  }
 ];
 
 const customers = [
