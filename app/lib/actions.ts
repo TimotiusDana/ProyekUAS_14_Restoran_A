@@ -7,15 +7,17 @@ import { redirect } from 'next/navigation';
 import { File } from 'buffer';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { menu } from './placeholder-data';
 
 const FormSchema = z.object({
 
   customerId: z.string(),
   price: z.coerce.number(),
-  tax: z.string(),
+  tax: z.coerce.number(),
   status: z.enum(['pending', 'paid']),
   payment_methods: z.enum(['qris', 'cash']),
   invoice_date: z.date(),
+  menu: z.string(),
 });
 
 const ResSchema = z.object({
@@ -72,29 +74,33 @@ export type State = {
   message?: string | null;
 };
 
-export async function createInvoice(prevState: State, data: any) {
+export async function createInvoice(prevState: State, formData: FormData) {
+
+  const { customerId, price, tax, status, payment_methods, menu } = CreateInvoice.parse({
+    customerId: formData.get('customerId') as string,
+    price: Number(formData.get('price')),
+    tax: formData.get('tax'),
+    status: formData.get('status') as 'pending' | 'paid',
+    payment_methods: formData.get('payment_methods') as 'qris' | 'cash',
+    menu: formData.get('menu'),
+  });
+
+
   try {
-    const { customerId, price, tax, status, payment_methods } = CreateInvoice.parse({
-      customerId: data.customerId,
-      price: Number(data.price),
-      tax: data.tax,
-      status: data.status as 'pending' | 'paid',
-      payment_methods: data.payment_methods as 'qris' | 'cash',
-    });
-
-    revalidatePath('/dashboard/invoices');
-    redirect('/dashboard/invoices');
-
     await sql`
-    INSERT INTO invoices (customer_id, price, tax,  status, payment_methods, invoice_date)
-    VALUES (${customerId}, ${price}, ${tax}, ${status}, ${payment_methods}, ${date})
+    INSERT INTO invoices (customerId, price, tax,  status, payment_methods, invoice_date, menu)
+    VALUES (${customerId}, ${price}, ${tax}, ${status}, ${payment_methods}, ${date}, ${menu})
   `;
   } catch (error) {
     return {
-      message: 'Database Error: Failed to Create invoice',
+      message: 'Failed to create invoice',
     };
   }
+  revalidatePath('/dashboard/invoices');
+  redirect('/dashboard/invoices');
+
 }
+
 
 export async function updateInvoice(id: string, formData: FormData) {
   const status = formData.get('status') as 'pending' | 'paid';
@@ -219,12 +225,14 @@ export async function updateCustomer(id: string, formData: FormData) {
     console.log(fileName);
   }
 
+  const baseUrl = 'http://localhost:3000/images';
+
   const { name, address, email, image_url, phone_number } = UpdateCustomer.parse({
     name: formData.get('name'),
     address: formData.get('address'),
     email: formData.get('email'),
-    image_url: fileName,
-    phone_number: formData.get('')
+    image_url: fileName ? `${baseUrl}${fileName}` : '',
+    phone_number: formData.get('phone_number')
   });
 
   await sql`

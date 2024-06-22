@@ -9,10 +9,7 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const formatTaxCurrency = (amount: number) => {
-  return (amount/10).toLocaleString('en-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  });
+  return (amount/10)
 };
 
 // Function to format date to a specified locale

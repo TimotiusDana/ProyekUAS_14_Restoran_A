@@ -19,6 +19,7 @@ export default async function Table({
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          {/* Mobile View */}
           <div className="md:hidden">
             {invoices?.map((invoice) => (
               <div
@@ -57,6 +58,7 @@ export default async function Table({
               </div>
             ))}
           </div>
+          {/* Desktop View */}
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
@@ -78,9 +80,7 @@ export default async function Table({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Menu
-                </th>
+
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -120,7 +120,7 @@ export default async function Table({
                     {formatDateToLocal(invoice.invoice_date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {menu.find(item => item.id === invoice.menuId)?.name || 'Menu item'} {/* Display the menu name */}
+                    {menu.find(item => item.id === invoice.menuId)?.name || 'Menu item'}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

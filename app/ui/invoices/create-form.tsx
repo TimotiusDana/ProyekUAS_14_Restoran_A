@@ -7,7 +7,9 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
-  CalendarIcon
+  CalendarIcon,
+  CakeIcon,
+  DevicePhoneMobileIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createInvoice } from '@/app/lib/actions';
@@ -17,7 +19,7 @@ import { useState } from 'react';
 export default function Form({ customers, menu }: { customers: CustomerField[]; menu: MenuField[] }) {
   const [date, setDate] = useState('');
   const [price, setPrice] = useState('');
-  const [tax, setTax] = useState('');
+  const [tax, setTax] = useState(0);
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
 
   const handleMenuChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -27,7 +29,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
     const menuItem = menu.find(item => item.id === selectedMenuId);
     if (menuItem) {
       setPrice(menuItem.price.toString());
-      const formattedTax = formatTaxCurrency(parseFloat(menuItem.price) || 0);
+      const formattedTax = formatTaxCurrency(menuItem.price || 0);
       setTax(formattedTax);
     }
   };
@@ -36,21 +38,8 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const invoiceData = {
-      customerId: formData.get('customerId') as string,
-      menuId: formData.get('menuId') as string,
-      price: formData.get('price') as string,
-      tax: formData.get('tax') as string,
-      payment_methods: formData.get('payment_methods') as string,
-      status: formData.get('status') as string,
-      date: formData.get('date') as string,
-    };
-
-    console.log('Invoice Data:', invoiceData); // Debugging line
-
     try {
-      await createInvoice({}, invoiceData); 
-      console.log('Invoice created successfully');
+      await createInvoice({}, formData); 
     } catch (error) {
       console.error('Failed to create invoice:', error);
     }
@@ -61,12 +50,12 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
+          <label htmlFor="customerId" className="mb-2 block text-sm font-medium">
             Nama Customer
           </label>
           <div className="relative">
             <select
-              id="customer"
+              id="customerId"
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
@@ -92,7 +81,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
           <div className="relative">
             <select
               id="menu"
-              name="menuId"
+              name="menu"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               value={selectedMenuItem}
               onChange={handleMenuChange}
@@ -106,13 +95,13 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
                 </option>
               ))}
             </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
         </div>
 
         {/* Invoice Amount */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">
             Masukkan Total Harga
           </label>
           <div className="relative mt-2 rounded-md">
@@ -133,7 +122,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
         </div>
 
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="tax" className="mb-2 block text-sm font-medium">
             Total Pajak
           </label>
           <div className="relative mt-2 rounded-md">
@@ -141,11 +130,10 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
               <input
                 id="tax"
                 name="tax"
-                type="text"
+                type="number"
                 placeholder="(Total Pajak muncul otomatis)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 value={tax}
-                readOnly
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -161,7 +149,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
-                  id="qris"
+                  id="payment_methods"
                   name="payment_methods"
                   type="radio"
                   value="qris"
@@ -169,14 +157,14 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
                 />
                 <label
                   htmlFor="qris"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-blue-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  QRIS <ClockIcon className="h-4 w-4" />
+                  QRIS <DevicePhoneMobileIcon className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">
                 <input
-                  id="cash"
+                  id="payment_methods"
                   name="payment_methods"
                   type="radio"
                   value="cash"
@@ -210,7 +198,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
                 />
                 <label
                   htmlFor="pending"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-yellow-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
                   Pending <ClockIcon className="h-4 w-4" />
                 </label>
@@ -241,7 +229,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
           </label>
           <div  className="relative mt-2 rounded-md">
             <input
-              id="date"
+              id="invoice_date"
               name="date"
               type="date"
               value={date}
@@ -252,9 +240,15 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
           </div>
         </div>
 
-        <Button type="submit" className="w-full">
-          Buat Invoice
-        </Button>
+        <div className="mt-6 flex justify-end gap-4">
+        <Link
+          href="/dashboard/invoices"
+          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+        >
+          Cancel
+        </Link>
+        <Button type="submit">Buat Invoice</Button>
+      </div>
       </div>
     </form>
   );

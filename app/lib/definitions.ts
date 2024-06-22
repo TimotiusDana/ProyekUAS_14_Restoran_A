@@ -6,7 +6,7 @@ export type User = {
 };
 
 export type Reservation = {
-id: string;
+  id: string;
   customer_id: string;
   name: string;
   image_url: string;
@@ -136,33 +136,23 @@ export type LatestReservationRaw = Omit<LatestReservation, 'price'> & {
   price: number;
 };
 
-
-
 export type MenuForm = {
   id: string;
   name: string;
-  category: 'makanan' | 'minuman' ;
+  category: 'makanan' | 'minuman';
   price: number;
-
-}
-
+};
 
 export type MenuField = {
   id: string;
   name: string;
   category: 'makanan' | 'minuman';
   price: number;
-  
-}
+};
 
-  
-
-  export type MenuTable ={
-    id: string;
-    name: string;
-    category: string;
+export type MenuTable = {
+  id: string;
+  name: string;
+  category: string;
   price: number;
-  
-  }
-
-  
+};
