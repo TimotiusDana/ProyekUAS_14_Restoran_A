@@ -7,9 +7,7 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
-  CalendarIcon,
-  CakeIcon,
-  DevicePhoneMobileIcon,
+  CalendarIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createInvoice } from '@/app/lib/actions';
@@ -95,7 +93,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
                 </option>
               ))}
             </select>
-            <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
         </div>
 
@@ -158,9 +156,9 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
                 />
                 <label
                   htmlFor="qris"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-blue-500 px-3 py-1.5 text-xs font-medium text-white"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  QRIS <DevicePhoneMobileIcon className="h-4 w-4" />
+                  QRIS <ClockIcon className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">
@@ -175,7 +173,7 @@ export default function Form({ customers, menu }: { customers: CustomerField[]; 
                   htmlFor="cash"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Cash <CurrencyDollarIcon className="h-4 w-4" />
+                  Cash <CheckIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>

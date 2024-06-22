@@ -4,7 +4,7 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';  // Importing the Image component
  
-import { signOut } from '@/auth';
+//import { signOut } from '@/auth';
  
 export default function SideNav() {
   return (
