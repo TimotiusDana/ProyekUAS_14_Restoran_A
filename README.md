@@ -39,3 +39,10 @@ Pertemuan 12 (sudah dinilai)
 Timotius, Daniel, & Filan:
 1. Pembuatan CRUD
 2. Revisi fungsi actions.ts
+
+Update Terakhir Pra-Presentasi:
+
+Timotius, Daniel, Filan:
+1. Penambahan fitur login
+2. Revisi form
+3. Revisi tampilan
